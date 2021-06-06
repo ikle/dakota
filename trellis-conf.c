@@ -109,6 +109,30 @@ static int read_sysconfig (struct config *o, FILE *in)
 	return ok;
 }
 
+static int read_raw (struct config *o, FILE *in)
+{
+	int bit;
+
+	if ((bit = chip_bit_read (in)) < 0)
+		return conf_error (o, "raw (unknown) requires chip bit");
+
+	return o->action->on_raw (o->cookie, bit);
+}
+
+static int read_arc (struct config *o, FILE *in, int master)
+{
+	char *sink, *source;
+	int ok;
+
+	if (fscanf (in, "%*[ \t]%ms%*[ \t]%ms", &sink, &source) != 2)
+		return conf_error (o, "arc requires sink and source");
+
+	ok = o->action->on_arc (o->cookie, sink, source);
+	free (source);
+	free (sink);
+	return ok ? master ? o->action->on_commit (o->cookie) : 1 : 0;
+}
+
 static int read_mux_conf (struct config *o, FILE *in)
 {
 	char *source;
@@ -133,6 +157,19 @@ no_bits:
 	return conf_error (o, "chip bits required");
 }
 
+static int read_mux (struct config *o, FILE *in)
+{
+	char *name;
+	int ok;
+
+	if (fscanf (in, "%*[ \t]%ms", &name) != 1)
+		return conf_error (o, "mux name required");
+
+	ok = o->action->on_mux (o->cookie, name);
+	free (name);
+	return ok ? read_mux_conf (o, in) : 0;
+}
+
 static int read_word_conf (struct config *o, FILE *in)
 {
 	unsigned *bits;
@@ -147,6 +184,20 @@ static int read_word_conf (struct config *o, FILE *in)
 	}
 
 	return ok ? o->action->on_commit (o->cookie) : 0;
+}
+
+static int read_word (struct config *o, FILE *in, int master)
+{
+	char *name, *value;
+	int ok;
+
+	if (fscanf (in, "%*[ \t]%ms%*[ \t]%ms", &name, &value) != 2)
+		return conf_error (o, "word requires name and value");
+
+	ok = o->action->on_word (o->cookie, name, value);
+	free (name);
+	free (value);
+	return ok ? master ? read_word_conf (o, in) : 1 : 0;
 }
 
 static int read_enum_conf (struct config *o, FILE *in)
@@ -173,47 +224,6 @@ no_bits:
 	return conf_error (o, "chip bits required");
 }
 
-static int read_mux (struct config *o, FILE *in)
-{
-	char *name;
-	int ok;
-
-	if (fscanf (in, "%*[ \t]%ms", &name) != 1)
-		return conf_error (o, "mux name required");
-
-	ok = o->action->on_mux (o->cookie, name);
-	free (name);
-	return ok ? read_mux_conf (o, in) : 0;
-}
-
-static int read_arc (struct config *o, FILE *in, int master)
-{
-	char *sink, *source;
-	int ok;
-
-	if (fscanf (in, "%*[ \t]%ms%*[ \t]%ms", &sink, &source) != 2)
-		return conf_error (o, "arc requires sink and source");
-
-	ok = o->action->on_arc (o->cookie, sink, source);
-	free (source);
-	free (sink);
-	return ok ? master ? o->action->on_commit (o->cookie) : 1 : 0;
-}
-
-static int read_word (struct config *o, FILE *in, int master)
-{
-	char *name, *value;
-	int ok;
-
-	if (fscanf (in, "%*[ \t]%ms%*[ \t]%ms", &name, &value) != 2)
-		return conf_error (o, "word requires name and value");
-
-	ok = o->action->on_word (o->cookie, name, value);
-	free (name);
-	free (value);
-	return ok ? master ? read_word_conf (o, in) : 1 : 0;
-}
-
 static int read_enum (struct config *o, FILE *in, int master)
 {
 	char *name, *value;
@@ -226,16 +236,6 @@ static int read_enum (struct config *o, FILE *in, int master)
 	free (name);
 	free (value);
 	return ok ? master ? read_enum_conf (o, in) : 1 : 0;
-}
-
-static int read_raw (struct config *o, FILE *in)
-{
-	int bit;
-
-	if ((bit = chip_bit_read (in)) < 0)
-		return conf_error (o, "raw (unknown) requires chip bit");
-
-	return o->action->on_raw (o->cookie, bit);
 }
 
 static int read_tile_conf (struct config *o, FILE *in)
