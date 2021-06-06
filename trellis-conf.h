@@ -20,7 +20,7 @@ struct config_action {
 	int (*on_arc)     (void *cookie, const char *sink, const char *source);
 	int (*on_word)    (void *cookie, const char *name, const char *value);
 	int (*on_enum)    (void *cookie, const char *name, const char *value);
-	int (*on_unknown) (void *cookie, const char *value);
+	int (*on_raw)     (void *cookie, const char *value);
 
 	int (*on_bram) (void *cookie, unsigned index);
 	int (*on_data) (void *cookie, unsigned bram, size_t i, unsigned value);

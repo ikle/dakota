@@ -60,9 +60,9 @@ static int on_enum (void *cookie, const char *name, const char *value)
 	return 1;
 }
 
-static int on_unknown (void *cookie, const char *value)
+static int on_raw (void *cookie, const char *value)
 {
-	printf ("\tunknown = %s\n", value);
+	printf ("\traw = %s\n", value);
 	return 1;
 }
 
@@ -112,7 +112,7 @@ static const struct config_action action = {
 	.on_arc		= on_arc,
 	.on_word	= on_word,
 	.on_enum	= on_enum,
-	.on_unknown	= on_unknown,
+	.on_raw		= on_raw,
 
 	.on_bram	= on_bram,
 	.on_data	= on_data,

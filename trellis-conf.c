@@ -147,15 +147,15 @@ static int read_enum (struct config *o, FILE *in)
 	return ok;
 }
 
-static int read_unknown (struct config *o, FILE *in)
+static int read_raw (struct config *o, FILE *in)
 {
 	char *value;
 	int ok;
 
 	if (fscanf (in, "%*[ \t]%ms", &value) != 1)
-		return conf_error (o, "unknown requires value");
+		return conf_error (o, "raw (unknown) requires value");
 
-	ok = o->action->on_unknown (o->cookie, value);
+	ok = o->action->on_raw (o->cookie, value);
 	free (value);
 	return ok;
 }
@@ -169,7 +169,7 @@ static int read_tile_conf (struct config *o, FILE *in)
 		ok = match (type, "arc:")     ? read_arc     (o, in) :
 		     match (type, "word:")    ? read_word    (o, in) :
 		     match (type, "enum:")    ? read_enum    (o, in) :
-		     match (type, "unknown:") ? read_unknown (o, in) :
+		     match (type, "unknown:") ? read_raw     (o, in) :
 		     conf_error (o, "unknown tile record type '%s'", type);
 
 	return ok ? o->action->on_commit (o->cookie): 0;
