@@ -10,6 +10,7 @@
 #include <string.h>
 
 #include "chip-bits.h"
+#include "chip-conf.h"
 #include "trellis-conf.h"
 
 /* Global */
@@ -166,7 +167,7 @@ static int on_commit (void *cookie)
 	return 1;
 }
 
-static const struct config_action action = {
+static const struct chip_action action = {
 	.on_device	= on_device,
 	.on_comment	= on_comment,
 	.on_sysconfig	= on_sysconfig,
@@ -196,7 +197,7 @@ static const struct config_action action = {
 int main (int argc, char *argv[])
 {
 	struct ctx o = { 0, 0 };
-	struct config c = { &action, &o };
+	struct chip_conf c = { &action, &o };
 	FILE *in;
 	int ok;
 

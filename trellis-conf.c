@@ -15,13 +15,13 @@
 #include "chip-bits.h"
 #include "trellis-conf.h"
 
-static int conf_error_va (struct config *o, const char *fmt, va_list ap)
+static int conf_error_va (struct chip_conf *o, const char *fmt, va_list ap)
 {
 	vsnprintf (o->error, sizeof (o->error), fmt, ap);
 	return 0;
 }
 
-static int conf_error (struct config *o, const char *fmt, ...)
+static int conf_error (struct chip_conf *o, const char *fmt, ...)
 {
 	va_list ap;
 	int ok;
@@ -70,7 +70,7 @@ static int match (const char *a, const char *b)
 	return strcmp (a, b) == 0;
 }
 
-static int read_device (struct config *o, FILE *in)
+static int read_device (struct chip_conf *o, FILE *in)
 {
 	char *name;
 	int ok;
@@ -83,7 +83,7 @@ static int read_device (struct config *o, FILE *in)
 	return ok;
 }
 
-static int read_comment (struct config *o, FILE *in)
+static int read_comment (struct chip_conf *o, FILE *in)
 {
 	char *value;
 	int ok;
@@ -96,7 +96,7 @@ static int read_comment (struct config *o, FILE *in)
 	return ok;
 }
 
-static int read_sysconfig (struct config *o, FILE *in)
+static int read_sysconfig (struct chip_conf *o, FILE *in)
 {
 	char *name, *value;
 	int ok;
@@ -110,7 +110,7 @@ static int read_sysconfig (struct config *o, FILE *in)
 	return ok;
 }
 
-static int read_raw (struct config *o, FILE *in, int top)
+static int read_raw (struct chip_conf *o, FILE *in, int top)
 {
 	int bit, ok;
 
@@ -121,7 +121,7 @@ static int read_raw (struct config *o, FILE *in, int top)
 	return (ok && top) ? o->action->on_commit (o->cookie) : ok;
 }
 
-static int read_arrow (struct config *o, FILE *in, int top)
+static int read_arrow (struct chip_conf *o, FILE *in, int top)
 {
 	char *sink, *source;
 	int ok;
@@ -135,7 +135,7 @@ static int read_arrow (struct config *o, FILE *in, int top)
 	return (ok && top) ? o->action->on_commit (o->cookie) : ok;
 }
 
-static int read_mux_conf (struct config *o, FILE *in)
+static int read_mux_conf (struct chip_conf *o, FILE *in)
 {
 	char *source;
 	unsigned *bits;
@@ -159,7 +159,7 @@ no_bits:
 	return conf_error (o, "chip bits required");
 }
 
-static int read_mux (struct config *o, FILE *in)
+static int read_mux (struct chip_conf *o, FILE *in)
 {
 	char *name;
 	int ok;
@@ -172,7 +172,7 @@ static int read_mux (struct config *o, FILE *in)
 	return ok ? read_mux_conf (o, in) : 0;
 }
 
-static int read_word_conf (struct config *o, FILE *in)
+static int read_word_conf (struct chip_conf *o, FILE *in)
 {
 	unsigned *bits;
 	int ok = 1;
@@ -188,7 +188,7 @@ static int read_word_conf (struct config *o, FILE *in)
 	return ok ? o->action->on_commit (o->cookie) : 0;
 }
 
-static int read_word (struct config *o, FILE *in, int top)
+static int read_word (struct chip_conf *o, FILE *in, int top)
 {
 	char *name, *value;
 	int ok;
@@ -202,7 +202,7 @@ static int read_word (struct config *o, FILE *in, int top)
 	return (ok && top) ? read_word_conf (o, in) : ok;
 }
 
-static int read_enum_conf (struct config *o, FILE *in)
+static int read_enum_conf (struct chip_conf *o, FILE *in)
 {
 	char *value;
 	unsigned *bits;
@@ -226,7 +226,7 @@ no_bits:
 	return conf_error (o, "chip bits required");
 }
 
-static int read_enum (struct config *o, FILE *in, int top)
+static int read_enum (struct chip_conf *o, FILE *in, int top)
 {
 	char *name, *value;
 	int ok;
@@ -240,7 +240,7 @@ static int read_enum (struct config *o, FILE *in, int top)
 	return (ok && top) ? read_enum_conf (o, in) : ok;
 }
 
-static int read_tile_conf (struct config *o, FILE *in)
+static int read_tile_conf (struct chip_conf *o, FILE *in)
 {
 	char type[16];
 	int ok = 1;
@@ -255,7 +255,7 @@ static int read_tile_conf (struct config *o, FILE *in)
 	return ok ? o->action->on_commit (o->cookie) : 0;
 }
 
-static int read_tile (struct config *o, FILE *in)
+static int read_tile (struct chip_conf *o, FILE *in)
 {
 	char *name;
 	int ok;
@@ -268,7 +268,7 @@ static int read_tile (struct config *o, FILE *in)
 	return ok ? read_tile_conf (o, in) : 0;
 }
 
-static int read_tile_group (struct config *o, FILE *in)
+static int read_tile_group (struct chip_conf *o, FILE *in)
 {
 	char *name;
 	int ok;
@@ -287,7 +287,7 @@ static int read_tile_group (struct config *o, FILE *in)
 	return ok ? read_tile_conf (o, in) : 0;
 }
 
-static int read_bram (struct config *o, FILE *in)
+static int read_bram (struct chip_conf *o, FILE *in)
 {
 	char *name;
 	unsigned value;
@@ -309,7 +309,7 @@ static int read_bram (struct config *o, FILE *in)
 	return ok ? o->action->on_commit (o->cookie) : 0;
 }
 
-int read_conf (struct config *o, FILE *in)
+int read_conf (struct chip_conf *o, FILE *in)
 {
 	char verb[16];
 	int ok = 1;
