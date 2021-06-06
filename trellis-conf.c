@@ -247,10 +247,10 @@ static int read_tile_conf (struct config *o, FILE *in)
 		ok = match (type, "arc:")     ? read_arc     (o, in, 0) :
 		     match (type, "word:")    ? read_word    (o, in, 0) :
 		     match (type, "enum:")    ? read_enum    (o, in, 0) :
-		     match (type, "unknown:") ? read_raw     (o, in) :
+		     match (type, "unknown:") ? read_raw     (o, in)    :
 		     conf_error (o, "unknown tile record type '%s'", type);
 
-	return ok ? o->action->on_commit (o->cookie): 0;
+	return ok ? o->action->on_commit (o->cookie) : 0;
 }
 
 static int read_tile (struct config *o, FILE *in)
@@ -304,7 +304,7 @@ static int read_bram (struct config *o, FILE *in)
 		ok = o->action->on_bram_data (o->cookie, value);
 	}
 
-	return ok ? o->action->on_commit (o->cookie): 0;
+	return ok ? o->action->on_commit (o->cookie) : 0;
 }
 
 int read_conf (struct config *o, FILE *in)
@@ -313,16 +313,16 @@ int read_conf (struct config *o, FILE *in)
 	int ok = 1;
 
 	while (ok && next_entry (in) && fscanf (in, "%15s", verb) == 1)
-		ok = match (verb, ".device")     ? read_device     (o, in) :
-		     match (verb, ".comment")    ? read_comment    (o, in) :
-		     match (verb, ".sysconfig")  ? read_sysconfig  (o, in) :
-		     match (verb, ".fixed_conn") ? read_arc        (o, in, 1) :
-		     match (verb, ".mux")        ? read_mux        (o, in) :
-		     match (verb, ".config")     ? read_word       (o, in, 1) :
-		     match (verb, ".config_enum")? read_enum       (o, in, 1) :
-		     match (verb, ".tile")       ? read_tile       (o, in) :
-		     match (verb, ".tile_group") ? read_tile_group (o, in) :
-		     match (verb, ".bram_init")  ? read_bram       (o, in) :
+		ok = match (verb, ".device")      ? read_device     (o, in)    :
+		     match (verb, ".comment")     ? read_comment    (o, in)    :
+		     match (verb, ".sysconfig")   ? read_sysconfig  (o, in)    :
+		     match (verb, ".fixed_conn")  ? read_arc        (o, in, 1) :
+		     match (verb, ".mux")         ? read_mux        (o, in)    :
+		     match (verb, ".config")      ? read_word       (o, in, 1) :
+		     match (verb, ".config_enum") ? read_enum       (o, in, 1) :
+		     match (verb, ".tile")        ? read_tile       (o, in)    :
+		     match (verb, ".tile_group")  ? read_tile_group (o, in)    :
+		     match (verb, ".bram_init")   ? read_bram       (o, in)    :
 		     conf_error (o, "unknown verb '%s'", verb);
 
 	return ferror (in) ? conf_error (o, "%s", strerror (errno)) : ok;
