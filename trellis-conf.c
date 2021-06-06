@@ -37,8 +37,15 @@ static int next_ns (FILE *in)
 {
 	char la;
 
-	if (fscanf (in, " %c", &la) != 1)
-		return EOF;
+	for (;;) {
+		if (fscanf (in, " %c", &la) != 1)
+			return EOF;
+
+		if (la != '#')
+			break;
+
+		fscanf (in, "%*[^\n]");
+	}
 
 	ungetc (la, in);
 	return la;
@@ -46,20 +53,14 @@ static int next_ns (FILE *in)
 
 static int next_entry (FILE *in)
 {
-	int la;
-
-	while ((la = next_ns (in)) == '#')
-		fscanf (in, "#%*[^\n]");
+	int la = next_ns (in);
 
 	return (la != EOF);
 }
 
 static int next_record (FILE *in)
 {
-	int la;
-
-	while ((la = next_ns (in)) == '#')
-		fscanf (in, "#%*[^\n]");
+	int la = next_ns (in);
 
 	return (la != EOF && la != '.');
 }
