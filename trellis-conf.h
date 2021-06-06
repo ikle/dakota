@@ -17,10 +17,11 @@ struct config_action {
 	int (*on_sysconfig) (void *o, const char *name, const char *value);
 
 	int (*on_tile)      (void *o, const char *name);
+
+	int (*on_raw)       (void *o, const char *value);
 	int (*on_arc)       (void *o, const char *sink, const char *source);
 	int (*on_word)      (void *o, const char *name, const char *value);
 	int (*on_enum)      (void *o, const char *name, const char *value);
-	int (*on_raw)       (void *o, const char *value);
 
 	int (*on_bram)      (void *o, const char *name);
 	int (*on_bram_data) (void *o, unsigned value);
