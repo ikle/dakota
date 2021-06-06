@@ -8,6 +8,7 @@
 
 #include <stdio.h>
 
+#include "chip-bits.h"
 #include "trellis-conf.h"
 
 /* Global */
@@ -60,9 +61,11 @@ static int on_enum (void *cookie, const char *name, const char *value)
 	return 1;
 }
 
-static int on_raw (void *cookie, const char *value)
+static int on_raw (void *cookie, unsigned bit)
 {
-	printf ("\traw = %s\n", value);
+	printf ("\traw =");
+	chip_bit_write (bit, stdout);
+	printf ("\n");
 	return 1;
 }
 

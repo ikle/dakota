@@ -12,6 +12,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "chip-bits.h"
 #include "trellis-conf.h"
 
 static int conf_error_va (struct config *o, const char *fmt, va_list ap)
@@ -149,15 +150,12 @@ static int read_enum (struct config *o, FILE *in)
 
 static int read_raw (struct config *o, FILE *in)
 {
-	char *value;
-	int ok;
+	int bit;
 
-	if (fscanf (in, "%*[ \t]%ms", &value) != 1)
-		return conf_error (o, "raw (unknown) requires value");
+	if ((bit = chip_bit_read (in)) < 0)
+		return conf_error (o, "raw (unknown) requires chip bit");
 
-	ok = o->action->on_raw (o->cookie, value);
-	free (value);
-	return ok;
+	return o->action->on_raw (o->cookie, bit);
 }
 
 static int read_tile_conf (struct config *o, FILE *in)
