@@ -209,13 +209,15 @@ static int read_tile_group (struct config *o, FILE *in)
 
 static int read_bram (struct config *o, FILE *in)
 {
-	unsigned index, value;
+	char *name;
+	unsigned value;
 	int ok;
 
-	if (fscanf (in, "%*[ \t]%u", &index) != 1)
+	if (fscanf (in, "%*[ \t]%ms", &name) != 1)
 		return conf_error (o, "bram index required");
 
-	ok = o->action->on_bram (o->cookie, index);
+	ok = o->action->on_bram (o->cookie, name);
+	free (name);
 
 	while (ok && next_record (in)) {
 		if (fscanf (in, "%x", &value) != 1)

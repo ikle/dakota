@@ -68,11 +68,11 @@ static int on_raw (void *cookie, const char *value)
 
 /* BRAM */
 
-static int on_bram (void *cookie, unsigned index)
+static int on_bram (void *cookie, const char *name)
 {
 	struct ctx *o = cookie;
 
-	printf ("bram %u", index);
+	printf ("bram %s", name);
 	o->i = 0;
 	return 1;
 }

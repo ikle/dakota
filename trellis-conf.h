@@ -22,7 +22,7 @@ struct config_action {
 	int (*on_enum)    (void *cookie, const char *name, const char *value);
 	int (*on_raw)     (void *cookie, const char *value);
 
-	int (*on_bram)      (void *cookie, unsigned index);
+	int (*on_bram)      (void *cookie, const char *name);
 	int (*on_bram_data) (void *cookie, unsigned value);
 
 	int (*on_commit) (void *cookie);
