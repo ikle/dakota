@@ -20,6 +20,9 @@ int chip_bit_read (FILE *in)
 	if (fscanf (in, "%*[ \t]%c", &la) != 1)
 		goto error;
 
+	if (la == '-')
+		goto empty;
+
 	value = (la != '!') ? 1 : 0;
 
 	if (la != '!')
@@ -35,6 +38,9 @@ int chip_bit_read (FILE *in)
 		goto error;
 
 	return chip_bit_make (x, y, value);
+empty:
+	errno = 0;
+	return -1;
 error:
 	errno = EILSEQ;
 	return -1;
@@ -84,6 +90,11 @@ no_mem:
 
 int chip_bits_write (unsigned *bits, FILE *out)
 {
+	if (bits == NULL) {
+		fprintf (out, " -");
+		return 1;
+	}
+
 	do {
 		if (!chip_bit_write (bits[0], out))
 			return 0;
