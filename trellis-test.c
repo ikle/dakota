@@ -7,6 +7,7 @@
  */
 
 #include <stdio.h>
+#include <string.h>
 
 #include "chip-bits.h"
 #include "trellis-conf.h"
@@ -15,6 +16,7 @@
 
 struct ctx {
 	size_t i;
+	int in_tile;
 };
 
 static int on_device (void *cookie, const char *name)
@@ -35,36 +37,93 @@ static int on_sysconfig (void *cookie, const char *name, const char *value)
 	return 1;
 }
 
-/* Tile */
+/* Tile Config */
 
 static int on_tile (void *cookie, const char *name)
 {
+	struct ctx *o = cookie;
+
 	printf ("tile %s\n", name);
-	return 1;
-}
-
-static int on_arc (void *cookie, const char *sink, const char *source)
-{
-	printf ("\tarc %s -> %s\n", source, sink);
-	return 1;
-}
-
-static int on_word (void *cookie, const char *name, const char *value)
-{
-	printf ("\tword %s = %s\n", name, value);
-	return 1;
-}
-
-static int on_enum (void *cookie, const char *name, const char *value)
-{
-	printf ("\tenum %s = %s\n", name, value);
+	o->in_tile = 1;
 	return 1;
 }
 
 static int on_raw (void *cookie, unsigned bit)
 {
-	printf ("\traw =");
+	struct ctx *o = cookie;
+
+	if (o->in_tile)
+		printf ("\t");
+
+	printf ("raw =");
 	chip_bit_write (bit, stdout);
+	printf ("\n");
+	return 1;
+}
+
+static int on_arc (void *cookie, const char *sink, const char *source)
+{
+	struct ctx *o = cookie;
+
+	if (o->in_tile)
+		printf ("\t");
+
+	printf ("arc %s -> %s\n", source, sink);
+	return 1;
+}
+
+static int on_mux (void *cookie, const char *name)
+{
+	printf ("mux %s\n", name);
+	return 1;
+}
+
+static int on_mux_data (void *cookie, const char *source, unsigned *bits)
+{
+	printf ("\t%s =", source);
+	chip_bits_write (bits, stdout);
+	printf ("\n");
+	return 1;
+}
+
+static int on_word (void *cookie, const char *name, const char *value)
+{
+	struct ctx *o = cookie;
+
+	if (o->in_tile)
+		printf ("\t");
+	else
+		o->i = strlen (value);
+
+	printf ("word %s = %s\n", name, value);
+	return 1;
+}
+
+static int on_word_data (void *cookie, unsigned *bits)
+{
+	struct ctx *o = cookie;
+
+	printf ("\t[%zu] =", --o->i);
+	chip_bits_write (bits, stdout);
+	printf ("\n");
+	return 1;
+}
+
+static int on_enum (void *cookie, const char *name, const char *value)
+{
+	struct ctx *o = cookie;
+
+	if (o->in_tile)
+		printf ("\t");
+
+	printf ("enum %s = %s\n", name, value);
+	return 1;
+}
+
+static int on_enum_data (void *cookie, const char *value, unsigned *bits)
+{
+	printf ("\t%s =", value);
+	chip_bits_write (bits, stdout);
 	printf ("\n");
 	return 1;
 }
@@ -103,6 +162,7 @@ static int on_commit (void *cookie)
 	}
 
 	printf ("\n");
+	o->in_tile = 0;
 	return 1;
 }
 
@@ -112,10 +172,18 @@ static const struct config_action action = {
 	.on_sysconfig	= on_sysconfig,
 
 	.on_tile	= on_tile,
-	.on_arc		= on_arc,
-	.on_word	= on_word,
-	.on_enum	= on_enum,
+
 	.on_raw		= on_raw,
+	.on_arc		= on_arc,
+
+	.on_mux		= on_mux,
+	.on_mux_data	= on_mux_data,
+
+	.on_word	= on_word,
+	.on_word_data	= on_word_data,
+
+	.on_enum	= on_enum,
+	.on_enum_data	= on_enum_data,
 
 	.on_bram	= on_bram,
 	.on_bram_data	= on_bram_data,
@@ -127,7 +195,7 @@ static const struct config_action action = {
 
 int main (int argc, char *argv[])
 {
-	struct ctx o = { 0 };
+	struct ctx o = { 0, 0 };
 	struct config c = { &action, &o };
 	FILE *in;
 	int ok;

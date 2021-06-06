@@ -20,8 +20,15 @@ struct config_action {
 
 	int (*on_raw)       (void *o, unsigned bit);
 	int (*on_arc)       (void *o, const char *sink, const char *source);
+
+	int (*on_mux)       (void *o, const char *name);
+	int (*on_mux_data)  (void *o, const char *source, unsigned *bits);
+
 	int (*on_word)      (void *o, const char *name, const char *value);
+	int (*on_word_data) (void *o, unsigned *bits);
+
 	int (*on_enum)      (void *o, const char *name, const char *value);
+	int (*on_enum_data) (void *o, const char *value, unsigned *bits);
 
 	int (*on_bram)      (void *o, const char *name);
 	int (*on_bram_data) (void *o, unsigned value);

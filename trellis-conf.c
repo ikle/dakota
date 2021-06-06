@@ -56,7 +56,10 @@ static int next_entry (FILE *in)
 
 static int next_record (FILE *in)
 {
-	int la = next_ns (in);
+	int la;
+
+	while ((la = next_ns (in)) == '#')
+		fscanf (in, "#%*[^\n]");
 
 	return (la != EOF && la != '.');
 }
@@ -106,7 +109,84 @@ static int read_sysconfig (struct config *o, FILE *in)
 	return ok;
 }
 
-static int read_arc (struct config *o, FILE *in)
+static int read_mux_conf (struct config *o, FILE *in)
+{
+	char *source;
+	unsigned *bits;
+	int ok = 1;
+
+	while (ok && next_record (in)) {
+		if (fscanf (in, "%ms", &source) != 1)
+			return conf_error (o, "source name required");
+
+		if ((bits = chip_bits_read (in)) == NULL && errno != 0)
+			goto no_bits;
+
+		ok = o->action->on_mux_data (o->cookie, source, bits);
+		free (source);
+		free (bits);
+	}
+
+	return ok ? o->action->on_commit (o->cookie) : 0;
+no_bits:
+	free (source);
+	return conf_error (o, "chip bits required");
+}
+
+static int read_word_conf (struct config *o, FILE *in)
+{
+	unsigned *bits;
+	int ok = 1;
+
+	while (ok && next_record (in)) {
+		if ((bits = chip_bits_read (in)) == NULL && errno != 0)
+			return conf_error (o, "chip bits required");
+
+		ok = o->action->on_word_data (o->cookie, bits);
+		free (bits);
+	}
+
+	return ok ? o->action->on_commit (o->cookie) : 0;
+}
+
+static int read_enum_conf (struct config *o, FILE *in)
+{
+	char *value;
+	unsigned *bits;
+	int ok = 1;
+
+	while (ok && next_record (in)) {
+		if (fscanf (in, "%ms", &value) != 1)
+			return conf_error (o, "value name required");
+
+		if ((bits = chip_bits_read (in)) == NULL && errno != 0)
+			goto no_bits;
+
+		ok = o->action->on_enum_data (o->cookie, value, bits);
+		free (value);
+		free (bits);
+	}
+
+	return ok ? o->action->on_commit (o->cookie) : 0;
+no_bits:
+	free (value);
+	return conf_error (o, "chip bits required");
+}
+
+static int read_mux (struct config *o, FILE *in)
+{
+	char *name;
+	int ok;
+
+	if (fscanf (in, "%*[ \t]%ms", &name) != 1)
+		return conf_error (o, "mux name required");
+
+	ok = o->action->on_mux (o->cookie, name);
+	free (name);
+	return ok ? read_mux_conf (o, in) : 0;
+}
+
+static int read_arc (struct config *o, FILE *in, int master)
 {
 	char *sink, *source;
 	int ok;
@@ -117,10 +197,10 @@ static int read_arc (struct config *o, FILE *in)
 	ok = o->action->on_arc (o->cookie, sink, source);
 	free (source);
 	free (sink);
-	return ok;
+	return ok ? master ? o->action->on_commit (o->cookie) : 1 : 0;
 }
 
-static int read_word (struct config *o, FILE *in)
+static int read_word (struct config *o, FILE *in, int master)
 {
 	char *name, *value;
 	int ok;
@@ -131,10 +211,10 @@ static int read_word (struct config *o, FILE *in)
 	ok = o->action->on_word (o->cookie, name, value);
 	free (name);
 	free (value);
-	return ok;
+	return ok ? master ? read_word_conf (o, in) : 1 : 0;
 }
 
-static int read_enum (struct config *o, FILE *in)
+static int read_enum (struct config *o, FILE *in, int master)
 {
 	char *name, *value;
 	int ok;
@@ -145,7 +225,7 @@ static int read_enum (struct config *o, FILE *in)
 	ok = o->action->on_enum (o->cookie, name, value);
 	free (name);
 	free (value);
-	return ok;
+	return ok ? master ? read_enum_conf (o, in) : 1 : 0;
 }
 
 static int read_raw (struct config *o, FILE *in)
@@ -164,9 +244,9 @@ static int read_tile_conf (struct config *o, FILE *in)
 	int ok = 1;
 
 	while (ok && next_record (in) && fscanf (in, "%15s", type) == 1)
-		ok = match (type, "arc:")     ? read_arc     (o, in) :
-		     match (type, "word:")    ? read_word    (o, in) :
-		     match (type, "enum:")    ? read_enum    (o, in) :
+		ok = match (type, "arc:")     ? read_arc     (o, in, 0) :
+		     match (type, "word:")    ? read_word    (o, in, 0) :
+		     match (type, "enum:")    ? read_enum    (o, in, 0) :
 		     match (type, "unknown:") ? read_raw     (o, in) :
 		     conf_error (o, "unknown tile record type '%s'", type);
 
@@ -236,6 +316,10 @@ int read_conf (struct config *o, FILE *in)
 		ok = match (verb, ".device")     ? read_device     (o, in) :
 		     match (verb, ".comment")    ? read_comment    (o, in) :
 		     match (verb, ".sysconfig")  ? read_sysconfig  (o, in) :
+		     match (verb, ".fixed_conn") ? read_arc        (o, in, 1) :
+		     match (verb, ".mux")        ? read_mux        (o, in) :
+		     match (verb, ".config")     ? read_word       (o, in, 1) :
+		     match (verb, ".config_enum")? read_enum       (o, in, 1) :
 		     match (verb, ".tile")       ? read_tile       (o, in) :
 		     match (verb, ".tile_group") ? read_tile_group (o, in) :
 		     match (verb, ".bram_init")  ? read_bram       (o, in) :
