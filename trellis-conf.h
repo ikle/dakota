@@ -12,20 +12,20 @@
 #include <stdio.h>
 
 struct config_action {
-	int (*on_device)    (void *cookie, const char *name);
-	int (*on_comment)   (void *cookie, const char *value);
-	int (*on_sysconfig) (void *cookie, const char *name, const char *value);
+	int (*on_device)    (void *o, const char *name);
+	int (*on_comment)   (void *o, const char *value);
+	int (*on_sysconfig) (void *o, const char *name, const char *value);
 
-	int (*on_tile)    (void *cookie, const char *name);
-	int (*on_arc)     (void *cookie, const char *sink, const char *source);
-	int (*on_word)    (void *cookie, const char *name, const char *value);
-	int (*on_enum)    (void *cookie, const char *name, const char *value);
-	int (*on_raw)     (void *cookie, const char *value);
+	int (*on_tile)    (void *o, const char *name);
+	int (*on_arc)     (void *o, const char *sink, const char *source);
+	int (*on_word)    (void *o, const char *name, const char *value);
+	int (*on_enum)    (void *o, const char *name, const char *value);
+	int (*on_raw)     (void *o, const char *value);
 
-	int (*on_bram)      (void *cookie, const char *name);
-	int (*on_bram_data) (void *cookie, unsigned value);
+	int (*on_bram)      (void *o, const char *name);
+	int (*on_bram_data) (void *o, unsigned value);
 
-	int (*on_commit) (void *cookie);
+	int (*on_commit) (void *o);
 };
 
 struct config {
