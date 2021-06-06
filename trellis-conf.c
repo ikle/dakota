@@ -294,7 +294,7 @@ static int read_bram (struct config *o, FILE *in)
 	int ok;
 
 	if (fscanf (in, "%*[ \t]%ms", &name) != 1)
-		return conf_error (o, "bram index required");
+		return conf_error (o, "bram name (index) required");
 
 	ok = o->action->on_bram (o->cookie, name);
 	free (name);
