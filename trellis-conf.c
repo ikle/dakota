@@ -110,14 +110,15 @@ static int read_sysconfig (struct config *o, FILE *in)
 	return ok;
 }
 
-static int read_raw (struct config *o, FILE *in)
+static int read_raw (struct config *o, FILE *in, int top)
 {
-	int bit;
+	int bit, ok;
 
 	if ((bit = chip_bit_read (in)) < 0)
 		return conf_error (o, "raw (unknown) requires chip bit");
 
-	return o->action->on_raw (o->cookie, bit);
+	ok = o->action->on_raw (o->cookie, bit);
+	return (ok && top) ? o->action->on_commit (o->cookie) : ok;
 }
 
 static int read_arrow (struct config *o, FILE *in, int top)
@@ -248,7 +249,7 @@ static int read_tile_conf (struct config *o, FILE *in)
 		ok = match (type, "arc:")     ? read_arrow   (o, in, 0) :
 		     match (type, "word:")    ? read_word    (o, in, 0) :
 		     match (type, "enum:")    ? read_enum    (o, in, 0) :
-		     match (type, "unknown:") ? read_raw     (o, in)    :
+		     match (type, "unknown:") ? read_raw     (o, in, 0) :
 		     conf_error (o, "unknown tile record type '%s'", type);
 
 	return ok ? o->action->on_commit (o->cookie) : 0;
@@ -317,6 +318,7 @@ int read_conf (struct config *o, FILE *in)
 		ok = match (verb, ".device")      ? read_device     (o, in)    :
 		     match (verb, ".comment")     ? read_comment    (o, in)    :
 		     match (verb, ".sysconfig")   ? read_sysconfig  (o, in)    :
+		     match (verb, ".unknown")     ? read_raw        (o, in, 1) :
 		     match (verb, ".fixed_conn")  ? read_arrow      (o, in, 1) :
 		     match (verb, ".mux")         ? read_mux        (o, in)    :
 		     match (verb, ".config")      ? read_word       (o, in, 1) :
