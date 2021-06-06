@@ -13,11 +13,16 @@
 
 int chip_bit_read (FILE *in)
 {
-	char la;
-	int value;
+	int la, value;
 	unsigned x, y;
 
-	if (fscanf (in, "%*[ \t]%c", &la) != 1)
+	while ((la = getc (in)) != EOF)
+		if (la != ' ' && la != '\t') {
+			ungetc (la, in);
+			break;
+		}
+
+	if ((la = getc (in)) == EOF)
 		goto error;
 
 	if (la == '-')
