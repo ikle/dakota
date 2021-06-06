@@ -61,14 +61,14 @@ static int on_raw (void *cookie, unsigned bit)
 	return 1;
 }
 
-static int on_arc (void *cookie, const char *sink, const char *source)
+static int on_arrow (void *cookie, const char *sink, const char *source)
 {
 	struct ctx *o = cookie;
 
 	if (o->in_tile)
 		printf ("\t");
 
-	printf ("arc %s -> %s\n", source, sink);
+	printf ("arrow %s -> %s\n", source, sink);
 	return 1;
 }
 
@@ -174,7 +174,7 @@ static const struct config_action action = {
 	.on_tile	= on_tile,
 
 	.on_raw		= on_raw,
-	.on_arc		= on_arc,
+	.on_arrow	= on_arrow,
 
 	.on_mux		= on_mux,
 	.on_mux_data	= on_mux_data,

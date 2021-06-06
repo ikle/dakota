@@ -120,15 +120,15 @@ static int read_raw (struct config *o, FILE *in)
 	return o->action->on_raw (o->cookie, bit);
 }
 
-static int read_arc (struct config *o, FILE *in, int master)
+static int read_arrow (struct config *o, FILE *in, int master)
 {
 	char *sink, *source;
 	int ok;
 
 	if (fscanf (in, "%*[ \t]%ms%*[ \t]%ms", &sink, &source) != 2)
-		return conf_error (o, "arc requires sink and source");
+		return conf_error (o, "arrow (arc) requires sink and source");
 
-	ok = o->action->on_arc (o->cookie, sink, source);
+	ok = o->action->on_arrow (o->cookie, sink, source);
 	free (source);
 	free (sink);
 	return ok ? master ? o->action->on_commit (o->cookie) : 1 : 0;
@@ -245,7 +245,7 @@ static int read_tile_conf (struct config *o, FILE *in)
 	int ok = 1;
 
 	while (ok && next_record (in) && fscanf (in, "%15s", type) == 1)
-		ok = match (type, "arc:")     ? read_arc     (o, in, 0) :
+		ok = match (type, "arc:")     ? read_arrow   (o, in, 0) :
 		     match (type, "word:")    ? read_word    (o, in, 0) :
 		     match (type, "enum:")    ? read_enum    (o, in, 0) :
 		     match (type, "unknown:") ? read_raw     (o, in)    :
@@ -317,7 +317,7 @@ int read_conf (struct config *o, FILE *in)
 		ok = match (verb, ".device")      ? read_device     (o, in)    :
 		     match (verb, ".comment")     ? read_comment    (o, in)    :
 		     match (verb, ".sysconfig")   ? read_sysconfig  (o, in)    :
-		     match (verb, ".fixed_conn")  ? read_arc        (o, in, 1) :
+		     match (verb, ".fixed_conn")  ? read_arrow      (o, in, 1) :
 		     match (verb, ".mux")         ? read_mux        (o, in)    :
 		     match (verb, ".config")      ? read_word       (o, in, 1) :
 		     match (verb, ".config_enum") ? read_enum       (o, in, 1) :

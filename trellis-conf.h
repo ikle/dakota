@@ -19,7 +19,7 @@ struct config_action {
 	int (*on_tile)      (void *o, const char *name);
 
 	int (*on_raw)       (void *o, unsigned bit);
-	int (*on_arc)       (void *o, const char *sink, const char *source);
+	int (*on_arrow)     (void *o, const char *sink, const char *source);
 
 	int (*on_mux)       (void *o, const char *name);
 	int (*on_mux_data)  (void *o, const char *source, unsigned *bits);
