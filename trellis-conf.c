@@ -120,7 +120,7 @@ static int read_raw (struct config *o, FILE *in)
 	return o->action->on_raw (o->cookie, bit);
 }
 
-static int read_arrow (struct config *o, FILE *in, int master)
+static int read_arrow (struct config *o, FILE *in, int top)
 {
 	char *sink, *source;
 	int ok;
@@ -131,7 +131,7 @@ static int read_arrow (struct config *o, FILE *in, int master)
 	ok = o->action->on_arrow (o->cookie, sink, source);
 	free (source);
 	free (sink);
-	return ok ? master ? o->action->on_commit (o->cookie) : 1 : 0;
+	return (ok && top) ? o->action->on_commit (o->cookie) : ok;
 }
 
 static int read_mux_conf (struct config *o, FILE *in)
@@ -187,7 +187,7 @@ static int read_word_conf (struct config *o, FILE *in)
 	return ok ? o->action->on_commit (o->cookie) : 0;
 }
 
-static int read_word (struct config *o, FILE *in, int master)
+static int read_word (struct config *o, FILE *in, int top)
 {
 	char *name, *value;
 	int ok;
@@ -198,7 +198,7 @@ static int read_word (struct config *o, FILE *in, int master)
 	ok = o->action->on_word (o->cookie, name, value);
 	free (name);
 	free (value);
-	return ok ? master ? read_word_conf (o, in) : 1 : 0;
+	return (ok && top) ? read_word_conf (o, in) : ok;
 }
 
 static int read_enum_conf (struct config *o, FILE *in)
@@ -225,7 +225,7 @@ no_bits:
 	return conf_error (o, "chip bits required");
 }
 
-static int read_enum (struct config *o, FILE *in, int master)
+static int read_enum (struct config *o, FILE *in, int top)
 {
 	char *name, *value;
 	int ok;
@@ -236,7 +236,7 @@ static int read_enum (struct config *o, FILE *in, int master)
 	ok = o->action->on_enum (o->cookie, name, value);
 	free (name);
 	free (value);
-	return ok ? master ? read_enum_conf (o, in) : 1 : 0;
+	return (ok && top) ? read_enum_conf (o, in) : ok;
 }
 
 static int read_tile_conf (struct config *o, FILE *in)
