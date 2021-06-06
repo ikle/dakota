@@ -13,7 +13,7 @@
 /* Global */
 
 struct ctx {
-	size_t bram_max;
+	size_t i;
 };
 
 static int on_device (void *cookie, const char *name)
@@ -73,18 +73,18 @@ static int on_bram (void *cookie, unsigned index)
 	struct ctx *o = cookie;
 
 	printf ("bram %u", index);
-	o->bram_max = 0;
+	o->i = 0;
 	return 1;
 }
 
-static int on_data (void *cookie, unsigned bram, size_t i, unsigned value)
+static int on_bram_data (void *cookie, unsigned value)
 {
 	struct ctx *o = cookie;
 	const char *sep;
 
-	sep = (i & 15) == 0 ? "\n\t" : (i & 15) == 8 ? "  " : " ";
+	sep = (o->i & 15) == 0 ? "\n\t" : (o->i & 15) == 8 ? "  " : " ";
 	printf ("%s%03x", sep, value);
-	o->bram_max = i;
+	++o->i;
 	return 1;
 }
 
@@ -94,9 +94,9 @@ static int on_commit (void *cookie)
 {
 	struct ctx *o = cookie;
 
-	if (o->bram_max > 0) {
+	if (o->i > 0) {
 		printf ("\n");
-		o->bram_max = 0;
+		o->i = 0;
 	}
 
 	printf ("\n");
@@ -115,7 +115,7 @@ static const struct config_action action = {
 	.on_raw		= on_raw,
 
 	.on_bram	= on_bram,
-	.on_data	= on_data,
+	.on_bram_data	= on_bram_data,
 
 	.on_commit	= on_commit,
 };

@@ -211,18 +211,17 @@ static int read_bram (struct config *o, FILE *in)
 {
 	unsigned index, value;
 	int ok;
-	size_t i;
 
 	if (fscanf (in, "%*[ \t]%u", &index) != 1)
 		return conf_error (o, "bram index required");
 
 	ok = o->action->on_bram (o->cookie, index);
 
-	for (i = 0; ok && next_record (in); ++i) {
+	while (ok && next_record (in)) {
 		if (fscanf (in, "%x", &value) != 1)
 			return conf_error (o, "hex bram value required");
 
-		ok = o->action->on_data (o->cookie, index, i, value);
+		ok = o->action->on_bram_data (o->cookie, value);
 	}
 
 	return ok ? o->action->on_commit (o->cookie): 0;
