@@ -8,10 +8,10 @@
 
 #include <stdio.h>
 
+#include <err.h>
+
 #include "chip-conf-show.h"
 #include "trellis-conf.h"
-
-#include <err.h>
 
 int main (int argc, char *argv[])
 {
