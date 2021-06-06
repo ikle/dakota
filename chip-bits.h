@@ -21,7 +21,7 @@ static inline unsigned chip_bit_make (int x, int y, int value)
 	assert ((y & ~0x7f)  == 0);
 	assert ((value & ~1) == 0);
 
-	return (x << 8) | (value << 7) | x;
+	return (x << 8) | (value << 7) | y;
 }
 
 static inline int chip_bit_last (unsigned bit)
