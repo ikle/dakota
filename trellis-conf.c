@@ -309,7 +309,7 @@ static int read_bram (struct chip_conf *o, FILE *in)
 	return ok ? o->action->on_commit (o->cookie) : 0;
 }
 
-int read_conf (struct chip_conf *o, FILE *in)
+int trellis_read_conf (struct chip_conf *o, FILE *in)
 {
 	char verb[16];
 	int ok = 1;

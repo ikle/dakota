@@ -11,6 +11,6 @@
 
 #include "chip-conf.h"
 
-int read_conf (struct chip_conf *o, FILE *in);
+int trellis_read_conf (struct chip_conf *o, FILE *in);
 
 #endif  /* TRELLIS_CONF_H */

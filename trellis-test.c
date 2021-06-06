@@ -207,7 +207,7 @@ int main (int argc, char *argv[])
 	if ((in = fopen (argv[1], "r")) == NULL)
 		err (1, "cannot open conf file %s", argv[1]);
 
-	ok = read_conf (&c, in);
+	ok = trellis_read_conf (&c, in);
 	fclose (in);
 
 	if (!ok)
