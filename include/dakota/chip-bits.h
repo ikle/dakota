@@ -1,13 +1,13 @@
 /*
- * Chip Bit Helpers
+ * Dakota Chip Bit Helpers
  *
  * Copyright (c) 2021 Alexei A. Smekalkine <ikle@ikle.ru>
  *
  * SPDX-License-Identifier: BSD-2-Clause
  */
 
-#ifndef CHIP_BITS_H
-#define CHIP_BITS_H  1
+#ifndef DAKOTA_CHIP_BITS_H
+#define DAKOTA_CHIP_BITS_H  1
 
 #include <stdio.h>
 
@@ -35,4 +35,4 @@ int chip_bit_write (unsigned bit, FILE *out);
 unsigned *chip_bits_read (FILE *in);
 int chip_bits_write (unsigned *bits, FILE *out);
 
-#endif  /* CHIP_BITS_H */
+#endif  /* DAKOTA_CHIP_BITS_H */

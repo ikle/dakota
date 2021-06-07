@@ -11,7 +11,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "chip-bits.h"
+#include <dakota/chip-bits.h>
+
 #include "trellis-conf.h"
 
 static int next_ns (FILE *in)

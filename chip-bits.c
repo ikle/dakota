@@ -9,7 +9,7 @@
 #include <errno.h>
 #include <stdlib.h>
 
-#include "chip-bits.h"
+#include <dakota/chip-bits.h>
 
 int chip_bit_read (FILE *in)
 {

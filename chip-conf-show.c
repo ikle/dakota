@@ -10,7 +10,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "chip-bits.h"
+#include <dakota/chip-bits.h>
+
 #include "chip-conf-show.h"
 
 /* Global */
