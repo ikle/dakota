@@ -8,6 +8,7 @@
 
 #include <errno.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include <dakota/chip-bits.h>
 
@@ -107,4 +108,33 @@ int chip_bits_write (unsigned *bits, FILE *out)
 	while (!chip_bit_last (*bits++));
 
 	return 1;
+}
+
+static size_t chip_bits_len (unsigned *bits)
+{
+	size_t len;
+
+	if (bits == NULL)
+		return 0;
+
+	for (len = 1; !chip_bit_last (*bits); ++bits, ++len) {}
+
+	return len;
+}
+
+unsigned *chip_bits_merge (unsigned *what, unsigned *with)
+{
+	size_t what_len = chip_bits_len (what);
+	size_t with_len = chip_bits_len (with);
+	size_t total = what_len + with_len;
+	unsigned *bits;
+
+	if ((bits = realloc (what, sizeof (bits[0]) * total)) == NULL)
+		return NULL;
+
+	if (what_len > 0 && with_len > 0)
+		bits[what_len - 1] |= 0x8000;
+
+	memcpy (bits + what_len, with, sizeof (bits[0]) * with_len);
+	return bits;
 }

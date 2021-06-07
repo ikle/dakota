@@ -35,4 +35,6 @@ int chip_bit_write (unsigned bit, FILE *out);
 unsigned *chip_bits_read (FILE *in);
 int chip_bits_write (unsigned *bits, FILE *out);
 
+unsigned *chip_bits_merge (unsigned *what, unsigned *with);
+
 #endif  /* DAKOTA_CHIP_BITS_H */
