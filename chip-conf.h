@@ -43,4 +43,6 @@ struct chip_conf {
 	char error[256];
 };
 
+int chip_error (struct chip_conf *o, const char *fmt, ...);
+
 #endif  /* CHIP_CONF_H */
