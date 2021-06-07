@@ -94,7 +94,7 @@ no_mem:
 	return NULL;
 }
 
-int chip_bits_write (unsigned *bits, FILE *out)
+int chip_bits_write (const unsigned *bits, FILE *out)
 {
 	if (bits == NULL) {
 		fprintf (out, " -");
@@ -110,7 +110,7 @@ int chip_bits_write (unsigned *bits, FILE *out)
 	return 1;
 }
 
-static size_t chip_bits_len (unsigned *bits)
+static size_t chip_bits_len (const unsigned *bits)
 {
 	size_t len;
 
@@ -122,7 +122,7 @@ static size_t chip_bits_len (unsigned *bits)
 	return len;
 }
 
-unsigned *chip_bits_merge (unsigned *what, unsigned *with)
+unsigned *chip_bits_merge (unsigned *what, const unsigned *with)
 {
 	size_t what_len = chip_bits_len (what);
 	size_t with_len = chip_bits_len (with);

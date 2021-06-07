@@ -33,8 +33,8 @@ int chip_bit_read (FILE *in);
 int chip_bit_write (unsigned bit, FILE *out);
 
 unsigned *chip_bits_read (FILE *in);
-int chip_bits_write (unsigned *bits, FILE *out);
+int chip_bits_write (const unsigned *bits, FILE *out);
 
-unsigned *chip_bits_merge (unsigned *what, unsigned *with);
+unsigned *chip_bits_merge (unsigned *what, const unsigned *with);
 
 #endif  /* DAKOTA_CHIP_BITS_H */
