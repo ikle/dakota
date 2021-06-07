@@ -29,6 +29,21 @@ static inline int chip_bit_last (unsigned bit)
 	return (bit & 0x8000) == 0;
 }
 
+static inline int chip_bit_x (unsigned bit)
+{
+	return ((bit >> 8) & 0x7f);
+}
+
+static inline int chip_bit_value (unsigned bit)
+{
+	return (bit & 0x80) != 0;
+}
+
+static inline int chip_bit_y (unsigned bit)
+{
+	return (bit & 0x7f);
+}
+
 int chip_bit_read (FILE *in);
 int chip_bit_write (unsigned bit, FILE *out);
 
