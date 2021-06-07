@@ -127,7 +127,7 @@ int bitmap_add (struct bitmap *o, const unsigned *bits)
 	int x, y;
 
 	if (bits == NULL)
-		return 1;
+		return 0;
 
 	do {
 		x = chip_bit_x (*bits);
