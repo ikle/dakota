@@ -91,10 +91,15 @@ int tile_set_raw (struct tile *o)
 	if (!cmdb_level (o->db, "family", o->family, "tile", o->type, NULL))
 		return 0;
 
-	if ((bits = cmdb_first (o->db, "raw")) == NULL)
-		return 1;
+	for (
+		bits = cmdb_first (o->db, "raw");
+		bits != NULL;
+		bits = cmdb_next (o->db, "raw", bits)
+	)
+		if (!tile_add_bits (o, bits, 0))
+			return 0;
 
-	return tile_add_bits (o, bits, 0);
+	return 1;
 }
 
 int tile_set_mux (struct tile *o, const char *name, const char *source)
