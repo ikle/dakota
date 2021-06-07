@@ -84,6 +84,17 @@ unsigned *chip_bits_parse (const char *s)
 	return bits;
 }
 
+void chip_bits_invert (unsigned *bits)
+{
+	if (bits == NULL)
+		return;
+
+	do {
+		*bits = chip_bit_invert (*bits);
+	}
+	while (!chip_bit_last (*bits++));
+}
+
 int chip_bit_read (FILE *in)
 {
 	int la;
