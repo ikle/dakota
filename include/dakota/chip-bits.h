@@ -44,6 +44,9 @@ static inline int chip_bit_y (unsigned bit)
 	return (bit & 0x7f);
 }
 
+int chip_bit_parse (const char *s);
+unsigned *chip_bits_parse (const char *s);
+
 int chip_bit_read (FILE *in);
 int chip_bit_write (unsigned bit, FILE *out);
 

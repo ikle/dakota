@@ -12,10 +12,82 @@
 
 #include <dakota/chip-bits.h>
 
+int chip_bit_parse (const char *s)
+{
+	int value = 1;
+	unsigned x, y;
+
+	s += strspn (s, " \t");
+
+	if (*s == '-') {
+		errno = 0;
+		return -1;
+	}
+
+	if (*s == '!')
+		++s, value = 0;
+
+	if (sscanf (s, "F%uB%u", &x, &y) != 2)
+		goto error;
+
+	if (x > 127 || y > 127)
+		goto error;
+
+	return chip_bit_make (x, y, value);
+error:
+	errno = EILSEQ;
+	return -1;
+}
+
+static const char *next_word (const char *s)
+{
+	s += strcspn (s, " \t");
+	s += strspn  (s, " \t");
+
+	return s;
+}
+
+static size_t chip_bits_count (const char *s)
+{
+	size_t count;
+
+	s += strspn (s, " \t");
+
+	for (count = 0; *s != '\0'; ++count)
+		s = next_word (s);
+
+	return count;
+}
+
+unsigned *chip_bits_parse (const char *s)
+{
+	int bit;
+	size_t count, i;
+	unsigned *bits;
+
+	if ((bit = chip_bit_parse (s)) < 0)
+		return NULL;
+
+	count = chip_bits_count (s);
+
+	if ((bits = malloc (sizeof (bits[0]) * count)) == NULL)
+		return NULL;
+
+	bits[0] = bit;
+	s = next_word (s);
+
+	for (i = 0; (bit = chip_bit_parse (s)) >= 0; bits[i] = bit) {
+		bits[i++] |= 0x8000;
+		s = next_word (s);
+	}
+
+	return bits;
+}
+
 int chip_bit_read (FILE *in)
 {
-	int la, value;
-	unsigned x, y;
+	int la;
+	char word[16];
 
 	while ((la = getc (in)) != EOF)
 		if (la != ' ' && la != '\t') {
@@ -23,30 +95,13 @@ int chip_bit_read (FILE *in)
 			break;
 		}
 
-	if ((la = getc (in)) == EOF)
-		goto error;
-
-	if (la == '-')
-		goto empty;
-
-	value = (la != '!') ? 1 : 0;
-
-	if (la != '!')
-		ungetc (la, in);
-
 	if (la == '\n')
 		goto error;
 
-	if (fscanf (in, "F%uB%u", &x, &y) != 2)
+	if (fscanf (in, "%15s", word) != 1)
 		goto error;
 
-	if (x > 127 || y > 127)
-		goto error;
-
-	return chip_bit_make (x, y, value);
-empty:
-	errno = 0;
-	return -1;
+	return chip_bit_parse (word);
 error:
 	errno = EILSEQ;
 	return -1;
