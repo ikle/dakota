@@ -113,6 +113,7 @@ int bitmap_export (const struct bitmap *o, const char *path)
 		return 0;
 
 	if (!pbm_export (out, o->width, o->height, o->bits) ||
+	    fputc ('\n', out) == EOF ||
 	    !pbm_export (out, o->width, o->height, o->mask))
 		goto error;
 
