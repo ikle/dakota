@@ -56,7 +56,6 @@ void tile_free (struct tile *o)
 	if (o == NULL)
 		return;
 
-	cmdb_close (o->db);
 	bitmap_free (o->map);
 	free (o);
 }
