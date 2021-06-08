@@ -72,8 +72,10 @@ int bitmap_resize (struct bitmap *o, size_t x, size_t y)
 	size_t size;
 	unsigned char *bits, *mask;
 
-	if (pitch == o->pitch && height == o->height)
+	if (pitch == o->pitch && height == o->height) {
+		o->width = width;
 		return 1;
+	}
 
 	size = pitch * height;
 
