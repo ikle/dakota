@@ -27,7 +27,7 @@ int bitmap_blit (struct bitmap *o, size_t x, size_t y,
 		start_src = 0, start_dst = y * o->pitch + (x >> 3), j = 0;
 		j < tile->height;
 		start_src += tile->pitch, start_dst += o->pitch, ++j
-	)
+	) {
 		for (
 			prev_mask = 0, prev_bits = 0,
 			src = start_src, dst = start_dst, i = 0;
@@ -44,6 +44,13 @@ int bitmap_blit (struct bitmap *o, size_t x, size_t y,
 			prev_mask = (tile->mask[src] >> lshift);
 			prev_bits = (tile->bits[src] >> lshift);
 		}
+
+		if (rshift != 0) {
+			o->mask[dst] |=  prev_mask;
+			o->bits[dst] &= ~prev_mask;
+			o->bits[dst] |=  prev_bits;
+		}
+	}
 
 	return 1;
 }
