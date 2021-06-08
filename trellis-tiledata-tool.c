@@ -217,7 +217,7 @@ int main (int argc, char *argv[])
 		errx (1, "cannot open database");
 
 	if ((in = fopen (argv[3], "r")) == NULL)
-		err (1, "cannot open tile conf file %s", argv[2]);
+		err (1, "cannot open tile conf file %s", argv[3]);
 
 	c.action = &action;
 	c.cookie = &o;
