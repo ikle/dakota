@@ -210,11 +210,11 @@ no_bits:
 
 static int read_enum (struct chip_conf *o, FILE *in, int top)
 {
-	char *name, *value;
+	char *name, *value = NULL;
 	int ok;
 
-	if (fscanf (in, "%*[ \t]%ms%*[ \t]%ms", &name, &value) != 2)
-		return chip_error (o, "enum requires name and value");
+	if (fscanf (in, "%*[ \t]%ms%*[ \t]%ms", &name, &value) < 1)
+		return chip_error (o, "enum requires name");
 
 	ok = o->action->on_enum (o->cookie, name, value);
 	free (name);
