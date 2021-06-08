@@ -67,7 +67,7 @@ no_mem:
 int bitmap_resize (struct bitmap *o, size_t x, size_t y)
 {
 	size_t width  = (x < o->width)  ? o->width  : x + 1;
-	size_t height = (x < o->height) ? o->height : y + 1;
+	size_t height = (y < o->height) ? o->height : y + 1;
 	size_t pitch  = GET_PITCH (width);
 	size_t size;
 	unsigned char *bits, *mask;
