@@ -40,7 +40,7 @@ int main (int argc, char *argv[])
 	json_object *root;
 
 	if (argc != 3)
-		err (0, "\ttrellis-tilegrid <out-cmdb> <in-json>");
+		err (0, "\n\ttrellis-tilegrid <out-cmdb> <in-json>");
 
 	if ((db = cmdb_open (argv[1], "rwx")) == NULL)
 		errx (1, "cannot open database");
