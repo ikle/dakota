@@ -28,8 +28,8 @@ int bitmap_export (const struct bitmap *o, const char *path)
 		goto error;
 
 	for (y = 0; y < o->height; ++y)
-		for (x = 0; x < o->width; ++x) {
-			i = y * o->pitch + (x >> 3);
+		for (x = 0; x < o->pitch; ++x) {
+			i = y * o->pitch + x;
 			fputc (sample_msb (o->bits[i] & o->mask[i]), out);
 		}
 
