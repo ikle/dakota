@@ -11,7 +11,8 @@
 int bitmap_blit (struct bitmap *o, size_t x, size_t y,
 		 const struct bitmap *tile)
 {
-	const size_t shift = (x & 7);
+	const size_t rshift = (x & 7);
+	const size_t lshift = 8 - rshift;
 
 	unsigned prev_mask, prev_bits, mask, bits;
 	size_t start_src, start_dst, src, dst, i, j;
@@ -33,15 +34,15 @@ int bitmap_blit (struct bitmap *o, size_t x, size_t y,
 			i < tile->pitch;
 			++src, ++dst, ++i
 		) {
-			mask = (tile->mask[src] << shift) | prev_mask;
-			bits = (tile->bits[src] << shift) | prev_bits;
+			mask = (tile->mask[src] << rshift) | prev_mask;
+			bits = (tile->bits[src] << rshift) | prev_bits;
 
 			o->mask[dst] |=  mask;
 			o->bits[dst] &= ~mask;
 			o->bits[dst] |=  bits;
 
-			prev_mask = (tile->mask[src] >> shift);
-			prev_bits = (tile->bits[src] >> shift);
+			prev_mask = (tile->mask[src] >> lshift);
+			prev_bits = (tile->bits[src] >> lshift);
 		}
 
 	return 1;
