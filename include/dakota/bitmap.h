@@ -33,6 +33,7 @@ void bitmap_sub (struct bitmap *o, const unsigned *bits);
 int bitmap_blit (struct bitmap *o, size_t x, size_t y,
 		 const struct bitmap *tile);
 
+struct bitmap *bitmap_import (const char *path);
 int bitmap_export (const struct bitmap *o, const char *path);
 
 #endif  /* DAKOTA_BITMAP_H */
