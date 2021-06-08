@@ -211,7 +211,7 @@ int main (int argc, char *argv[])
 
 	if (argc != 4)
 		errx (0, "\n\t"
-			 "rellis-tiledata <type> <out-cmdb> <in-tile-bits.db>");
+			 "trellis-tiledata <type> <out-cmdb> <in-tile-bits.db>");
 
 	if ((o.db = cmdb_open (argv[2], "rwx")) == NULL)
 		errx (1, "cannot open database");
