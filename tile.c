@@ -88,7 +88,7 @@ int tile_set_raw (struct tile *o)
 {
 	const char *bits;
 
-	if (!cmdb_level (o->db, "family :", o->family, "tile :", o->type, NULL))
+	if (!cmdb_level (o->db, "tile :", o->type, NULL))
 		return 0;
 
 	for (
@@ -104,8 +104,7 @@ int tile_set_raw (struct tile *o)
 
 int tile_set_mux (struct tile *o, const char *name, const char *source)
 {
-	if (!cmdb_level (o->db, "family :", o->family, "tile :", o->type,
-				"mux :", name, NULL))
+	if (!cmdb_level (o->db, "tile :", o->type, "mux :", name, NULL))
 		return 0;
 
 	if ((source = cmdb_first (o->db, source)) == NULL) {
@@ -122,8 +121,7 @@ int tile_set_word (struct tile *o, const char *name, const char *value)
 	char key[16];
 	const char *bits;
 
-	if (!cmdb_level (o->db, "family :", o->family, "tile :", o->type,
-				"word :", name, NULL))
+	if (!cmdb_level (o->db, "tile :", o->type, "word :", name, NULL))
 		return 0;
 
 	for (i = 0; i < n; ++i) {
@@ -143,8 +141,7 @@ int tile_set_word (struct tile *o, const char *name, const char *value)
 
 int tile_set_enum (struct tile *o, const char *name, const char *value)
 {
-	if (!cmdb_level (o->db, "family :", o->family, "tile :", o->type,
-				"enum :", name, NULL))
+	if (!cmdb_level (o->db, "tile :", o->type, "enum :", name, NULL))
 		return 0;
 
 	if ((value = cmdb_first (o->db, value)) == NULL) {
