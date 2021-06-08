@@ -28,4 +28,6 @@ void bitmap_free (struct bitmap *o);
 int  bitmap_add (struct bitmap *o, const unsigned *bits);
 void bitmap_sub (struct bitmap *o, const unsigned *bits);
 
+int bitmap_export (const struct bitmap *o, const char *path);
+
 #endif  /* DAKOTA_BITMAP_H */
