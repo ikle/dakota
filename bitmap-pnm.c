@@ -19,7 +19,7 @@ static unsigned char sample_msb (unsigned char b)
 int bitmap_export (const struct bitmap *o, const char *path)
 {
 	FILE *out;
-	size_t y, x, i;
+	size_t i, size;
 
 	if ((out = fopen (path, "wb")) == NULL)
 		return 0;
@@ -27,9 +27,8 @@ int bitmap_export (const struct bitmap *o, const char *path)
 	if (fprintf (out, "P4\n%zu %zu\n", o->width, o->height) < 0)
 		goto error;
 
-	for (y = 0, i = 0; y < o->height; ++y, i += o->pitch)
-		for (x = 0; x < o->pitch; ++x, ++i)
-			fputc (sample_msb (o->bits[i] & o->mask[i]), out);
+	for (size = o->pitch * o->height, i = 0; i < size; ++i)
+		fputc (sample_msb (o->bits[i] & o->mask[i]), out);
 
 	if (fclose (out) == 0)
 		return 1;
