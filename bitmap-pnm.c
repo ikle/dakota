@@ -11,6 +11,8 @@
 
 #include <dakota/bitmap.h>
 
+#define GET_PITCH(x)	(((x) + 7) >> 3)
+
 static unsigned char reverse (unsigned char b)
 {
 	return ((b * 0x80200802ULL) & 0x0884422110ULL) * 0x0101010101ULL >> 32;
@@ -39,7 +41,7 @@ static unsigned char *pbm_import (FILE *in, size_t *w, size_t *h)
 	if (fscanf (in, "P4 %zu %zu ", w, h) != 2)
 		return NULL;
 
-	count = *w * *h;
+	count = GET_PITCH (*w) * *h;
 
 	if ((data = malloc (count)) == NULL)
 		return NULL;
@@ -64,7 +66,7 @@ static int pbm_export_data (FILE *out, const unsigned char *data, size_t count)
 
 static int pbm_export (FILE *out, size_t w, size_t h, const unsigned char *data)
 {
-	size_t count = w * h;
+	size_t count = GET_PITCH (w) * h;
 
 	if (fprintf (out, "P4\n%zu %zu\n", w, h) < 0)
 		return 0;
