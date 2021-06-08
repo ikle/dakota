@@ -51,6 +51,7 @@ static inline unsigned chip_bit_invert (unsigned bit)
 
 int chip_bit_parse (const char *s);
 unsigned *chip_bits_parse (const char *s);
+char *chip_bits_string (const unsigned *bits);
 
 void chip_bits_invert (unsigned *bits);
 

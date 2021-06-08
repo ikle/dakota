@@ -160,6 +160,49 @@ no_mem:
 	return NULL;
 }
 
+static int chip_bit_print (char *to, size_t size, unsigned bit)
+{
+	const char *prefix = (bit & 0x80) == 0 ? "!" : "";
+	unsigned x = (bit >> 8) & 0x7f;
+	unsigned y = bit & 0x7f;
+
+	return snprintf (to, size, "%sF%uB%u", prefix, x, y);
+}
+
+static int chip_bits_print (char *to, size_t size, const unsigned *bits)
+{
+	int len, total = 0;
+
+	if (bits == NULL)
+		return snprintf (to, size, "-");
+
+	for (;;) {
+		len = chip_bit_print (to, size, bits[0]);
+
+		total += len, to += len, size = size > len ? size - len : 0;
+
+		if (chip_bit_last (*bits++))
+			break;
+
+		total += snprintf (to, size, " ");
+		++to, size = size > 1 ? size - 1 : 0;
+	}
+
+	return total;
+}
+
+char *chip_bits_string (const unsigned *bits)
+{
+	int size = chip_bits_print (NULL, 0, bits) + 1;
+	char *s;
+
+	if ((s = malloc (size)) == NULL)
+		return NULL;
+
+	chip_bits_print (s, size, bits);
+	return s;
+}
+
 int chip_bits_write (const unsigned *bits, FILE *out)
 {
 	if (bits == NULL) {
