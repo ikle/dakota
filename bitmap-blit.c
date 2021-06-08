@@ -13,7 +13,7 @@ int bitmap_blit (struct bitmap *o, size_t x, size_t y,
 {
 	const size_t shift = (x & 7);
 
-	unsigned prev_mask = 0, prev_bits = 0, mask, bits;
+	unsigned prev_mask, prev_bits, mask, bits;
 	size_t start_src, start_dst, src, dst, i, j;
 
 	if (tile->width == 0 || tile->height == 0)
@@ -28,6 +28,7 @@ int bitmap_blit (struct bitmap *o, size_t x, size_t y,
 		start_src += tile->pitch, start_dst += o->pitch, ++j
 	)
 		for (
+			prev_mask = 0, prev_bits = 0,
 			src = start_src, dst = start_dst, i = 0;
 			i < tile->pitch;
 			++src, ++dst, ++i
