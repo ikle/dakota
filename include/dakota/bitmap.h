@@ -25,6 +25,8 @@ struct bitmap *bitmap_alloc (void);
 struct bitmap *bitmap_clone (const struct bitmap *o);
 void bitmap_free (struct bitmap *o);
 
+int bitmap_resize (struct bitmap *o, size_t x, size_t y);
+
 int  bitmap_add (struct bitmap *o, const unsigned *bits);
 void bitmap_sub (struct bitmap *o, const unsigned *bits);
 
