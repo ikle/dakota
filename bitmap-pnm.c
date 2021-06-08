@@ -7,7 +7,7 @@
  */
 
 #include <stdio.h>
-#include <string.h>
+#include <stdlib.h>
 
 #include <dakota/bitmap.h>
 
@@ -16,58 +16,105 @@ static unsigned char reverse (unsigned char b)
 	return ((b * 0x80200802ULL) & 0x0884422110ULL) * 0x0101010101ULL >> 32;
 }
 
+static int pbm_import_data (FILE *in, unsigned char *data, size_t count)
+{
+	size_t i;
+	int a;
+
+	for (i = 0; i < count; ++i) {
+		if ((a = fgetc (in)) == EOF)
+			return 0;
+
+		data[i] = reverse (a);
+	}
+
+	return 1;
+}
+
+static unsigned char *pbm_import (FILE *in, size_t *w, size_t *h)
+{
+	unsigned char *data;
+	size_t count;
+
+	if (fscanf (in, "P4 %zu %zu ", w, h) != 2)
+		return NULL;
+
+	count = *w * *h;
+
+	if ((data = malloc (count)) == NULL)
+		return NULL;
+
+	if (pbm_import_data (in, data, count))
+		return data;
+
+	free (data);
+	return 0;
+}
+
+static int pbm_export_data (FILE *out, const unsigned char *data, size_t count)
+{
+	size_t i;
+
+	for (i = 0; i < count; ++i)
+		if (fputc (reverse (data[i]), out) == EOF)
+			return 0;
+
+	return 1;
+}
+
+static int pbm_export (FILE *out, size_t w, size_t h, const unsigned char *data)
+{
+	size_t count = w * h;
+
+	if (fprintf (out, "P4\n%zu %zu\n", w, h) < 0)
+		return 0;
+
+	return pbm_export_data (out, data, count);
+}
+
 struct bitmap *bitmap_import (const char *path)
 {
 	FILE *in;
-	size_t width, height;
+	size_t bw, bh, mw, mh;
+	unsigned char *bits, *mask;
 	struct bitmap *o;
-	size_t i, size;
-	int a;
 
 	if ((in = fopen (path, "rb")) == NULL)
 		return NULL;
 
-	if (fscanf (in, "P4 %zu %zu ", &width, &height) != 2)
-		goto no_header;
+	bits = pbm_import (in, &bw, &bh);
+	mask = pbm_import (in, &mw, &mh);
+
+	fclose (in);
+
+	if (bits == NULL || mask == NULL || bw != mw || bh != mh)
+		goto no_import;
 
 	if ((o = bitmap_alloc ()) == NULL)
 		goto no_bitmap;
 
-	if (!bitmap_resize (o, width - 1, height - 1))
-		goto no_resize;
-
-	for (size = o->pitch * o->height, i = 0; i < size; ++i) {
-		if ((a = fgetc (in)) == EOF)
-			goto no_data;
-
-		o->mask[i] = 0xff;
-		o->bits[i] = reverse (a);
-	}
-
-	fclose (in);
+	o->width  = bw;
+	o->height = bh;
+	o->bits   = bits;
+	o->mask   = mask;
 	return o;
-no_data:
-no_resize:
-	bitmap_free (o);
 no_bitmap:
-no_header:
-	fclose (in);
+no_import:
+	free (bits);
+	free (mask);
 	return NULL;
 }
 
 int bitmap_export (const struct bitmap *o, const char *path)
 {
 	FILE *out;
-	size_t i, size;
 
 	if ((out = fopen (path, "wb")) == NULL)
 		return 0;
 
-	if (fprintf (out, "P4\n%zu %zu\n", o->width, o->height) < 0)
+	if (!pbm_export (out, o->width, o->height, o->bits) ||
+	    !pbm_export (out, o->width, o->height, o->mask))
 		goto error;
-
-	for (size = o->pitch * o->height, i = 0; i < size; ++i)
-		fputc (reverse (o->bits[i] & o->mask[i]), out);
 
 	if (fclose (out) == 0)
 		return 1;
