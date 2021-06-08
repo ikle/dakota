@@ -93,6 +93,9 @@ struct bitmap *bitmap_import (const char *path)
 	if ((o = bitmap_alloc ()) == NULL)
 		goto no_bitmap;
 
+	free (o->bits);
+	free (o->mask);
+
 	o->width  = bw;
 	o->height = bh;
 	o->bits   = bits;
