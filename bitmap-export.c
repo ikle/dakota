@@ -27,11 +27,9 @@ int bitmap_export (const struct bitmap *o, const char *path)
 	if (fprintf (out, "P4\n%zu %zu\n", o->width, o->height) < 0)
 		goto error;
 
-	for (y = 0; y < o->height; ++y)
-		for (x = 0; x < o->pitch; ++x) {
-			i = y * o->pitch + x;
+	for (y = 0, i = 0; y < o->height; ++y, i += o->pitch)
+		for (x = 0; x < o->pitch; ++x, ++i)
 			fputc (sample_msb (o->bits[i] & o->mask[i]), out);
-		}
 
 	if (fclose (out) == 0)
 		return 1;
