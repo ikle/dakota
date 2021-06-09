@@ -90,10 +90,10 @@ int main (int argc, char *argv[])
 		err (0, "\n\ttrellis-tilegrid <family> <device>");
 
 	if ((db = dakota_open_grid (argv[1], argv[2], "rwx")) == NULL)
-		errx (1, "cannot open database");
+		errx (1, "cannot create dakota grid database");
 
 	if ((root = trellis_open_grid (argv[1], argv[2])) == NULL)
-		errx (1, "cannot open tile grid database");
+		errx (1, "cannot open trellis grid database");
 
 	json_object_object_foreach (root, key, child)
 		if (!import_tile (db, key, child))
