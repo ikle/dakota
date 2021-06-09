@@ -9,7 +9,7 @@
 #include <err.h>
 #include <stdlib.h>
 
-#include <cmdb.h>
+#include <dakota/cache.h>
 #include <dakota/string.h>
 #include <json-c/json.h>
 
@@ -36,26 +36,6 @@ static json_object *trellis_open_grid (const char *family, const char *device)
 	root = json_object_from_file (path);
 	free (path);
 	return root;
-}
-
-static struct cmdb *
-dakota_open_grid (const char *family, const char *device, const char *mode)
-{
-	static const char *home;
-	char *path;
-	struct cmdb *db;
-
-	if (home == NULL && (home = getenv ("HOME")) == NULL)
-		return NULL;
-
-	path = make_string ("%s/.cache/dakota/db/%s-%s.cmdb",
-			    home, family, device);
-	if (path == NULL)
-		return NULL;
-
-	db = cmdb_open (path, mode);
-	free (path);
-	return db;
 }
 
 static const char *json_fetch (json_object *root, const char *name)
