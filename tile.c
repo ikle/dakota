@@ -103,12 +103,15 @@ static int tile_set_raw (struct tile *o)
 
 int tile_set_mux (struct tile *o, const char *name, const char *source)
 {
+	if (strcmp (source, "_NONE_") == 0)
+		return 1;
+
 	if (!cmdb_level (o->db, "tile :", o->type, "mux :", name, NULL))
 		return 0;
 
 	if ((source = cmdb_first (o->db, source)) == NULL) {
 		errno = ENOENT;
-		return 1;
+		return 0;
 	}
 
 	return tile_add_bits (o, source, 0);
@@ -120,6 +123,9 @@ int tile_set_word (struct tile *o, const char *name, const char *value)
 	char key[16];
 	const char *bits;
 
+	if (strcmp (value, "_NONE_") == 0)
+		return 1;
+
 	if (!cmdb_level (o->db, "tile :", o->type, "word :", name, NULL))
 		return 0;
 
@@ -128,7 +134,7 @@ int tile_set_word (struct tile *o, const char *name, const char *value)
 
 		if ((bits = cmdb_first (o->db, key)) == NULL) {
 			errno = ENOENT;
-			return 1;
+			return 0;
 		}
 
 		if (!tile_add_bits (o, bits, value[n - 1 - i] == '0'))
@@ -140,12 +146,15 @@ int tile_set_word (struct tile *o, const char *name, const char *value)
 
 int tile_set_enum (struct tile *o, const char *name, const char *value)
 {
+	if (strcmp (value, "_NONE_") == 0)
+		return 1;
+
 	if (!cmdb_level (o->db, "tile :", o->type, "enum :", name, NULL))
 		return 0;
 
 	if ((value = cmdb_first (o->db, value)) == NULL) {
 		errno = ENOENT;
-		return 1;
+		return 0;
 	}
 
 	return tile_add_bits (o, value, 0);
