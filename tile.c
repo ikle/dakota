@@ -20,7 +20,41 @@ struct tile {
 	struct bitmap *map;
 };
 
-static int tile_init (struct tile *o);
+static int tile_add_bits (struct tile *o, const char *value, int invert)
+{
+	unsigned *bits;
+	int ok;
+
+	if (strcmp (value, "-") == 0)
+		return 1;
+
+	bits = chip_bits_parse (value);
+
+	if (invert)
+		chip_bits_invert (bits);
+
+	ok = bitmap_add (o->map, bits);
+	free (bits);
+	return ok;
+}
+
+static int tile_init (struct tile *o)
+{
+	const char *bits;
+
+	if (!cmdb_level (o->db, "tile :", o->type, NULL))
+		return 0;
+
+	for (
+		bits = cmdb_first (o->db, "raw");
+		bits != NULL;
+		bits = cmdb_next (o->db, "raw", bits)
+	)
+		if (!tile_add_bits (o, bits, 0))
+			return 0;
+
+	return 1;
+}
 
 struct tile *tile_alloc (struct cmdb *db, const char *type)
 {
@@ -63,42 +97,6 @@ void tile_free (struct tile *o)
 int tile_set_raw (struct tile *o, const unsigned *bits)
 {
 	return bitmap_add (o->map, bits);
-}
-
-static int tile_add_bits (struct tile *o, const char *value, int invert)
-{
-	unsigned *bits;
-	int ok;
-
-	if (strcmp (value, "-") == 0)
-		return 1;
-
-	bits = chip_bits_parse (value);
-
-	if (invert)
-		chip_bits_invert (bits);
-
-	ok = bitmap_add (o->map, bits);
-	free (bits);
-	return ok;
-}
-
-static int tile_init (struct tile *o)
-{
-	const char *bits;
-
-	if (!cmdb_level (o->db, "tile :", o->type, NULL))
-		return 0;
-
-	for (
-		bits = cmdb_first (o->db, "raw");
-		bits != NULL;
-		bits = cmdb_next (o->db, "raw", bits)
-	)
-		if (!tile_add_bits (o, bits, 0))
-			return 0;
-
-	return 1;
 }
 
 int tile_set_mux (struct tile *o, const char *name, const char *source)
