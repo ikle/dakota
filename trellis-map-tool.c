@@ -90,7 +90,7 @@ static int on_raw (void *cookie, unsigned bit)
 {
 	struct ctx *o = cookie;
 
-	if (!chiplet_set_bits (o->chiplet, &bit))
+	if (!chiplet_set_raw (o->chiplet, &bit))
 		return chip_error (o->conf, "cannot apply raw");
 
 	return 1;

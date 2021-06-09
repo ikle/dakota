@@ -18,8 +18,7 @@ void chiplet_free  (struct chiplet *o);
 
 int chiplet_add (struct chiplet *o, size_t x, size_t y, const char *type);
 
-int chiplet_set_bits (struct chiplet *o, const unsigned *bits);
-
+int chiplet_set_raw  (struct chiplet *o, const unsigned *bits);
 int chiplet_set_mux  (struct chiplet *o, const char *name, const char *source);
 int chiplet_set_word (struct chiplet *o, const char *name, const char *value);
 int chiplet_set_enum (struct chiplet *o, const char *name, const char *value);

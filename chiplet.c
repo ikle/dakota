@@ -101,7 +101,7 @@ int chiplet_add (struct chiplet *o, size_t x, size_t y, const char *type)
 	return 1;
 }
 
-int chiplet_set_bits (struct chiplet *o, const unsigned *bits)
+int chiplet_set_raw (struct chiplet *o, const unsigned *bits)
 {
 	struct unit *u;
 	int ok = 0;
