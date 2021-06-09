@@ -51,7 +51,7 @@ static char *make_str (const char *fmt, ...)
 struct ctx {
 	struct chip_conf *conf;
 	const char *family;
-	struct cmdb *tiles, *grid;
+	struct cmdb *grid;
 	struct bitmap *chip;
 	struct chiplet *chiplet;
 };
@@ -240,6 +240,7 @@ int main (int argc, char *argv[])
 	struct chip_conf c;
 	struct ctx o;
 	char *path;
+	struct cmdb *tiles;
 	FILE *in;
 	int ok;
 
@@ -258,7 +259,7 @@ int main (int argc, char *argv[])
 	if ((path = make_str ("test/%s.cmdb", o.family)) == NULL)
 		err (1, "cannot make database path");
 
-	if ((o.tiles = cmdb_open (path, "r")) == NULL)
+	if ((tiles = cmdb_open (path, "r")) == NULL)
 		errx (1, "cannot open database");
 
 	free (path);
@@ -266,7 +267,7 @@ int main (int argc, char *argv[])
 	if ((o.chip = bitmap_alloc ()) == NULL)
 		err (1, "cannot create chip bitmap");
 
-	if ((o.chiplet = chiplet_alloc (o.tiles)) == NULL)
+	if ((o.chiplet = chiplet_alloc (tiles)) == NULL)
 		err (1, "cannot create chiplet");
 
 	if ((in = fopen (argv[2], "r")) == NULL)
@@ -281,7 +282,7 @@ int main (int argc, char *argv[])
 	if (!bitmap_export (o.chip, argv[3]))
 		err (1, "cannot export bitmap to %s", argv[3]);
 
-	cmdb_close (o.tiles);
+	cmdb_close (tiles);
 	cmdb_close (o.grid);
 	bitmap_free (o.chip);
 	chiplet_free (o.chiplet);
