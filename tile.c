@@ -51,6 +51,7 @@ void tile_free (struct tile *o)
 		return;
 
 	bitmap_free (o->map);
+	free (o->type);
 	free (o);
 }
 
