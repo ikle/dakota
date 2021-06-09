@@ -29,23 +29,23 @@ struct tile *tile_alloc (struct cmdb *db, const char *type)
 	if ((o = malloc (sizeof (*o))) == NULL)
 		return NULL;
 
-	if ((o->map = bitmap_alloc ()) == NULL)
-		goto no_map;
+	o->db = db;
 
 	if ((o->type = strdup (type)) == NULL)
 		goto no_type;
 
-	o->db = db;
+	if ((o->map = bitmap_alloc ()) == NULL)
+		goto no_map;
 
 	if (!tile_set_raw (o))
 		goto no_init;
 
 	return o;
 no_init:
-	free (o->type);
-no_type:
 	bitmap_free (o->map);
 no_map:
+	free (o->type);
+no_type:
 	free (o);
 	return NULL;
 }
