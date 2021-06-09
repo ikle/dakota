@@ -17,9 +17,7 @@
 struct tile {
 	struct cmdb *db;
 	char *type;
-
 	struct bitmap *map;
-	char error[128];
 };
 
 struct tile *tile_alloc (struct cmdb *db, const char *type)
@@ -36,7 +34,6 @@ struct tile *tile_alloc (struct cmdb *db, const char *type)
 		goto no_type;
 
 	o->db = db;
-	o->error[0] = '\0';
 	return o;
 no_type:
 	bitmap_free (o->map);
