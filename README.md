@@ -4,8 +4,8 @@ Usage Example:
 
 1. Import Lattice FPGA databases from project Trellis:
 ```bash
-$ PREFIX=/usr FAMILY=ECP5    DEVICE=LFE5U-25F     test/import-db
-$ PREFIX=/usr FAMILY=MachXO2 DEVICE=LCMXO2-7000HC test/import-db
+$ PREFIX=/usr test/import-db ECP5    LFE5U-25F
+$ PREFIX=/usr test/import-db MachXO2 LCMXO2-7000HC
 ```
 2. Map you design (output from nextpnr) to PNM bitmaps:
 ```bash

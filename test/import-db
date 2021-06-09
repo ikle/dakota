@@ -5,6 +5,9 @@
 : ${ROOT:=$HOME/src/hw/tools/fpga}
 : ${DEST:=$ROOT/test}
 
+[ -n "$1" ] && FAMILY="$1"
+[ -n "$2" ] && DEVICE="$2"
+
 : ${FAMILY:=ECP5}
 : ${DEVICE:=LFE5U-25F}
 
