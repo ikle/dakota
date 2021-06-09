@@ -52,8 +52,8 @@ struct ctx {
 	struct chip_conf *conf;
 	const char *family;
 	struct cmdb *grid;
-	struct bitmap *chip;
 	struct chiplet *chiplet;
+	struct bitmap *image;
 };
 
 static int on_device (void *cookie, const char *name)
@@ -201,7 +201,7 @@ static int on_commit (void *cookie)
 	struct ctx *o = cookie;
 	int ok;
 
-	ok = chiplet_blit (o->chiplet, o->chip);
+	ok = chiplet_blit (o->chiplet, o->image);
 
 	chiplet_reset (o->chiplet);
 
@@ -248,10 +248,6 @@ int main (int argc, char *argv[])
 		errx (0, "\n\t"
 			 "trellis-map <family> <design.trellis> <out.pnm>");
 
-	c.action = &action;
-	c.cookie = &o;
-	c.error[0] = '\0';
-
 	o.conf   = &c;
 	o.family = argv[1];
 	o.grid   = NULL;
@@ -264,14 +260,18 @@ int main (int argc, char *argv[])
 
 	free (path);
 
-	if ((o.chip = bitmap_alloc ()) == NULL)
-		err (1, "cannot create chip bitmap");
-
 	if ((o.chiplet = chiplet_alloc (tiles)) == NULL)
 		err (1, "cannot create chiplet");
 
+	if ((o.image = bitmap_alloc ()) == NULL)
+		err (1, "cannot create chip bitmap");
+
 	if ((in = fopen (argv[2], "r")) == NULL)
 		err (1, "cannot open design file %s", argv[2]);
+
+	c.action = &action;
+	c.cookie = &o;
+	c.error[0] = '\0';
 
 	ok = trellis_read_conf (&c, in);
 	fclose (in);
@@ -279,13 +279,13 @@ int main (int argc, char *argv[])
 	if (!ok)
 		errx (1, c.error);
 
-	if (!bitmap_export (o.chip, argv[3]))
+	if (!bitmap_export (o.image, argv[3]))
 		err (1, "cannot export bitmap to %s", argv[3]);
 
 	cmdb_close (tiles);
 	cmdb_close (o.grid);
-	bitmap_free (o.chip);
 	chiplet_free (o.chiplet);
+	bitmap_free (o.image);
 
 	return 0;
 }
