@@ -6,45 +6,13 @@
  * SPDX-License-Identifier: BSD-2-Clause
  */
 
-#include <stdarg.h>
-#include <stdio.h>
-#include <stdlib.h>
-
-static char *make_str_va (const char *fmt, va_list ap)
-{
-	va_list aq;
-	int size;
-	char *s;
-
-	va_copy (aq, ap);
-	size = vsnprintf (NULL, 0, fmt, aq) + 1;
-	va_end (aq);
-
-	if ((s = malloc (size)) == NULL)
-		return NULL;
-
-	vsnprintf (s, size, fmt, ap);
-	return s;
-}
-
-static char *make_str (const char *fmt, ...)
-{
-	va_list ap;
-	char *s;
-
-	va_start(ap, fmt);
-	s = make_str_va (fmt, ap);
-	va_end(ap);
-
-	return s;
-}
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 #include <cmdb.h>
 #include <dakota/chiplet.h>
+#include <dakota/string.h>
 
 #include "trellis-conf.h"
 
@@ -64,7 +32,7 @@ static int on_device (void *cookie, const char *name)
 	if (o->grid != NULL)
 		return chip_error (o->conf, "device defined already");
 
-	if ((path = make_str ("test/%s-%s.cmdb", o->family, name)) == NULL)
+	if ((path = make_string ("test/%s-%s.cmdb", o->family, name)) == NULL)
 		return chip_error (o->conf, "cannot make device path");
 
 	o->grid = cmdb_open (path, "r");
@@ -252,7 +220,7 @@ int main (int argc, char *argv[])
 	o.family = argv[1];
 	o.grid   = NULL;
 
-	if ((path = make_str ("test/%s.cmdb", o.family)) == NULL)
+	if ((path = make_string ("test/%s.cmdb", o.family)) == NULL)
 		err (1, "cannot make database path");
 
 	if ((tiles = cmdb_open (path, "r")) == NULL)
