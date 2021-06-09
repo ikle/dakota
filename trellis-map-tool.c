@@ -11,7 +11,7 @@
 #include <string.h>
 
 #include <cmdb.h>
-#include <dakota/chiplet.h>
+#include <dakota/chip.h>
 #include <dakota/string.h>
 
 #include "trellis-conf.h"
@@ -19,9 +19,8 @@
 struct ctx {
 	struct chip_conf *conf;
 	const char *family;
-	struct cmdb *grid;
-	struct chiplet *chiplet;
-	struct bitmap *image;
+	struct cmdb *tiles, *grid;
+	struct chip *chip;
 };
 
 static int on_device (void *cookie, const char *name)
@@ -38,10 +37,13 @@ static int on_device (void *cookie, const char *name)
 	o->grid = cmdb_open (path, "r");
 	free (path);
 
-	if (o->grid != NULL)
-		return 1;
+	if (o->grid == NULL)
+		return chip_error (o->conf, "cannot open device database");
 
-	return chip_error (o->conf, "cannot open device database");
+	if (!chip_add_grid (o->chip, o->grid))
+		return chip_error (o->conf, "cannot assign device to chip");
+
+	return 1;
 }
 
 static int on_comment (void *cookie, const char *value)
@@ -58,8 +60,6 @@ static int on_tile (void *cookie, const char *name)
 {
 	struct ctx *o = cookie;
 	char *type;
-	const char *v;
-	size_t x, y;
 
 	if (o->grid == NULL)
 		return chip_error (o->conf, "device does not defined");
@@ -69,19 +69,8 @@ static int on_tile (void *cookie, const char *name)
 
 	++type;
 
-	if (!cmdb_level (o->grid, "tile :", name, NULL) ||
-	    (v = cmdb_first (o->grid, "x")) == NULL)
-		return chip_error (o->conf, "cannot get grid for %s", name);
-
-	x = atol (v);
-
-	if ((v = cmdb_first (o->grid, "y")) == NULL)
-		return chip_error (o->conf, "cannot get grid for %s", name);
-
-	y = atol (v);
-
-	if (!chiplet_add (o->chiplet, x, y, type))
-		return chip_error (o->conf, "cannot create tile");
+	if (!chip_add_tile (o->chip, name, type))
+		return chip_error (o->conf, "cannot add tile %s", name);
 
 	return 1;
 }
@@ -90,7 +79,7 @@ static int on_raw (void *cookie, unsigned bit)
 {
 	struct ctx *o = cookie;
 
-	if (!chiplet_set_raw (o->chiplet, &bit))
+	if (!chip_set_raw (o->chip, &bit))
 		return chip_error (o->conf, "cannot apply raw");
 
 	return 1;
@@ -100,7 +89,7 @@ static int on_arrow (void *cookie, const char *sink, const char *source)
 {
 	struct ctx *o = cookie;
 
-	if (!chiplet_set_mux (o->chiplet, sink, source))
+	if (!chip_set_mux (o->chip, sink, source))
 		return chip_error (o->conf, "cannot apply arrow");
 
 	return 1;
@@ -124,7 +113,7 @@ static int on_word (void *cookie, const char *name, const char *value)
 {
 	struct ctx *o = cookie;
 
-	if (!chiplet_set_word (o->chiplet, name, value))
+	if (!chip_set_word (o->chip, name, value))
 		return chip_error (o->conf, "cannot apply word");
 
 	return 1;
@@ -141,7 +130,7 @@ static int on_enum (void *cookie, const char *name, const char *value)
 {
 	struct ctx *o = cookie;
 
-	if (!chiplet_set_enum (o->chiplet, name, value))
+	if (!chip_set_enum (o->chip, name, value))
 		return chip_error (o->conf, "cannot apply enum");
 
 	return 1;
@@ -167,13 +156,11 @@ static int on_bram_data (void *cookie, unsigned value)
 static int on_commit (void *cookie)
 {
 	struct ctx *o = cookie;
-	int ok;
 
-	ok = chiplet_blit (o->chiplet, o->image);
+	if (!chip_commit (o->chip))
+		chip_error (o->conf, "cannot commit changes");
 
-	chiplet_reset (o->chiplet);
-
-	return ok ? 1 : chip_error (o->conf, "cannot blit tile");
+	return 1;
 }
 
 static const struct chip_action action = {
@@ -208,7 +195,6 @@ int main (int argc, char *argv[])
 	struct chip_conf c;
 	struct ctx o;
 	char *path;
-	struct cmdb *tiles;
 	FILE *in;
 	int ok;
 
@@ -223,16 +209,13 @@ int main (int argc, char *argv[])
 	if ((path = make_string ("test/%s.cmdb", o.family)) == NULL)
 		err (1, "cannot make database path");
 
-	if ((tiles = cmdb_open (path, "r")) == NULL)
+	if ((o.tiles = cmdb_open (path, "r")) == NULL)
 		errx (1, "cannot open database");
 
 	free (path);
 
-	if ((o.chiplet = chiplet_alloc (tiles)) == NULL)
-		err (1, "cannot create chiplet");
-
-	if ((o.image = bitmap_alloc ()) == NULL)
-		err (1, "cannot create chip bitmap");
+	if ((o.chip = chip_alloc (o.tiles, NULL)) == NULL)
+		err (1, "cannot create chip");
 
 	if ((in = fopen (argv[2], "r")) == NULL)
 		err (1, "cannot open design file %s", argv[2]);
@@ -247,13 +230,12 @@ int main (int argc, char *argv[])
 	if (!ok)
 		errx (1, c.error);
 
-	if (!bitmap_export (o.image, argv[3]))
+	if (!bitmap_export (chip_get_bits (o.chip), argv[3]))
 		err (1, "cannot export bitmap to %s", argv[3]);
 
-	cmdb_close (tiles);
+	cmdb_close (o.tiles);
 	cmdb_close (o.grid);
-	chiplet_free (o.chiplet);
-	bitmap_free (o.image);
+	chip_free (o.chip);
 
 	return 0;
 }
