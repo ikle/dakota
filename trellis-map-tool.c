@@ -44,8 +44,7 @@ static char *make_str (const char *fmt, ...)
 #include <string.h>
 
 #include <cmdb.h>
-#include <dakota/bitmap.h>
-#include <dakota/tile.h>
+#include <dakota/chiplet.h>
 
 #include "trellis-conf.h"
 
@@ -54,9 +53,7 @@ struct ctx {
 	const char *family;
 	struct cmdb *tiles, *grid;
 	struct bitmap *chip;
-
-	struct tile *tile;  /* ToDo: Create lists of tile to support groups */
-	size_t x, y;
+	struct chiplet *chiplet;
 };
 
 static int on_device (void *cookie, const char *name)
@@ -94,6 +91,7 @@ static int on_tile (void *cookie, const char *name)
 	struct ctx *o = cookie;
 	char *type;
 	const char *v;
+	size_t x, y;
 
 	if (o->grid == NULL)
 		return chip_error (o->conf, "device does not defined");
@@ -103,21 +101,19 @@ static int on_tile (void *cookie, const char *name)
 
 	++type;
 
-	tile_free (o->tile);  /* ToDo: Create list of tiles to support groups */
-
-	if ((o->tile = tile_alloc (o->tiles, type)) == NULL)
-		return chip_error (o->conf, "cannot create tile");
-
 	if (!cmdb_level (o->grid, "tile :", name, NULL) ||
 	    (v = cmdb_first (o->grid, "x")) == NULL)
 		return chip_error (o->conf, "cannot get grid for %s", name);
 
-	o->x = atol (v);
+	x = atol (v);
 
 	if ((v = cmdb_first (o->grid, "y")) == NULL)
 		return chip_error (o->conf, "cannot get grid for %s", name);
 
-	o->y = atol (v);
+	y = atol (v);
+
+	if (!chiplet_add (o->chiplet, x, y, type))
+		return chip_error (o->conf, "cannot create tile");
 
 	return 1;
 }
@@ -126,10 +122,7 @@ static int on_raw (void *cookie, unsigned bit)
 {
 	struct ctx *o = cookie;
 
-	if (o->tile == NULL)
-		return chip_error (o->conf, "tile does not defined");
-
-	if (!tile_set_bits (o->tile, &bit))
+	if (!chiplet_set_bits (o->chiplet, &bit))
 		return chip_error (o->conf, "cannot apply raw");
 
 	return 1;
@@ -139,10 +132,7 @@ static int on_arrow (void *cookie, const char *sink, const char *source)
 {
 	struct ctx *o = cookie;
 
-	if (o->tile == NULL)
-		return chip_error (o->conf, "tile does not defined");
-
-	if (!tile_set_mux (o->tile, sink, source))
+	if (!chiplet_set_mux (o->chiplet, sink, source))
 		return chip_error (o->conf, "cannot apply arrow");
 
 	return 1;
@@ -166,10 +156,7 @@ static int on_word (void *cookie, const char *name, const char *value)
 {
 	struct ctx *o = cookie;
 
-	if (o->tile == NULL)
-		return chip_error (o->conf, "tile does not defined");
-
-	if (!tile_set_word (o->tile, name, value))
+	if (!chiplet_set_word (o->chiplet, name, value))
 		return chip_error (o->conf, "cannot apply word");
 
 	return 1;
@@ -186,10 +173,7 @@ static int on_enum (void *cookie, const char *name, const char *value)
 {
 	struct ctx *o = cookie;
 
-	if (o->tile == NULL)
-		return chip_error (o->conf, "tile does not defined");
-
-	if (!tile_set_enum (o->tile, name, value))
+	if (!chiplet_set_enum (o->chiplet, name, value))
 		return chip_error (o->conf, "cannot apply enum");
 
 	return 1;
@@ -217,13 +201,9 @@ static int on_commit (void *cookie)
 	struct ctx *o = cookie;
 	int ok;
 
-	if (o->tile == NULL)
-		return 1;
+	ok = chiplet_blit (o->chiplet, o->chip);
 
-	ok = bitmap_blit (o->chip, o->x, o->y, tile_get_bits (o->tile));
-
-	tile_free (o->tile);
-	o->tile = NULL;
+	chiplet_reset (o->chiplet);
 
 	return ok ? 1 : chip_error (o->conf, "cannot blit tile");
 }
@@ -275,8 +255,6 @@ int main (int argc, char *argv[])
 	o.family = argv[1];
 	o.grid   = NULL;
 
-	o.tile   = NULL;
-
 	if ((path = make_str ("test/%s.cmdb", o.family)) == NULL)
 		err (1, "cannot make database path");
 
@@ -287,6 +265,9 @@ int main (int argc, char *argv[])
 
 	if ((o.chip = bitmap_alloc ()) == NULL)
 		err (1, "cannot create chip bitmap");
+
+	if ((o.chiplet = chiplet_alloc (o.tiles)) == NULL)
+		err (1, "cannot create chiplet");
 
 	if ((in = fopen (argv[2], "r")) == NULL)
 		err (1, "cannot open design file %s", argv[2]);
@@ -300,11 +281,10 @@ int main (int argc, char *argv[])
 	if (!bitmap_export (o.chip, argv[3]))
 		err (1, "cannot export bitmap to %s", argv[3]);
 
-	tile_free (o.tile);
-
 	cmdb_close (o.tiles);
 	cmdb_close (o.grid);
 	bitmap_free (o.chip);
+	chiplet_free (o.chiplet);
 
 	return 0;
 }
