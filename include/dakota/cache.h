@@ -11,6 +11,8 @@
 
 #include <cmdb.h>
 
+struct cmdb *dakota_open_tiles (const char *family, const char *mode);
+
 struct cmdb *
 dakota_open_grid (const char *family, const char *device, const char *mode);
 
