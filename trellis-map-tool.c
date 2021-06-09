@@ -11,8 +11,8 @@
 #include <string.h>
 
 #include <cmdb.h>
+#include <dakota/cache.h>
 #include <dakota/chip.h>
-#include <dakota/string.h>
 
 #include "trellis-conf.h"
 
@@ -26,18 +26,11 @@ struct ctx {
 static int on_device (void *cookie, const char *name)
 {
 	struct ctx *o = cookie;
-	char *path;
 
 	if (o->grid != NULL)
 		return chip_error (o->conf, "device defined already");
 
-	if ((path = make_string ("test/%s-%s.cmdb", o->family, name)) == NULL)
-		return chip_error (o->conf, "cannot make device path");
-
-	o->grid = cmdb_open (path, "r");
-	free (path);
-
-	if (o->grid == NULL)
+	if ((o->grid = dakota_open_grid (o->family, name, "r")) == NULL)
 		return chip_error (o->conf, "cannot open device database");
 
 	if (!chip_add_grid (o->chip, o->grid))
@@ -194,7 +187,6 @@ int main (int argc, char *argv[])
 {
 	struct chip_conf c;
 	struct ctx o;
-	char *path;
 	FILE *in;
 	int ok;
 
@@ -206,13 +198,8 @@ int main (int argc, char *argv[])
 	o.family = argv[1];
 	o.grid   = NULL;
 
-	if ((path = make_string ("test/%s.cmdb", o.family)) == NULL)
-		err (1, "cannot make database path");
-
-	if ((o.tiles = cmdb_open (path, "r")) == NULL)
+	if ((o.tiles = dakota_open_tiles (o.family, "r")) == NULL)
 		errx (1, "cannot open database");
-
-	free (path);
 
 	if ((o.chip = chip_alloc (o.tiles, NULL)) == NULL)
 		err (1, "cannot create chip");
