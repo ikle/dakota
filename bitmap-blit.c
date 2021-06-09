@@ -39,7 +39,7 @@ int bitmap_blit (struct bitmap *o, size_t x, size_t y,
 
 			o->mask[dst] |=  mask;
 			o->bits[dst] &= ~mask;
-			o->bits[dst] |=  bits;
+			o->bits[dst] |=  bits & mask;
 
 			prev_mask = (tile->mask[src] >> lshift);
 			prev_bits = (tile->bits[src] >> lshift);
