@@ -10,7 +10,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <cmdb.h>
+#include <dakota/cache.h>
 #include <dakota/chip-bits.h>
 
 #include "trellis-conf.h"
@@ -211,9 +211,9 @@ int main (int argc, char *argv[])
 
 	if (argc != 4)
 		errx (0, "\n\t"
-			 "trellis-tiledata <type> <out-cmdb> <in-tile-bits.db>");
+			 "trellis-tiledata <family> <type> <in-tile-bits.db>");
 
-	if ((o.db = cmdb_open (argv[2], "rwx")) == NULL)
+	if ((o.db = dakota_open_tiles (argv[1], "rwx")) == NULL)
 		errx (1, "cannot open database");
 
 	if ((in = fopen (argv[3], "r")) == NULL)
@@ -224,7 +224,7 @@ int main (int argc, char *argv[])
 	c.error[0] = '\0';
 
 	o.conf = &c;
-	o.tile = argv[1];
+	o.tile = argv[2];
 
 	ok = trellis_read_conf (&c, in);
 	fclose (in);
