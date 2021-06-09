@@ -105,9 +105,6 @@ static int on_tile (void *cookie, const char *name)
 	if ((o->tile = tile_alloc (o->tiles, o->type)) == NULL)
 		return chip_error (o->conf, "cannot create tile");
 
-	if (!tile_set_raw (o->tile))
-		return chip_error (o->conf, "cannot apply raw values");
-
 	if (!cmdb_level (o->grid, "tile :", name, NULL) ||
 	    (v = cmdb_first (o->grid, "x")) == NULL)
 		return chip_error (o->conf, "cannot get grid for %s", name);

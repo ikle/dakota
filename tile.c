@@ -20,6 +20,8 @@ struct tile {
 	struct bitmap *map;
 };
 
+static int tile_set_raw (struct tile *o);
+
 struct tile *tile_alloc (struct cmdb *db, const char *type)
 {
 	struct tile *o;
@@ -34,7 +36,13 @@ struct tile *tile_alloc (struct cmdb *db, const char *type)
 		goto no_type;
 
 	o->db = db;
+
+	if (!tile_set_raw (o))
+		goto no_init;
+
 	return o;
+no_init:
+	free (o->type);
 no_type:
 	bitmap_free (o->map);
 no_map:
@@ -75,7 +83,7 @@ static int tile_add_bits (struct tile *o, const char *value, int invert)
 	return ok;
 }
 
-int tile_set_raw (struct tile *o)
+static int tile_set_raw (struct tile *o)
 {
 	const char *bits;
 
