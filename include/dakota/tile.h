@@ -15,8 +15,7 @@
 struct tile *tile_alloc (struct cmdb *db, const char *type);
 void tile_free (struct tile *o);
 
-int tile_set_bits (struct tile *o, const unsigned *bits);
-
+int tile_set_raw  (struct tile *o, const unsigned *bits);
 int tile_set_mux  (struct tile *o, const char *name, const char *source);
 int tile_set_word (struct tile *o, const char *name, const char *value);
 int tile_set_enum (struct tile *o, const char *name, const char *value);

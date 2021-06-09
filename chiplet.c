@@ -107,7 +107,7 @@ int chiplet_set_raw (struct chiplet *o, const unsigned *bits)
 	int ok = 0;
 
 	for (u = o->set; u != NULL; u = u->next)
-		ok |= tile_set_bits (u->tile, bits);
+		ok |= tile_set_raw (u->tile, bits);
 
 	return ok;
 }
