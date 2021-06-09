@@ -1,0 +1,19 @@
+#!/bin/sh
+
+: ${PREFIX:=$HOME/cad}
+: ${TRELLIS:=$PREFIX/share/trellis/database}
+: ${ROOT:=$HOME/src/hw/tools/fpga}
+: ${DEST:=$ROOT/test}
+
+: ${FAMILY:=ECP5}
+: ${DEVICE:=LFE5U-25F}
+
+for TYPE in $(ls -1 "$TRELLIS/$FAMILY/tiledata"); do
+	$ROOT/trellis-tiledata	"$TYPE" "$DEST/$FAMILY.cmdb" \
+				"$TRELLIS/$FAMILY/tiledata/$TYPE/bits.db"
+
+	[ $? -eq 0 ] || echo "$FAMILY $TYPE: error"
+done
+
+$ROOT/trellis-tilegrid	"$DEST/$FAMILY-$DEVICE.cmdb" \
+			"$TRELLIS/$FAMILY/$DEVICE/tilegrid.json"
