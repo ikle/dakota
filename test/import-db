@@ -8,6 +8,8 @@
 : ${FAMILY:=ECP5}
 : ${DEVICE:=LFE5U-25F}
 
+export PREFIX
+
 for TYPE in $(ls -1 "$TRELLIS/$FAMILY/tiledata"); do
 	$ROOT/trellis-tiledata	"$TYPE" "$DEST/$FAMILY.cmdb" \
 				"$TRELLIS/$FAMILY/tiledata/$TYPE/bits.db"
@@ -15,5 +17,4 @@ for TYPE in $(ls -1 "$TRELLIS/$FAMILY/tiledata"); do
 	[ $? -eq 0 ] || echo "$FAMILY $TYPE: error"
 done
 
-$ROOT/trellis-tilegrid	"$DEST/$FAMILY-$DEVICE.cmdb" \
-			"$TRELLIS/$FAMILY/$DEVICE/tilegrid.json"
+$ROOT/trellis-tilegrid	"$FAMILY" "$DEVICE"
