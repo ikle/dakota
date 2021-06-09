@@ -21,8 +21,6 @@ them using pnmsplit, a utility from the Netpbm project:
 ```bash
 $ pnmsplit test/hdmi-test.pnm test/hdmi-test-%d.pnm
 pnmsplit: WRITING test/hdmi-test-0.pnm
-
 pnmsplit: WRITING test/hdmi-test-1.pnm
-
 $
 ```
