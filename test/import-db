@@ -11,8 +11,7 @@
 export PREFIX
 
 for TYPE in $(ls -1 "$TRELLIS/$FAMILY/tiledata"); do
-	$ROOT/trellis-tiles "$FAMILY" "$TYPE" \
-			    "$TRELLIS/$FAMILY/tiledata/$TYPE/bits.db"
+	$ROOT/trellis-tiles "$FAMILY" "$TYPE"
 
 	[ $? -eq 0 ] || echo "$FAMILY $TYPE: error"
 done

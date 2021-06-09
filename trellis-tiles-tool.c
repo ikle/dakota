@@ -12,6 +12,7 @@
 
 #include <dakota/cache.h>
 #include <dakota/chip-bits.h>
+#include <dakota/string.h>
 
 #include "trellis-conf.h"
 
@@ -202,6 +203,31 @@ static const struct chip_action action = {
 
 #include <err.h>
 
+static FILE *trellis_open_tile (const char *family, const char *type)
+{
+	static const char *prefix;
+	static const char *trellis;
+	char *path;
+	FILE *file;
+
+	if (prefix == NULL && (prefix = getenv ("PREFIX")) == NULL)
+		prefix = "/usr";
+
+	if (trellis == NULL && (trellis = getenv ("TRELLIS")) == NULL)
+		trellis = make_string ("%s/share/trellis/database", prefix);
+
+	if (trellis == NULL)
+		return NULL;
+
+	path = make_string ("%s/%s/tiledata/%s/bits.db", trellis, family, type);
+	if (path == NULL)
+		return NULL;
+
+	file = fopen (path, "r");
+	free (path);
+	return file;
+}
+
 int main (int argc, char *argv[])
 {
 	struct ctx o;
@@ -209,15 +235,15 @@ int main (int argc, char *argv[])
 	FILE *in;
 	int ok;
 
-	if (argc != 4)
+	if (argc != 3)
 		errx (0, "\n\t"
-			 "trellis-tiledata <family> <type> <in-tile-bits.db>");
+			 "trellis-tiledata <family> <type>");
 
 	if ((o.db = dakota_open_tiles (argv[1], "rwx")) == NULL)
 		errx (1, "cannot open database");
 
-	if ((in = fopen (argv[3], "r")) == NULL)
-		err (1, "cannot open tile conf file %s", argv[3]);
+	if ((in = trellis_open_tile (argv[1], argv[2])) == NULL)
+		err (1, "cannot open trellis tile conf file");
 
 	c.action = &action;
 	c.cookie = &o;
