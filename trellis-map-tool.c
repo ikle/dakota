@@ -41,6 +41,7 @@ static char *make_str (const char *fmt, ...)
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include <cmdb.h>
 #include <dakota/bitmap.h>
@@ -55,7 +56,6 @@ struct ctx {
 	struct bitmap *chip;
 
 	struct tile *tile;  /* ToDo: Create lists of tile to support groups */
-	char *name, *type;
 	size_t x, y;
 };
 
@@ -92,17 +92,20 @@ static int on_sysconfig (void *cookie, const char *name, const char *value)
 static int on_tile (void *cookie, const char *name)
 {
 	struct ctx *o = cookie;
+	char *type;
 	const char *v;
 
 	if (o->grid == NULL)
 		return chip_error (o->conf, "device does not defined");
 
-	if (sscanf (name, "%m[^:]:%ms", &o->name, &o->type) != 2)
+	if ((type = strchr (name, ':')) == NULL)
 		return chip_error (o->conf, "cannot parse tile name");
+
+	++type;
 
 	tile_free (o->tile);  /* ToDo: Create list of tiles to support groups */
 
-	if ((o->tile = tile_alloc (o->tiles, o->type)) == NULL)
+	if ((o->tile = tile_alloc (o->tiles, type)) == NULL)
 		return chip_error (o->conf, "cannot create tile");
 
 	if (!cmdb_level (o->grid, "tile :", name, NULL) ||
@@ -220,12 +223,7 @@ static int on_commit (void *cookie)
 	ok = bitmap_blit (o->chip, o->x, o->y, tile_get_bits (o->tile));
 
 	tile_free (o->tile);
-	free (o->name);
-	free (o->type);
-
 	o->tile = NULL;
-	o->name = NULL;
-	o->type = NULL;
 
 	return ok ? 1 : chip_error (o->conf, "cannot blit tile");
 }
@@ -278,8 +276,6 @@ int main (int argc, char *argv[])
 	o.grid   = NULL;
 
 	o.tile   = NULL;
-	o.name   = NULL;
-	o.type   = NULL;
 
 	if ((path = make_str ("test/%s.cmdb", o.family)) == NULL)
 		err (1, "cannot make database path");
@@ -305,8 +301,6 @@ int main (int argc, char *argv[])
 		err (1, "cannot export bitmap to %s", argv[3]);
 
 	tile_free (o.tile);
-	free (o.name);
-	free (o.type);
 
 	cmdb_close (o.tiles);
 	cmdb_close (o.grid);
