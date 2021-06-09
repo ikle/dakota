@@ -17,4 +17,4 @@ for TYPE in $(ls -1 "$TRELLIS/$FAMILY/tiledata"); do
 	[ $? -eq 0 ] || echo "$FAMILY $TYPE: error"
 done
 
-$ROOT/trellis-tilegrid	"$FAMILY" "$DEVICE"
+$ROOT/trellis-grid "$FAMILY" "$DEVICE"

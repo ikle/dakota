@@ -5,6 +5,6 @@
 *.swp
 *-test
 
+trellis-grid
 trellis-map
 trellis-tiledata
-trellis-tilegrid
