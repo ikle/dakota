@@ -12,7 +12,7 @@
 #include <cmdb.h>
 #include <dakota/bitmap.h>
 
-struct tile *tile_alloc (struct cmdb *db, const char *family, const char *type);
+struct tile *tile_alloc (struct cmdb *db, const char *type);
 void tile_free (struct tile *o);
 
 int tile_set_bits (struct tile *o, const unsigned *bits);

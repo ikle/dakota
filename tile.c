@@ -16,14 +16,13 @@
 
 struct tile {
 	struct cmdb *db;
-	char *family;
 	char *type;
 
 	struct bitmap *map;
 	char error[128];
 };
 
-struct tile *tile_alloc (struct cmdb *db, const char *family, const char *type)
+struct tile *tile_alloc (struct cmdb *db, const char *type)
 {
 	struct tile *o;
 
@@ -33,9 +32,6 @@ struct tile *tile_alloc (struct cmdb *db, const char *family, const char *type)
 	if ((o->map = bitmap_alloc ()) == NULL)
 		goto no_map;
 
-	if ((o->family = strdup (family)) == NULL)
-		goto no_family;
-
 	if ((o->type = strdup (type)) == NULL)
 		goto no_type;
 
@@ -43,8 +39,6 @@ struct tile *tile_alloc (struct cmdb *db, const char *family, const char *type)
 	o->error[0] = '\0';
 	return o;
 no_type:
-	free (o->family);
-no_family:
 	bitmap_free (o->map);
 no_map:
 	free (o);

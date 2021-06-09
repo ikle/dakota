@@ -102,7 +102,7 @@ static int on_tile (void *cookie, const char *name)
 
 	tile_free (o->tile);  /* ToDo: Create list of tiles to support groups */
 
-	if ((o->tile = tile_alloc (o->tiles, o->family, o->type)) == NULL)
+	if ((o->tile = tile_alloc (o->tiles, o->type)) == NULL)
 		return chip_error (o->conf, "cannot create tile");
 
 	if (!tile_set_raw (o->tile))
