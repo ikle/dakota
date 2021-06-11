@@ -152,11 +152,30 @@ static int push_char (struct shell *o, int a)
 	return 1;
 }
 
+static int get_word_char (struct shell *o)
+{
+	int a;
+
+	for (;;) {
+		if ((a = fgetc (o->in)) != '\\')
+			return a;
+
+		if ((a = fgetc (o->in)) != '\n') {
+			ungetc (a, o->in);
+			return '\\';
+		}
+
+		/* collapse backspash + newline, concatenate lines */
+	}
+
+	return a;  /* unreachable */
+}
+
 static size_t get_word (struct shell *o)
 {
 	int a;
 start:
-	switch (a = fgetc (o->in)) {
+	switch (a = get_word_char (o)) {
 	case EOF:
 	case '\n':	goto end;
 	case '\t':
@@ -198,7 +217,7 @@ w_next:
 	if (!push_char (o, a))
 		return 0;
 
-	switch (a = fgetc (o->in)) {
+	switch (a = get_word_char (o)) {
 	case EOF:
 	case '\t':
 	case '\n':
