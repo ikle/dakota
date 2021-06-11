@@ -202,7 +202,8 @@ w_next:
 	case EOF:
 	case '\t':
 	case '\n':
-	case ' ':	goto tail;
+	case ' ':
+	case '#':	goto tail;
 	default:	goto w_next;
 	}
 tail:
@@ -211,8 +212,11 @@ tail:
 
 	debug ("got word %s", o->cmd.argv[o->cmd.argc - 1]);
 
-	if (a != '\n')
-		goto start;
+	switch (a) {
+	case '\n':	goto end;
+	case '#':	goto comment;
+	default:	goto start;
+	}
 end:
 	if (o->cmd.argc > 0) {
 		debug ("got %zu words", o->cmd.argc);
