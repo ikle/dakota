@@ -163,21 +163,21 @@ start:
 	case ' ':	goto start;
 	case '"':	goto string;
 	case '#':	goto comment;
-	default:	goto head;
+	default:	goto w_head;
 	}
 string:
 	if (!push_word (o))
 		return 0;
 
-	goto first;
-content:
+	goto s_first;
+s_next:
 	if (!push_char (o, a))
 		return 0;
-first:
+s_first:
 	switch (a = fgetc (o->in)) {
 	case EOF:
 	case '"':	goto tail;
-	default:	goto content;
+	default:	goto s_next;
 	}
 comment:
 	switch (a = fgetc (o->in)) {
@@ -185,10 +185,10 @@ comment:
 	case '\n':	goto end;
 	default:	goto comment;
 	}
-head:
+w_head:
 	if (!push_word (o))
 		return 0;
-word:
+w_next:
 	if (!push_char (o, a))
 		return 0;
 
@@ -197,7 +197,7 @@ word:
 	case '\t':
 	case '\n':
 	case ' ':	goto tail;
-	default:	goto word;
+	default:	goto w_next;
 	}
 tail:
 	if (!push_char (o, '\0'))
