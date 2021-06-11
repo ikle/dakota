@@ -9,6 +9,9 @@
 #ifndef DAKOTA_STRING_H
 #define DAKOTA_STRING_H  1
 
-char *make_string (const char *fmt, ...);
+#include <stdarg.h>
+
+char *make_string_va (const char *fmt, va_list ap);
+char *make_string    (const char *fmt, ...);
 
 #endif  /* DAKOTA_STRING_H */

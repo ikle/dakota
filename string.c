@@ -6,13 +6,12 @@
  * SPDX-License-Identifier: BSD-2-Clause
  */
 
-#include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
 
 #include <dakota/string.h>
 
-static char *make_string_va (const char *fmt, va_list ap)
+char *make_string_va (const char *fmt, va_list ap)
 {
 	va_list aq;
 	int size;
