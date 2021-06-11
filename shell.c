@@ -177,6 +177,12 @@ s_first:
 	switch (a = fgetc (o->in)) {
 	case EOF:
 	case '"':	goto tail;
+	case '\\':	goto s_escape;
+	default:	goto s_next;
+	}
+s_escape:
+	switch (a = fgetc (o->in)) {
+	case EOF:	goto tail;
 	default:	goto s_next;
 	}
 comment:
