@@ -161,8 +161,23 @@ start:
 	case '\n':	goto end;
 	case '\t':
 	case ' ':	goto start;
+	case '"':	goto string;
 	case '#':	goto comment;
 	default:	goto head;
+	}
+string:
+	if (!push_word (o))
+		return 0;
+
+	goto first;
+content:
+	if (!push_char (o, a))
+		return 0;
+first:
+	switch (a = fgetc (o->in)) {
+	case EOF:
+	case '"':	goto tail;
+	default:	goto content;
 	}
 comment:
 	switch (a = fgetc (o->in)) {
