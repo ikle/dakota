@@ -157,7 +157,13 @@ static int get_word_char (struct shell *o)
 	int a;
 
 	for (;;) {
-		if ((a = fgetc (o->in)) != '\\')
+		if ((a = fgetc (o->in)) == '#') {
+			while ((a = fgetc (o->in)) != EOF && a != '\n') {}
+
+			return a;
+		}
+
+		if (a != '\\')
 			return a;
 
 		if ((a = fgetc (o->in)) != '\n') {
@@ -181,7 +187,6 @@ start:
 	case '\t':
 	case ' ':	goto start;
 	case '"':	goto string;
-	case '#':	goto comment;
 	default:	goto w_head;
 	}
 string:
@@ -204,12 +209,6 @@ s_escape:
 	case EOF:	goto tail;
 	default:	goto s_next;
 	}
-comment:
-	switch (a = fgetc (o->in)) {
-	case EOF:
-	case '\n':	goto end;
-	default:	goto comment;
-	}
 w_head:
 	if (!push_word (o))
 		return 0;
@@ -221,8 +220,7 @@ w_next:
 	case EOF:
 	case '\t':
 	case '\n':
-	case ' ':
-	case '#':	goto tail;
+	case ' ':	goto tail;
 	default:	goto w_next;
 	}
 tail:
@@ -231,11 +229,8 @@ tail:
 
 	debug ("got word %s", o->cmd.argv[o->cmd.argc - 1]);
 
-	switch (a) {
-	case '\n':	goto end;
-	case '#':	goto comment;
-	default:	goto start;
-	}
+	if (a != '\n')
+		goto start;
 end:
 	if (o->cmd.argc > 0) {
 		debug ("got %zu words", o->cmd.argc);
