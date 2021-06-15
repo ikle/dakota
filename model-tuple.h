@@ -13,11 +13,11 @@
 #include <stddef.h>
 
 struct tuple {
-	int size;
+	size_t size;
 	char **m;
 };
 
-int  tuple_init (struct tuple *o, int size, va_list ap);
+int  tuple_init (struct tuple *o, size_t size, va_list ap);
 void tuple_fini (struct tuple *o);
 
 #endif  /* DAKOTA_MODEL_TUPLE_H */

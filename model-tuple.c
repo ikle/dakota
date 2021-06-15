@@ -6,17 +6,14 @@
  * SPDX-License-Identifier: BSD-2-Clause
  */
 
-#include <assert.h>
 #include <stdlib.h>
 #include <string.h>
 
 #include "model-tuple.h"
 
-int tuple_init (struct tuple *o, int size, va_list ap)
+int tuple_init (struct tuple *o, size_t size, va_list ap)
 {
 	int i;
-
-	assert (size > 0);
 
 	if ((o->m = malloc (sizeof (o->m[0]) * size)) == NULL)
 		return 0;
