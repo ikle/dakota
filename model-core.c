@@ -6,6 +6,7 @@
  * SPDX-License-Identifier: BSD-2-Clause
  */
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -55,11 +56,17 @@ model_add_port (struct model *o, struct cell *cell, const char *name, int type)
 	struct model *m = o->last;
 	const size_t nports = m->nports + 1;
 	struct port *p;
+	char alias[22];
 
 	if ((p = array_resize (m->port, nports)) == NULL)
 		return error (&o->error, NULL);
 
 	m->port = p;
+
+	if (name == NULL) {
+		snprintf (alias, sizeof (alias), "P%zu", m->nports);
+		name = alias;
+	}
 
 	if (!port_init (m->port + m->nports, cell, name, type))
 		return error (&o->error, NULL);
@@ -101,11 +108,17 @@ int model_add_cell (struct model *o, const char *type, const char *name)
 	struct model *m = o->last;
 	const size_t ncells = m->ncells + 1;
 	struct cell *p;
+	char alias[22];
 
 	if ((p = array_resize (m->cell, ncells)) == NULL)
 		return error (&o->error, NULL);
 
 	m->cell = p;
+
+	if (name == NULL) {
+		snprintf (alias, sizeof (alias), "U%zu", m->nports);
+		name = alias;
+	}
 
 	if (!cell_init (m->cell + m->ncells, type, name))
 		return error (&o->error, NULL);
