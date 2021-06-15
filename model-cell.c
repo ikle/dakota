@@ -43,27 +43,33 @@ void cell_fini (struct cell *o)
 	array_free (o->attr,  o->nattrs,  pair_fini);
 }
 
-int cell_add_tuple (struct cell *o, int size, ...)
+int cell_add_tuple_va (struct cell *o, int size, va_list ap)
 {
 	const size_t ntuples = o->ntuples + 1;
 	struct tuple *p;
-	va_list ap;
-	int ok;
 
 	if ((p = array_resize (o->tuple, ntuples)) == NULL)
 		return 0;
 
 	o->tuple = p;
 
-	va_start (ap, size);
-	ok = tuple_init (o->tuple + o->ntuples, size, ap);
-	va_end (ap);
-
-	if (!ok)
+	if (!tuple_init (o->tuple + o->ntuples, size, ap))
 		return 0;
 
 	o->ntuples = ntuples;
 	return 1;
+}
+
+int cell_add_tuple (struct cell *o, int size, ...)
+{
+	va_list ap;
+	int ok;
+
+	va_start (ap, size);
+	ok = cell_add_tuple_va (o, size, ap);
+	va_end (ap);
+
+	return ok;
 }
 
 int cell_add_param (struct cell *o, const char *name, const char *value)

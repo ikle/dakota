@@ -30,8 +30,9 @@ struct cell {
 int  cell_init (struct cell *o, const char *type, const char *name);
 void cell_fini (struct cell *o);
 
-int cell_add_tuple (struct cell *o, int size, ...);
-int cell_add_param (struct cell *o, const char *name, const char *value);
-int cell_add_attr  (struct cell *o, const char *name, const char *value);
+int cell_add_tuple_va (struct cell *o, int size, va_list ap);
+int cell_add_tuple    (struct cell *o, int size, ...);
+int cell_add_param    (struct cell *o, const char *name, const char *value);
+int cell_add_attr     (struct cell *o, const char *name, const char *value);
 
 #endif  /* DAKOTA_MODEL_CELL_H */
