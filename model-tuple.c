@@ -9,13 +9,15 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <dakota/array.h>
+
 #include "model-tuple.h"
 
 int tuple_init (struct tuple *o, size_t size, va_list ap)
 {
 	int i;
 
-	if ((o->m = malloc (sizeof (o->m[0]) * size)) == NULL)
+	if ((o->m = array_alloc (o->m, size)) == NULL)
 		return 0;
 
 	for (i = 0; i < size; ++i)
@@ -24,19 +26,11 @@ int tuple_init (struct tuple *o, size_t size, va_list ap)
 
 	return 1;
 no_value:
-	for (; i > 0; --i)
-		free (o->m + i);
-
-	free (o->m);
+	array_free (o->m, i, free);
 	return 0;
 }
 
 void tuple_fini (struct tuple *o)
 {
-	int i;
-
-	for (i = 0; i < o->size; ++i)
-		free (o->m + i);
-
-	free (o->m);
+	array_free (o->m, o->size, free);
 }
