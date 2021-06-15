@@ -73,16 +73,12 @@ model_add_port (struct model *o, struct cell *cell, const char *name, int type)
 
 int model_add_input (struct model *o, const char *name)
 {
-	int ok = model_add_port (o, NULL, name, PORT_SINK);
-
-	return ok ? 1 : error (&o->error, NULL);
+	return model_add_port (o, NULL, name, PORT_SINK);
 }
 
 int model_add_output (struct model *o, const char *name)
 {
-	int ok = model_add_port (o, NULL, name, PORT_SOURCE);
-
-	return ok ? 1 : error (&o->error, NULL);
+	return model_add_port (o, NULL, name, PORT_SOURCE);
 }
 
 int model_add_wire (struct model *o, const char *sink, const char *source)
