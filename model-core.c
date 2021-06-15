@@ -11,6 +11,7 @@
 
 #include <dakota/array.h>
 #include <dakota/error.h>
+#include <dakota/model.h>
 
 #include "model-core.h"
 
