@@ -12,9 +12,7 @@
 #include <stddef.h>
 
 enum port_type {
-	PORT_SOURCE	= 0,
-	PORT_SINK	= 1,
-	PORT_TYPE	= 1,
+	PORT_DRIVEN	= 1,
 	PORT_LOCAL	= 2,
 };
 

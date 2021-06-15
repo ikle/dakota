@@ -40,57 +40,95 @@ void model_free (struct model *o)
 	free (o);
 }
 
-/*
- * 1. find cell model, and
- * 2. create local ports binded to cell ports
- */
+static int model_add_sink (struct model *o, const char *name)
+{
+	struct port *p;
+
+	if ((p = model_get_port (o, name)) != NULL)
+		goto exists;
+
+	o->last = o;  /* add local port to this model */
+
+	if (!model_add_port (o, NULL, name, PORT_DRIVEN | PORT_LOCAL))
+		return error (&o->error, NULL);
+
+	return 1;
+exists:
+	if ((p->type & PORT_DRIVEN) != 0)
+		return error (&o->error, "multiple drivers for %s", name);
+
+	p->type |= PORT_DRIVEN;
+	return 1;
+}
+
+static int model_has_sink (struct model *o, struct port *port, const char *name)
+{
+	if (port == NULL)
+		port = model_get_port (o, name);
+	else
+	if (name == NULL)
+		name = port->name;
+
+	if (port != NULL && (port->type & PORT_DRIVEN) != 0)
+		return 1;
+
+	return error (&o->error, "no driver for %s", name);
+}
+
 static int model_bind_cell (struct model *o, struct cell *cell)
 {
 	struct model *m;
 	size_t i;
 	char *name;
-	int ok = 1, type;
+	int ok;
 
 	if ((m = model_get_model (o, cell->type)) == NULL)
 		return error (&o->error, "cannot find model %s for cell %s",
 			      cell->type, cell->name);
 
-	o->last = m;
-
 	for (i = 0; i < m->nports; ++i) {
-		name = make_string ("%s.%s", cell->name, m->port[i].name);
-		type = m->port[i].type | PORT_LOCAL;
+		if (m->port[i].type != 0)  /* is not output? */
+			continue;
 
-		ok &= name != NULL && model_add_port (o, cell, name, type);
+		name = make_string ("%s.%s", cell->name, m->port[i].name);
+		if (name == NULL)
+			return error (&o->error, NULL);
+
+		ok = model_add_sink (o, name);
 		free (name);
+
+		if (!ok)
+			return 0;
 	}
 
-	return ok ? 1 : error (&o->error, NULL);
+	return 1;
 }
 
-/*
- * 1. find model ports to connect, and
- * 2. validate types
- */
-static int model_bind_wire (struct model *o, struct wire *wire)
+static int model_check_cell (struct model *o, struct cell *cell)
 {
-	const struct port *sink, *source;
+	struct model *m;
+	size_t i;
+	char *name;
+	int ok;
 
-	if ((sink = model_get_port (o, wire->sink)) == NULL)
-		return error (&o->error, "cannot find sink port %s",
-			      wire->sink);
+	if ((m = model_get_model (o, cell->type)) == NULL)
+		return error (&o->error, "cannot find model %s for cell %s",
+			      cell->type, cell->name);
 
-	if ((sink->type & PORT_TYPE) != PORT_SINK)
-		return error (&o->error, "cannot use source port %s as sink",
-			      wire->sink);
+	for (i = 0; i < m->nports; ++i) {
+		if (m->port[i].type != PORT_DRIVEN)  /* is not input? */
+			continue;
 
-	if ((source = model_get_port (o, wire->source)) == NULL)
-		return error (&o->error, "cannot find source port %s",
-			      wire->source);
+		name = make_string ("%s.%s", cell->name, m->port[i].name);
+		if (name == NULL)
+			return error (&o->error, NULL);
 
-	if ((source->type & PORT_TYPE) != PORT_SOURCE)
-		return error (&o->error, "cannot use sink port %s as source",
-			      wire->source);
+		ok = model_has_sink (o, NULL, name);
+		free (name);
+
+		if (!ok)
+			return 0;
+	}
 
 	return 1;
 }
@@ -104,7 +142,20 @@ int model_commit (struct model *o)
 			return 0;
 
 	for (i = 0; i < o->nwires; ++i)
-		if (!model_bind_wire (o, o->wire + i))
+		if (!model_add_sink (o, o->wire[i].sink))
+			return 0;
+
+	for (i = 0; i < o->nports; ++i)
+		if (o->port[i].type == 0 &&  /* is output? */
+		    !model_has_sink (o, o->port + i, NULL))
+			return 0;
+
+	for (i = 0; i < o->nwires; ++i)
+		if (!model_has_sink (o, NULL, o->wire[i].source))
+			return 0;
+
+	for (i = 0; i < o->ncells; ++i)
+		if (!model_check_cell (o, o->cell + i))
 			return 0;
 
 	return 1;
