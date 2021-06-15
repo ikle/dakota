@@ -36,8 +36,9 @@ void array_do_free (void *o, size_t count, size_t size, void (*free_entry) ())
 {
 	size_t i, pos;
 
-	for (i = 0, pos = 0; i < count; ++i, pos += size)
-		free_entry (o + pos);
+	if (free_entry != NULL)
+		for (i = 0, pos = 0; i < count; ++i, pos += size)
+			free_entry (o + pos);
 
 	free (o);
 }
