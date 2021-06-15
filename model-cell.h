@@ -13,14 +13,7 @@
 #include <stddef.h>
 
 #include "model-pair.h"
-
-struct tuple {
-	int size;
-	char **m;
-};
-
-int  tuple_init (struct tuple *o, int size, va_list ap);
-void tuple_fini (struct tuple *o);
+#include "model-tuple.h"
 
 struct cell {
 	char *type;
