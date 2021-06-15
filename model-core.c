@@ -142,6 +142,9 @@ int model_add_tuple (struct model *o, int size, ...)
 	va_list ap;
 	int ok;
 
+	if (m->ncells == 0)
+		return error (&o->error, "no cell to add tuple");
+
 	va_start (ap, size);
 	ok = cell_add_tuple_va (m->cell + m->ncells - 1, size, ap);
 	va_end (ap);
@@ -152,7 +155,12 @@ int model_add_tuple (struct model *o, int size, ...)
 int model_add_param (struct model *o, const char *name, const char *value)
 {
 	struct model *m = o->last;
-	int ok = cell_add_param (m->cell + m->ncells - 1, name, value);
+	int ok;
+
+	if (m->ncells == 0)
+		return error (&o->error, "no cell to add parameter");
+
+	ok = cell_add_param (m->cell + m->ncells - 1, name, value);
 
 	return ok ? 1 : error (&o->error, NULL);
 }
@@ -160,7 +168,12 @@ int model_add_param (struct model *o, const char *name, const char *value)
 int model_add_attr (struct model *o, const char *name, const char *value)
 {
 	struct model *m = o->last;
-	int ok = cell_add_attr (m->cell + m->ncells - 1, name, value);
+	int ok;
+
+	if (m->ncells == 0)
+		return error (&o->error, "no cell to add attribute");
+
+	ok = cell_add_attr (m->cell + m->ncells - 1, name, value);
 
 	return ok ? 1 : error (&o->error, NULL);
 }
