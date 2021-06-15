@@ -35,12 +35,14 @@
 
 .subckt ecp_lut4  A=A0 B=B0 C=C0 D=D0 Y0=H0 F=L0
 .cname K0
+.param INIT K0.INIT
 
 .subckt ecp_carry CI=FCI GI=H0 P=F0 S=S0 CO=CO
 .param INJECT1 INJECT1_0
 
 .subckt ecp_lut4  A=A1 B=B1 C=C1 D=D1 Y0=H1 F=L1
 .cname K1
+.param INIT K1.INIT
 
 .subckt ecp_carry CI=CO  GI=H1 P=F1 S=S1 CO=FCO
 .param INJECT1 INJECT1_1
@@ -73,9 +75,15 @@
 
 .subckt ecp_reg   CE=CEI CLK=CLKI ASR=ASR SSR=LSRI  M=M0 D=DI0 Q=Q0
 .cname REG0
+.param SD	REG0.SD
+.param LSRMODE	REG0.LSRMODE
+.param REGSET	REG0.REGSET
 
 .subckt ecp_reg   CE=CEI CLK=CLKI ASR=ASR SSR=LSRI  M=M1 D=DI1 Q=Q1
 .cname REG1
+.param SD	REG1.SD
+.param LSRMODE	REG1.LSRMODE
+.param REGSET	REG1.REGSET
 
 .end
 
