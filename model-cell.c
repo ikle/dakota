@@ -10,6 +10,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <dakota/array.h>
+
 #include "model-cell.h"
 
 int cell_init (struct cell *o, const char *type, const char *name)
@@ -34,25 +36,12 @@ no_name:
 
 void cell_fini (struct cell *o)
 {
-	size_t i;
-
 	free (o->type);
 	free (o->name);
 
-	for (i = 0; i < o->ntuples; ++i)
-		tuple_fini (o->tuple + i);
-
-	free (o->tuple);
-
-	for (i = 0; i < o->nparams; ++i)
-		pair_fini (o->param + i);
-
-	free (o->param);
-
-	for (i = 0; i < o->nattrs; ++i)
-		pair_fini (o->attr + i);
-
-	free (o->attr);
+	array_free (o->tuple, o->ntuples, tuple_fini);
+	array_free (o->param, o->nparams, pair_fini);
+	array_free (o->attr,  o->nattrs,  pair_fini);
 }
 
 int cell_add_tuple (struct cell *o, int size, ...)
@@ -62,7 +51,7 @@ int cell_add_tuple (struct cell *o, int size, ...)
 	va_list ap;
 	int ok;
 
-	if ((p = realloc (o->tuple, sizeof (p[0]) * ntuples)) == NULL)
+	if ((p = array_resize (o->tuple, ntuples)) == NULL)
 		return 0;
 
 	o->tuple = p;
@@ -83,7 +72,7 @@ int cell_add_param (struct cell *o, const char *name, const char *value)
 	const size_t nparams = o->nparams + 1;
 	struct pair *p;
 
-	if ((p = realloc (o->param, sizeof (p[0]) * nparams)) == NULL)
+	if ((p = array_resize (o->param, nparams)) == NULL)
 		return 0;
 
 	o->param = p;
@@ -100,7 +89,7 @@ int cell_add_attr  (struct cell *o, const char *name, const char *value)
 	const size_t nattrs = o->nattrs + 1;
 	struct pair *p;
 
-	if ((p = realloc (o->attr, sizeof (p[0]) * nattrs)) == NULL)
+	if ((p = array_resize (o->attr, nattrs)) == NULL)
 		return 0;
 
 	o->attr = p;
