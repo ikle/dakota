@@ -12,12 +12,7 @@
 #include <stdarg.h>
 #include <stddef.h>
 
-struct pair {
-	char *key, *value;
-};
-
-int  pair_init (struct pair *o, const char *key, const char *value);
-void pair_fini (struct pair *o);
+#include "model-pair.h"
 
 struct tuple {
 	int size;

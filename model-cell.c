@@ -12,26 +12,6 @@
 
 #include "model-cell.h"
 
-int pair_init (struct pair *o, const char *key, const char *value)
-{
-	if ((o->key = strdup (key)) == NULL)
-		return 0;
-
-	if ((o->value = strdup (value)) == NULL)
-		goto no_value;
-
-	return 1;
-no_value:
-	free (o->key);
-	return 0;
-}
-
-void pair_fini (struct pair *o)
-{
-	free (o->key);
-	free (o->value);
-}
-
 int tuple_init (struct tuple *o, int size, va_list ap)
 {
 	int i;
