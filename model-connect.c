@@ -40,6 +40,23 @@ exists:
 	return port;
 }
 
+static size_t model_add_source (struct model *o, const char *name)
+{
+	size_t port;
+
+	if ((port = model_get_port (o, name)) != M_UNKNOWN)
+		return port;
+
+	o->last = o;  /* add local port to this model */
+
+	if (!model_add_port (o, NULL, name, PORT_LOCAL)) {
+		error (&o->error, NULL);
+		return M_UNKNOWN;
+	}
+
+	return o->nports - 1;
+}
+
 static size_t model_get_sink (struct model *o, size_t port, const char *name)
 {
 	if (port == M_UNKNOWN)
@@ -65,24 +82,26 @@ static int model_bind_cell (struct model *o, struct cell *cell)
 	struct model *m;
 	size_t i;
 	char *name;
-	int ok;
+	size_t port;
 
 	if ((m = model_get_model (o, cell->type)) == NULL)
 		return error (&o->error, "cannot find model %s for cell %s",
 			      cell->type, cell->name);
 
 	for (i = 0; i < m->nports; ++i) {
-		if (m->port[i].type != 0)  /* is not output? */
+		if ((m->port[i].type & PORT_LOCAL) != 0)
 			continue;
 
 		name = make_string ("%s.%s", cell->name, m->port[i].name);
 		if (name == NULL)
 			return error (&o->error, NULL);
 
-		ok = (model_add_sink (o, cell, name) != M_UNKNOWN);
+		port = (m->port[i].type & PORT_DRIVEN) != 0 ?
+			model_add_source (o, name):
+			model_add_sink (o, cell, name);
 		free (name);
 
-		if (!ok)
+		if (port == M_UNKNOWN)
 			return 0;
 	}
 
