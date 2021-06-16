@@ -75,7 +75,7 @@ size_t error_s (struct error *o, const char *fmt, ...)
 	error_va (o, fmt, ap);
 	va_end(ap);
 
-	return 0;
+	return (size_t) -1;
 }
 
 void *error_p (struct error *o, const char *fmt, ...)
