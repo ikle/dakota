@@ -22,6 +22,8 @@ int model_init (struct model *o, const char *name)
 
 	o->last = o;
 
+	o->nparams = 0;
+	o->param   = NULL;
 	o->nports  = 0;
 	o->port    = NULL;
 	o->nwires  = 0;
@@ -157,9 +159,23 @@ int model_add_param (struct model *o, const char *name, const char *value)
 	struct model *m = o->last;
 	int ok;
 
-	if (m->ncells == 0)
-		return error (&o->error, "no cell to add parameter");
+	if (m->ncells > 0)
+		goto cell;
 
+	const size_t nparams = o->nparams + 1;
+	struct pair *p;
+
+	if ((p = array_resize (o->param, nparams)) == NULL)
+		return error (&o->error, NULL);
+
+	o->param = p;
+
+	if (!pair_init (o->param + o->nparams, name, value))
+		return error (&o->error, NULL);
+
+	o->nparams = nparams;
+	return 1;
+cell:
 	ok = cell_add_param (m->cell + m->ncells - 1, name, value);
 
 	return ok ? 1 : error (&o->error, NULL);

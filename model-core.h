@@ -13,6 +13,7 @@
 
 #include <dakota/error.h>
 
+#include "model-pair.h"
 #include "model-port.h"
 #include "model-wire.h"
 #include "model-cell.h"
@@ -21,6 +22,8 @@ struct model {
 	char *name;
 	struct model *last;
 
+	size_t        nparams;
+	struct pair  *param;
 	size_t        nports;
 	struct port  *port;
 	size_t        nwires;
