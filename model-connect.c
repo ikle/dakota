@@ -77,6 +77,13 @@ static int model_has_sink (struct model *o, size_t port, const char *name)
 	return (model_get_sink (o, port, name) != M_UNKNOWN);
 }
 
+static int model_bind_wire (struct model *o, struct wire *wire)
+{
+	wire->to = model_add_sink (o, NULL, wire->sink);
+
+	return (wire->to != M_UNKNOWN);
+}
+
 static int model_bind_cell (struct model *o, struct cell *cell)
 {
 	struct model *m;
@@ -141,11 +148,9 @@ int model_connect (struct model *o)
 {
 	size_t i;
 
-	for (i = 0; i < o->nwires; ++i) {
-		o->wire[i].to = model_add_sink (o, NULL, o->wire[i].sink);
-		if (o->wire[i].to == M_UNKNOWN)
+	for (i = 0; i < o->nwires; ++i)
+		if (!model_bind_wire (o, o->wire + i))
 			return 0;
-	}
 
 	for (i = 0; i < o->ncells; ++i)
 		if (!model_bind_cell (o, o->cell + i))
