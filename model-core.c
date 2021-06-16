@@ -157,28 +157,28 @@ int model_add_tuple (struct model *o, int size, ...)
 int model_add_param (struct model *o, const char *name, const char *value)
 {
 	struct model *m = o->last;
-	int ok;
-
-	if (m->ncells > 0)
-		goto cell;
-
 	const size_t nparams = o->nparams + 1;
 	struct pair *p;
 
+	if (m->ncells > 0) {
+		if (!cell_add_param (m->cell + m->ncells - 1, name, value))
+			goto error;
+
+		return 1;
+	}
+
 	if ((p = array_resize (o->param, nparams)) == NULL)
-		return error (&o->error, NULL);
+		goto error;
 
 	o->param = p;
 
 	if (!pair_init (o->param + o->nparams, name, value))
-		return error (&o->error, NULL);
+		goto error;
 
 	o->nparams = nparams;
 	return 1;
-cell:
-	ok = cell_add_param (m->cell + m->ncells - 1, name, value);
-
-	return ok ? 1 : error (&o->error, NULL);
+error:
+	return error (&o->error, NULL);
 }
 
 int model_add_attr (struct model *o, const char *name, const char *value)
