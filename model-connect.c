@@ -38,7 +38,7 @@ exists:
 	return port;
 }
 
-static int model_has_sink (struct model *o, size_t port, const char *name)
+static size_t model_get_sink (struct model *o, size_t port, const char *name)
 {
 	if (port == M_UNKNOWN)
 		port = model_get_port (o, name);
@@ -47,9 +47,15 @@ static int model_has_sink (struct model *o, size_t port, const char *name)
 		name = o->port[port].name;
 
 	if (port != M_UNKNOWN && (o->port[port].type & PORT_DRIVEN) != 0)
-		return 1;
+		return port;
 
-	return error (&o->error, "no driver for %s", name);
+	error (&o->error, "no driver for %s", name);
+	return M_UNKNOWN;
+}
+
+static int model_has_sink (struct model *o, size_t port, const char *name)
+{
+	return (model_get_sink (o, port, name) != M_UNKNOWN);
 }
 
 static int model_bind_cell (struct model *o, struct cell *cell)
