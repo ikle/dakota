@@ -13,7 +13,8 @@
 #include "model-connect.h"
 #include "model-core.h"
 
-static size_t model_add_sink (struct model *o, struct cell *cell, const char *name)
+static
+size_t model_add_sink (struct model *o, struct cell *cell, const char *name)
 {
 	size_t port;
 
