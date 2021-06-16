@@ -96,12 +96,12 @@ static int model_bind_cell (struct model *o, struct cell *cell)
 	return 1;
 }
 
-static int model_is_sink (struct model *o, size_t port)
+static int model_is_sink (struct model *o, struct port *port)
 {
-	if ((o->port[port].type & PORT_DRIVEN) != 0)
+	if ((port->type & PORT_DRIVEN) != 0)
 		return 1;
 
-	return error (&o->error, "no driver for %s", o->port[port].name);
+	return error (&o->error, "no driver for %s", port->name);
 }
 
 int model_connect (struct model *o)
@@ -117,7 +117,7 @@ int model_connect (struct model *o)
 			return 0;
 
 	for (i = 0; i < o->nports; ++i)
-		if (!model_is_sink (o, i))
+		if (!model_is_sink (o, o->port + i))
 			return 0;
 
 	for (i = 0; i < o->nmodels; ++i)
