@@ -17,7 +17,8 @@ struct tuple {
 	char **m;
 };
 
-int  tuple_init (struct tuple *o, size_t size, va_list ap);
-void tuple_fini (struct tuple *o);
+int  tuple_init   (struct tuple *o, size_t size, va_list ap);
+int  tuple_init_v (struct tuple *o, size_t size, const char *argv[]);
+void tuple_fini   (struct tuple *o);
 
 #endif  /* DAKOTA_MODEL_TUPLE_H */
