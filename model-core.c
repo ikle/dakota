@@ -178,7 +178,7 @@ int model_add_attr (struct model *o, const char *name, const char *value)
 	return ok ? 1 : error (&o->error, NULL);
 }
 
-struct port *model_get_port (struct model *o, const char *name)
+size_t model_get_port (struct model *o, const char *name)
 {
 	size_t i;
 
@@ -186,9 +186,9 @@ struct port *model_get_port (struct model *o, const char *name)
 
 	for (i = 0; i < o->nports; ++i)
 		if (strcmp (o->port[i].name, name) == 0)
-			return o->port + i;
+			return i;
 
-	return NULL;
+	return M_UNKNOWN;
 }
 
 struct model *model_get_model (struct model *o, const char *name)

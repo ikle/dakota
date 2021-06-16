@@ -39,7 +39,9 @@ void model_fini (struct model *o);
 int
 model_add_port (struct model *o, struct cell *cell, const char *name, int type);
 
-struct port  *model_get_port  (struct model *o, const char *name);
+#define M_UNKNOWN  ((size_t) -1)
+
+size_t model_get_port (struct model *o, const char *name);
 struct model *model_get_model (struct model *o, const char *name);
 
 #endif  /* DAKOTA_MODEL_H */

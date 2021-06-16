@@ -15,9 +15,9 @@
 
 static int model_add_sink (struct model *o, struct cell *cell, const char *name)
 {
-	struct port *p;
+	size_t port;
 
-	if ((p = model_get_port (o, name)) != NULL)
+	if ((port = model_get_port (o, name)) != M_UNKNOWN)
 		goto exists;
 
 	o->last = o;  /* add local port to this model */
@@ -27,22 +27,22 @@ static int model_add_sink (struct model *o, struct cell *cell, const char *name)
 
 	return 1;
 exists:
-	if ((p->type & PORT_DRIVEN) != 0)
+	if ((o->port[port].type & PORT_DRIVEN) != 0)
 		return error (&o->error, "multiple drivers for %s", name);
 
-	p->type |= PORT_DRIVEN;
+	o->port[port].type |= PORT_DRIVEN;
 	return 1;
 }
 
-static int model_has_sink (struct model *o, struct port *port, const char *name)
+static int model_has_sink (struct model *o, size_t port, const char *name)
 {
-	if (port == NULL)
+	if (port == M_UNKNOWN)
 		port = model_get_port (o, name);
 	else
 	if (name == NULL)
-		name = port->name;
+		name = o->port[port].name;
 
-	if (port != NULL && (port->type & PORT_DRIVEN) != 0)
+	if (port != M_UNKNOWN && (o->port[port].type & PORT_DRIVEN) != 0)
 		return 1;
 
 	return error (&o->error, "no driver for %s", name);
@@ -96,7 +96,7 @@ static int model_check_cell (struct model *o, struct cell *cell)
 		if (name == NULL)
 			return error (&o->error, NULL);
 
-		ok = model_has_sink (o, NULL, name);
+		ok = model_has_sink (o, M_UNKNOWN, name);
 		free (name);
 
 		if (!ok)
@@ -120,11 +120,11 @@ int model_connect (struct model *o)
 
 	for (i = 0; i < o->nports; ++i)
 		if (o->port[i].type == 0 &&  /* is output? */
-		    !model_has_sink (o, o->port + i, NULL))
+		    !model_has_sink (o, i, NULL))
 			return 0;
 
 	for (i = 0; i < o->nwires; ++i)
-		if (!model_has_sink (o, NULL, o->wire[i].source))
+		if (!model_has_sink (o, M_UNKNOWN, o->wire[i].source))
 			return 0;
 
 	for (i = 0; i < o->ncells; ++i)
