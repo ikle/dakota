@@ -84,7 +84,7 @@ static int model_bind_cell (struct model *o, struct cell *cell)
 		if (name == NULL)
 			return error (&o->error, NULL);
 
-		port = (m->port[i].type & PORT_DRIVEN) != 0 ?
+		port = (m->port[i].type & PORT_INPUT) != 0 ?
 			model_add_source (o, name):
 			model_add_sink (o, cell, name);
 		free (name);

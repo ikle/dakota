@@ -12,8 +12,9 @@
 #include <stddef.h>
 
 enum port_type {
-	PORT_DRIVEN	= 1,
-	PORT_LOCAL	= 2,
+	PORT_INPUT	= 1,
+	PORT_DRIVEN	= 2,
+	PORT_LOCAL	= 4,
 };
 
 struct port {
