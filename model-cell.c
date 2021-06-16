@@ -60,6 +60,23 @@ int cell_add_tuple_va (struct cell *o, int size, va_list ap)
 	return 1;
 }
 
+int cell_add_tuple_v (struct cell *o, int size, const char *argv[])
+{
+	const size_t ntuples = o->ntuples + 1;
+	struct tuple *p;
+
+	if ((p = array_resize (o->tuple, ntuples)) == NULL)
+		return 0;
+
+	o->tuple = p;
+
+	if (!tuple_init_v (o->tuple + o->ntuples, size, argv))
+		return 0;
+
+	o->ntuples = ntuples;
+	return 1;
+}
+
 int cell_add_tuple (struct cell *o, int size, ...)
 {
 	va_list ap;
