@@ -14,6 +14,7 @@
 struct wire {
 	char *sink;
 	char *source;
+	size_t to, from;  /* port index in current model */
 };
 
 int  wire_init (struct wire *o, const char *sink, const char *source);

@@ -9,7 +9,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "model-wire.h"
+#include "model-core.h"
 
 int wire_init (struct wire *o, const char *sink, const char *source)
 {
@@ -19,6 +19,8 @@ int wire_init (struct wire *o, const char *sink, const char *source)
 	if ((o->source = strdup (source)) == NULL)
 		goto no_source;
 
+	o->to   = M_UNKNOWN;
+	o->from = M_UNKNOWN;
 	return 1;
 no_source:
 	free (o->sink);
