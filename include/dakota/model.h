@@ -33,6 +33,7 @@ int model_add_model    (struct model *o, const char *name);
  */
 
 int model_add_tuple    (struct model *o, int size, ...);
+int model_add_tuple_v  (struct model *o, int size, const char *argv[]);
 int model_add_tuple_va (struct model *o, int size, va_list ap);
 int model_add_param    (struct model *o, const char *name, const char *value);
 int model_add_attr     (struct model *o, const char *name, const char *value);

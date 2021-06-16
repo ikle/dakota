@@ -151,6 +151,19 @@ int model_add_tuple_va (struct model *o, int size, va_list ap)
 	return ok ? 1 : error (&o->error, NULL);
 }
 
+int model_add_tuple_v (struct model *o, int size, const char *argv[])
+{
+	struct model *m = o->last;
+	int ok;
+
+	if (m->ncells == 0)
+		return error (&o->error, "no cell to add tuple");
+
+	ok = cell_add_tuple_v (m->cell + m->ncells - 1, size, argv);
+
+	return ok ? 1 : error (&o->error, NULL);
+}
+
 int model_add_tuple (struct model *o, int size, ...)
 {
 	va_list ap;
