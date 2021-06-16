@@ -23,17 +23,13 @@ size_t model_add_sink (struct model *o, struct cell *cell, const char *name)
 
 	o->last = o;  /* add local port to this model */
 
-	if (!model_add_port (o, cell, name, PORT_DRIVEN | PORT_LOCAL)) {
-		error (&o->error, NULL);
-		return M_UNKNOWN;
-	}
+	if (!model_add_port (o, cell, name, PORT_DRIVEN | PORT_LOCAL))
+		return error_s (&o->error, NULL);
 
 	return o->nports - 1;
 exists:
-	if ((o->port[port].type & PORT_DRIVEN) != 0) {
-		error (&o->error, "multiple drivers for %s", name);
-		return M_UNKNOWN;
-	}
+	if ((o->port[port].type & PORT_DRIVEN) != 0)
+		return error_s (&o->error, "multiple drivers for %s", name);
 
 	o->port[port].cell  = cell;
 	o->port[port].type |= PORT_DRIVEN;
@@ -49,10 +45,8 @@ static size_t model_add_source (struct model *o, const char *name)
 
 	o->last = o;  /* add local port to this model */
 
-	if (!model_add_port (o, NULL, name, PORT_LOCAL)) {
-		error (&o->error, NULL);
-		return M_UNKNOWN;
-	}
+	if (!model_add_port (o, NULL, name, PORT_LOCAL))
+		return error_s (&o->error, NULL);
 
 	return o->nports - 1;
 }
