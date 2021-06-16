@@ -13,7 +13,7 @@
 #include "model-connect.h"
 #include "model-core.h"
 
-static int model_add_sink (struct model *o, const char *name)
+static int model_add_sink (struct model *o, struct cell *cell, const char *name)
 {
 	struct port *p;
 
@@ -22,7 +22,7 @@ static int model_add_sink (struct model *o, const char *name)
 
 	o->last = o;  /* add local port to this model */
 
-	if (!model_add_port (o, NULL, name, PORT_DRIVEN | PORT_LOCAL))
+	if (!model_add_port (o, cell, name, PORT_DRIVEN | PORT_LOCAL))
 		return error (&o->error, NULL);
 
 	return 1;
@@ -67,7 +67,7 @@ static int model_bind_cell (struct model *o, struct cell *cell)
 		if (name == NULL)
 			return error (&o->error, NULL);
 
-		ok = model_add_sink (o, name);
+		ok = model_add_sink (o, cell, name);
 		free (name);
 
 		if (!ok)
@@ -115,7 +115,7 @@ int model_connect (struct model *o)
 			return 0;
 
 	for (i = 0; i < o->nwires; ++i)
-		if (!model_add_sink (o, o->wire[i].sink))
+		if (!model_add_sink (o, NULL, o->wire[i].sink))
 			return 0;
 
 	for (i = 0; i < o->nports; ++i)
