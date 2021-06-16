@@ -57,7 +57,7 @@ static size_t model_add_source (struct model *o, const char *name)
 	return o->nports - 1;
 }
 
-static int model_has_sink (struct model *o, size_t port)
+static int model_is_sink (struct model *o, size_t port)
 {
 	if ((o->port[port].type & PORT_DRIVEN) != 0)
 		return 1;
@@ -117,7 +117,7 @@ int model_connect (struct model *o)
 			return 0;
 
 	for (i = 0; i < o->nports; ++i)
-		if (!model_has_sink (o, i))
+		if (!model_is_sink (o, i))
 			return 0;
 
 	for (i = 0; i < o->nmodels; ++i)
