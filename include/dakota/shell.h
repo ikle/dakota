@@ -16,7 +16,7 @@ void shell_free (struct shell *o);
 
 struct shell_cmd {
 	size_t argc;
-	char **argv;
+	const char **argv;
 };
 
 const struct shell_cmd *shell_next (struct shell *o);
