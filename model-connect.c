@@ -35,6 +35,7 @@ exists:
 		return M_UNKNOWN;
 	}
 
+	o->port[port].cell  = cell;
 	o->port[port].type |= PORT_DRIVEN;
 	return port;
 }
