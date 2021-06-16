@@ -120,15 +120,15 @@ int model_connect (struct model *o)
 {
 	size_t i;
 
-	for (i = 0; i < o->ncells; ++i)
-		if (!model_bind_cell (o, o->cell + i))
-			return 0;
-
 	for (i = 0; i < o->nwires; ++i) {
 		o->wire[i].to = model_add_sink (o, NULL, o->wire[i].sink);
 		if (o->wire[i].to == M_UNKNOWN)
 			return 0;
 	}
+
+	for (i = 0; i < o->ncells; ++i)
+		if (!model_bind_cell (o, o->cell + i))
+			return 0;
 
 	for (i = 0; i < o->nports; ++i)
 		if (o->port[i].type == 0 &&  /* is output? */
