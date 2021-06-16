@@ -57,14 +57,6 @@ static size_t model_add_source (struct model *o, const char *name)
 	return o->nports - 1;
 }
 
-static int model_is_sink (struct model *o, size_t port)
-{
-	if ((o->port[port].type & PORT_DRIVEN) != 0)
-		return 1;
-
-	return error (&o->error, "no driver for %s", o->port[port].name);
-}
-
 static int model_bind_wire (struct model *o, struct wire *wire)
 {
 	wire->to   = model_add_sink (o, NULL, wire->sink);
@@ -102,6 +94,14 @@ static int model_bind_cell (struct model *o, struct cell *cell)
 	}
 
 	return 1;
+}
+
+static int model_is_sink (struct model *o, size_t port)
+{
+	if ((o->port[port].type & PORT_DRIVEN) != 0)
+		return 1;
+
+	return error (&o->error, "no driver for %s", o->port[port].name);
 }
 
 int model_connect (struct model *o)
