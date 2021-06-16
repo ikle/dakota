@@ -59,11 +59,10 @@ static int error_va (struct error *o, const char *fmt, va_list ap)
 int error (struct error *o, const char *fmt, ...)
 {
 	va_list ap;
-	int ok;
 
 	va_start(ap, fmt);
-	ok = error_va (o, fmt, ap);
+	error_va (o, fmt, ap);
 	va_end(ap);
 
-	return ok;
+	return 0;
 }
