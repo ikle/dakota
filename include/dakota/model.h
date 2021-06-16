@@ -9,6 +9,7 @@
 #ifndef DAKOTA_MODEL_H
 #define DAKOTA_MODEL_H  1
 
+#include <stdarg.h>
 #include <stddef.h>
 
 struct model *model_alloc (const char *name);
@@ -31,6 +32,7 @@ int model_add_model  (struct model *o, const char *name);
  *	+ cell nor U2 + wire U2.A U0.Y + wire U2.B U1.Y + wire Y U2.Y
  */
 
+int model_add_tuple_va (struct model *o, int size, va_list ap);
 int model_add_tuple  (struct model *o, int size, ...);
 int model_add_param  (struct model *o, const char *name, const char *value);
 int model_add_attr   (struct model *o, const char *name, const char *value);

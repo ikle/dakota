@@ -138,20 +138,29 @@ int model_add_model (struct model *o, const char *name)
 	return 1;
 }
 
-int model_add_tuple (struct model *o, int size, ...)
+int model_add_tuple_va (struct model *o, int size, va_list ap)
 {
 	struct model *m = o->last;
-	va_list ap;
 	int ok;
 
 	if (m->ncells == 0)
 		return error (&o->error, "no cell to add tuple");
 
-	va_start (ap, size);
 	ok = cell_add_tuple_va (m->cell + m->ncells - 1, size, ap);
-	va_end (ap);
 
 	return ok ? 1 : error (&o->error, NULL);
+}
+
+int model_add_tuple (struct model *o, int size, ...)
+{
+	va_list ap;
+	int ok;
+
+	va_start (ap, size);
+	ok = model_add_tuple_va (o, size, ap);
+	va_end (ap);
+
+	return ok;
 }
 
 int model_add_param (struct model *o, const char *name, const char *value)
