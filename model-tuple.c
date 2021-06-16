@@ -15,13 +15,16 @@
 
 int tuple_init (struct tuple *o, size_t size, va_list ap)
 {
+	const char *value;
+
 	int i;
 
 	if ((o->m = array_alloc (o->m, size)) == NULL)
 		return 0;
 
 	for (i = 0; i < size; ++i)
-		if ((o->m[i] = strdup (va_arg (ap, const char *))) == NULL)
+		if ((value = va_arg (ap, const char *)) == NULL ||
+		    (o->m[i] = strdup (value)) == NULL)
 			goto no_value;
 
 	return 1;
@@ -32,13 +35,15 @@ no_value:
 
 int tuple_init_v (struct tuple *o, size_t size, const char *argv[])
 {
+	const char *value;
 	int i;
 
 	if ((o->m = array_alloc (o->m, size)) == NULL)
 		return 0;
 
 	for (i = 0; i < size; ++i)
-		if ((o->m[i] = strdup (argv[i])) == NULL)
+		if ((value = argv[i]) == NULL ||
+		    (o->m[i] = strdup (value)) == NULL)
 			goto no_value;
 
 	return 1;
