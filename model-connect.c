@@ -135,9 +135,12 @@ int model_connect (struct model *o)
 		    !model_has_sink (o, i, NULL))
 			return 0;
 
-	for (i = 0; i < o->nwires; ++i)
-		if (!model_has_sink (o, M_UNKNOWN, o->wire[i].source))
+	for (i = 0; i < o->nwires; ++i) {
+		o->wire[i].from = model_get_sink (o, M_UNKNOWN,
+						  o->wire[i].source);
+		if (o->wire[i].from == M_UNKNOWN)
 			return 0;
+	}
 
 	for (i = 0; i < o->ncells; ++i)
 		if (!model_check_cell (o, o->cell + i))
