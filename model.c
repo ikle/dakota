@@ -38,11 +38,5 @@ void model_free (struct model *o)
 
 int model_commit (struct model *o)
 {
-	size_t i;
-
-	for (i = 0; i < o->nmodels; ++i)
-		if (!model_connect (o->model + i))
-			return 0;
-
 	return model_connect (o);
 }

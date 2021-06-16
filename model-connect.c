@@ -146,5 +146,9 @@ int model_connect (struct model *o)
 		if (!model_check_cell (o, o->cell + i))
 			return 0;
 
+	for (i = 0; i < o->nmodels; ++i)
+		if (!model_connect (o->model + i))
+			return 0;
+
 	return 1;
 }
