@@ -66,3 +66,25 @@ int error (struct error *o, const char *fmt, ...)
 
 	return 0;
 }
+
+size_t error_s (struct error *o, const char *fmt, ...)
+{
+	va_list ap;
+
+	va_start(ap, fmt);
+	error_va (o, fmt, ap);
+	va_end(ap);
+
+	return 0;
+}
+
+void *error_p (struct error *o, const char *fmt, ...)
+{
+	va_list ap;
+
+	va_start(ap, fmt);
+	error_va (o, fmt, ap);
+	va_end(ap);
+
+	return NULL;
+}

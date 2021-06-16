@@ -19,6 +19,8 @@ struct error {
 void error_init (struct error *o);
 void error_fini (struct error *o);
 
-int error (struct error *o, const char *fmt, ...);
+int    error   (struct error *o, const char *fmt, ...);
+size_t error_s (struct error *o, const char *fmt, ...);
+void  *error_p (struct error *o, const char *fmt, ...);
 
 #endif /* DAKOTA_ERROR_H */
