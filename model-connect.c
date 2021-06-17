@@ -38,7 +38,8 @@ exists:
 	return port;
 }
 
-static size_t model_add_source (struct model *o, const char *name)
+static
+size_t model_add_source (struct model *o, struct cell *cell, const char *name)
 {
 	size_t port;
 
@@ -47,7 +48,7 @@ static size_t model_add_source (struct model *o, const char *name)
 
 	o->last = o;  /* add local port to this model */
 
-	if (!model_add_port (o, NULL, name, PORT_LOCAL))
+	if (!model_add_port (o, cell, name, PORT_LOCAL))
 		return error_s (&o->error, NULL);
 
 	return o->nports - 1;
@@ -56,7 +57,7 @@ static size_t model_add_source (struct model *o, const char *name)
 static int model_bind_wire (struct model *o, struct wire *wire)
 {
 	wire->to   = model_add_sink (o, NULL, wire->sink);
-	wire->from = model_add_source (o, wire->source);
+	wire->from = model_add_source (o, NULL, wire->source);
 
 	return (wire->to != M_UNKNOWN && wire->from != M_UNKNOWN);
 }
@@ -127,7 +128,7 @@ static int model_bind_cell (struct model *o, struct cell *cell)
 			return error (&o->error, NULL);
 
 		port = (m->port[i].type & PORT_INPUT) != 0 ?
-			model_add_source (o, name):
+			model_add_source (o, cell, name):
 			model_add_sink (o, cell, name);
 		free (name);
 
