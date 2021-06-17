@@ -23,6 +23,9 @@ int main (int argc, char *argv[])
 	if (model_status (o) != NULL)
 		errx (1, "%s", model_status (o));
 
+	if (!model_write (o, "-"))
+		errx (1, "%s", model_status (o));
+
 	model_free (o);
 	return 0;
 }

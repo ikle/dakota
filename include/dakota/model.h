@@ -19,6 +19,7 @@ int model_error (struct model *o, const char *fmt, ...);
 const char *model_status (struct model *o);
 
 struct model *model_read (const char *path);
+int model_write (struct model *o, const char *path);
 
 int model_add_input    (struct model *o, const char *name);
 int model_add_output   (struct model *o, const char *name);
