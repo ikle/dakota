@@ -136,7 +136,7 @@ static int model_bind_cell (struct model *o, struct cell *cell)
 	}
 
 	for (i = 0, pos = 0; i < cell->nparams; ++i)
-		if (strcmp (cell->param[i].key, "bind") == 0) {
+		if (strcmp (cell->param[i].key, "dakota-bind") == 0) {
 			if (!model_bind_port (o, m, cell, pos, cell->param[i].value))
 				return 0;
 
