@@ -8,6 +8,8 @@
 
 #include <stdlib.h>
 
+#include <dakota/error.h>
+
 #include "model-connect.h"
 #include "model-core.h"
 
@@ -34,6 +36,17 @@ void model_free (struct model *o)
 
 	model_fini (o);
 	free (o);
+}
+
+int model_error (struct model *o, const char *fmt, ...)
+{
+	va_list ap;
+
+	va_start(ap, fmt);
+	error_va (&o->error, fmt, ap);
+	va_end(ap);
+
+	return 0;
 }
 
 const char *model_status (struct model *o)

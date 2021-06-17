@@ -15,6 +15,7 @@
 struct model *model_alloc (const char *name);
 void model_free (struct model *o);
 
+int model_error (struct model *o, const char *fmt, ...);
 const char *model_status (struct model *o);
 
 int model_add_input    (struct model *o, const char *name);
