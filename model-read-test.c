@@ -21,7 +21,7 @@ int main (int argc, char *argv[])
 		err (1, "cannot create model from %s", argv[1]);
 
 	if (model_status (o) != NULL)
-		warnx ("%s", model_status (o));
+		errx (1, "%s", model_status (o));
 
 	model_free (o);
 	return 0;
