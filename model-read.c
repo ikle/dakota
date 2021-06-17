@@ -176,6 +176,9 @@ struct model *model_read (const char *path)
 			break;
 	}
 
+	if (model_status (o) == NULL)
+		model_commit (o);
+
 	shell_free (sh);
 	return o;
 }
