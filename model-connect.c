@@ -56,7 +56,7 @@ size_t model_add_source (struct model *o, struct cell *cell, const char *name)
 
 static int model_bind_wire (struct model *o, struct wire *wire)
 {
-	wire->to   = model_add_sink (o, NULL, wire->sink);
+	wire->to   = model_add_sink   (o, NULL, wire->sink);
 	wire->from = model_add_source (o, NULL, wire->source);
 
 	return (wire->to != M_UNKNOWN && wire->from != M_UNKNOWN);
@@ -129,7 +129,7 @@ static int model_bind_cell (struct model *o, struct cell *cell)
 
 		port = (m->port[i].type & PORT_INPUT) != 0 ?
 			model_add_source (o, cell, name):
-			model_add_sink (o, cell, name);
+			model_add_sink   (o, cell, name);
 		free (name);
 
 		if (port == M_UNKNOWN)
