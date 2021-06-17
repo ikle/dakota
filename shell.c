@@ -55,6 +55,7 @@ void shell_free (struct shell *o)
 	if (o == NULL)
 		return;
 
+	fclose (o->in);
 	free (o->line);
 	free (o->cmd.argv);
 	free (o);
