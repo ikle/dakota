@@ -102,12 +102,12 @@ int model_connect (struct model *o)
 {
 	size_t i;
 
-	for (i = 0; i < o->nwires; ++i)
-		if (!model_bind_wire (o, o->wire + i))
-			return 0;
-
 	for (i = 0; i < o->ncells; ++i)
 		if (!model_bind_cell (o, o->cell + i))
+			return 0;
+
+	for (i = 0; i < o->nwires; ++i)
+		if (!model_bind_wire (o, o->wire + i))
 			return 0;
 
 	for (i = 0; i < o->nports; ++i)
