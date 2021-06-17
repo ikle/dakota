@@ -39,7 +39,7 @@ int error_va (struct error *o, const char *fmt, va_list ap)
 	char *p;
 
 	va_copy (aq, ap);
-	len = error_print_va (o, fmt, ap);
+	len = error_print_va (o, fmt, aq);
 	va_end (aq);
 
 	if (len < o->size)
