@@ -33,7 +33,9 @@ exists:
 	if ((o->port[port].type & PORT_DRIVEN) != 0)
 		return error_s (&o->error, "multiple drivers for %s", name);
 
-	o->port[port].cell  = cell;
+	if (o->port[port].cell == NULL)
+		o->port[port].cell = cell;
+
 	o->port[port].type |= PORT_DRIVEN;
 	return port;
 }
