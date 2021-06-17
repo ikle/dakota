@@ -23,10 +23,9 @@ static int model_write_params (struct model *o, FILE *out)
 		name  = o->param[i].key;
 		value = o->param[i].value;
 
-		if (value != NULL)
-			ok &= fprintf (out, ".param %s %s\n", name, value) > 0;
-		else
-			ok &= fprintf (out, ".param %s\n", name) > 0;
+		ok &= (value != NULL) ?
+		      fprintf (out, ".param %s %s\n", name, value) > 0 :
+		      fprintf (out, ".param %s\n",    name) > 0;
 	}
 
 	return ok;
@@ -119,7 +118,7 @@ static int model_write_cells (struct model *o, FILE *out)
 		name = o->cell[i].name;
 
 		ok &= fprintf (out, ".cell %s %s", type, name) > 0;
-		ok &= cell_write_binds (o->cell + i, out);
+		ok &= cell_write_binds  (o->cell + i, out);
 		ok &= cell_write_params (o->cell + i, out);
 	}
 
