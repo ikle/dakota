@@ -79,6 +79,7 @@ static int cell_write_binds (struct cell *o, FILE *out)
 		if (strcmp (o->param[i].key, "dakota-bind") == 0)
 			ok &= fprintf (out, " %s", o->param[i].value) > 0;
 
+	ok &= fprintf (out, "\n") > 0;
 	return ok;
 }
 
@@ -119,9 +120,7 @@ static int model_write_cells (struct model *o, FILE *out)
 
 		ok &= fprintf (out, ".cell %s %s", type, name) > 0;
 		ok &= cell_write_binds (o->cell + i, out);
-		ok &= fprintf (out, "\n") > 0;
 		ok &= cell_write_params (o->cell + i, out);
-		ok &= fprintf (out, "\n") > 0;
 	}
 
 	return ok;
@@ -153,9 +152,6 @@ static int model_write_wires (struct model *o, FILE *out)
 			ok &= fprintf (out, ".wire %s %s\n", sink, source) > 0;
 	}
 
-	if (o->nwires > 0)
-		ok &= fprintf (out, "\n") > 0;
-
 	return ok;
 }
 
@@ -168,9 +164,6 @@ static int model_write_one (struct model *o, FILE *out)
 	ok &= model_write_params  (o, out);
 	ok &= model_write_inputs  (o, out);
 	ok &= model_write_outputs (o, out);
-
-	ok &= fprintf (out, "\n") > 0;
-
 	ok &= model_write_cells   (o, out);
 	ok &= model_write_wires   (o, out);
 
