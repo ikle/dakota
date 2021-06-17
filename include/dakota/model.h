@@ -18,6 +18,8 @@ void model_free (struct model *o);
 int model_error (struct model *o, const char *fmt, ...);
 const char *model_status (struct model *o);
 
+struct model *model_read (const char *path);
+
 int model_add_input    (struct model *o, const char *name);
 int model_add_output   (struct model *o, const char *name);
 int model_add_wire     (struct model *o, const char *sink, const char *source);
