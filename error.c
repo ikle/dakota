@@ -7,7 +7,6 @@
  */
 
 #include <errno.h>
-#include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -33,7 +32,7 @@ static int error_print_va (struct error *o, const char *fmt, va_list ap)
 	return vsnprintf (o->reason, o->size, fmt, ap);
 }
 
-static int error_va (struct error *o, const char *fmt, va_list ap)
+int error_va (struct error *o, const char *fmt, va_list ap)
 {
 	va_list aq;
 	int len;
