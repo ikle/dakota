@@ -127,6 +127,11 @@ static int model_write_cells (struct model *o, FILE *out)
 	return ok;
 }
 
+static int port_is_internal (const struct port *p)
+{
+	return (p->type & PORT_LOCAL) != 0 && p->cell == NULL;
+}
+
 static int model_write_wires (struct model *o, FILE *out)
 {
 	const char *sink, *source;
@@ -143,7 +148,9 @@ static int model_write_wires (struct model *o, FILE *out)
 			return model_error (o, "broken wire from %s to %s",
 					    source, sink);
 
-		ok &= fprintf (out, ".wire %s %s\n", sink, source) > 0;
+		if (port_is_internal (o->port + to) &&
+		    port_is_internal (o->port + from))
+			ok &= fprintf (out, ".wire %s %s\n", sink, source) > 0;
 	}
 
 	if (o->nwires > 0)
