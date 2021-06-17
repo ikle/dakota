@@ -9,6 +9,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include <dakota/shell.h>
 #include <dakota/string.h>
@@ -34,6 +35,9 @@ struct shell *shell_alloc (const char *fmt, ...)
 	path = make_string_va (fmt, ap);
 	va_end(ap);
 
+	if (strcmp (path, "-") == 0)
+		o->in = stdin;
+	else
 	if ((o->in = fopen (path, "r")) == NULL)
 		goto no_file;
 
