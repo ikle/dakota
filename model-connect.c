@@ -6,7 +6,9 @@
  * SPDX-License-Identifier: BSD-2-Clause
  */
 
+#include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include <dakota/string.h>
 
@@ -59,10 +61,56 @@ static int model_bind_wire (struct model *o, struct wire *wire)
 	return (wire->to != M_UNKNOWN && wire->from != M_UNKNOWN);
 }
 
+static int model_bind_port (struct model *o, struct model *type,
+			    struct cell *cell, size_t i, const char *expr)
+{
+	char *p, *l, *r;
+	size_t port;
+	int ok;
+
+	if (i >= type->nports)
+		return model_error (o, "too many args for cell %s", cell->type);
+
+	if (sscanf (expr, "%m[^=]=%ms", &p, &r) == 2) {
+		l = make_string ("%s.%s", cell->name, p);
+		free (p);
+
+		if ((port = model_get_port (o, l)) == M_UNKNOWN)
+			goto no_port;
+	}
+	else {
+		l = make_string ("%s.%s", cell->name, type->port[i].name);
+		r = (char *) expr;
+		port = i;
+
+		if ((type->port[i].type & PORT_LOCAL) != 0)
+			goto no_port;
+	}
+
+	ok = (type->port[i].type & PORT_INPUT) != 0 ?
+	     model_add_wire (o, l, r):
+	     model_add_wire (o, r, l);
+
+	free (l);
+
+	if (r != expr)
+		free (r);
+
+	return ok;
+no_port:
+	model_error (o, "cannot find port %s for cell %s", l, cell->type);
+	free (l);
+
+	if (r != expr)
+		free (r);
+
+	return 0;
+}
+
 static int model_bind_cell (struct model *o, struct cell *cell)
 {
 	struct model *m;
-	size_t i;
+	size_t i, pos;
 	char *name;
 	size_t port;
 
@@ -86,6 +134,14 @@ static int model_bind_cell (struct model *o, struct cell *cell)
 		if (port == M_UNKNOWN)
 			return 0;
 	}
+
+	for (i = 0, pos = 0; i < cell->nparams; ++i)
+		if (strcmp (cell->param[i].key, "bind") == 0) {
+			if (!model_bind_port (o, m, cell, pos, cell->param[i].value))
+				return 0;
+
+			++pos;
+		}
 
 	return 1;
 }

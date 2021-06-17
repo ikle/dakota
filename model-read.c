@@ -44,31 +44,8 @@ static int on_outputs (struct model *o, const struct shell_cmd *cmd)
 	return 1;
 }
 
-static int cell_bind (struct model *o, const char *cell, size_t i, const char *to)
-{
-	char *sink, *port, *source;
-	char name[22];
-	int ok;
-
-	if (sscanf (to, "%m[^=]=%ms", &port, &source) == 2) {
-		sink = make_string ("%s.%s", cell, port);
-		free (port);
-		ok = model_add_wire (o, sink, source);
-		free (source);
-	}
-	else {
-		snprintf (name, sizeof (name), "P%zu", i);
-		sink = make_string ("%s.%s", cell, name);
-		ok = model_add_wire (o, sink, to);
-	}
-
-	free (sink);
-	return ok;
-}
-
 static int on_cell (struct model *o, const struct shell_cmd *cmd)
 {
-	const char *cell;
 	size_t i;
 
 	if (cmd->argc < 2)
@@ -77,10 +54,8 @@ static int on_cell (struct model *o, const struct shell_cmd *cmd)
 	if (!model_add_cell (o, cmd->argv[1], NULL))
 		return 0;
 
-	cell = model_get_cell (o);
-
 	for (i = 2; i < cmd->argc; ++i)
-		if (!cell_bind (o, cell, i - 2, cmd->argv[i]))
+		if (!model_add_param (o, "bind", cmd->argv[i]))
 			return 0;
 
 	return 1;
