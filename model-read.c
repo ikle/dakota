@@ -50,7 +50,7 @@ static int cell_bind (struct model *o, const char *cell, size_t i, const char *t
 	char name[22];
 	int ok;
 
-	if (sscanf (to, "%ms=%ms", &port, &source) == 2) {
+	if (sscanf (to, "%m[^=]=%ms", &port, &source) == 2) {
 		sink = make_string ("%s.%s", cell, port);
 		free (port);
 		ok = model_add_wire (o, sink, source);
