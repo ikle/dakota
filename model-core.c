@@ -197,7 +197,7 @@ int model_add_tuple (struct model *o, int size, ...)
 int model_add_param (struct model *o, const char *name, const char *value)
 {
 	struct model *m = o->last;
-	const size_t nparams = o->nparams + 1;
+	const size_t nparams = m->nparams + 1;
 	struct pair *p;
 
 	if (m->ncells > 0) {
@@ -207,15 +207,15 @@ int model_add_param (struct model *o, const char *name, const char *value)
 		return 1;
 	}
 
-	if ((p = array_resize (o->param, nparams)) == NULL)
+	if ((p = array_resize (m->param, nparams)) == NULL)
 		goto error;
 
-	o->param = p;
+	m->param = p;
 
-	if (!pair_init (o->param + o->nparams, name, value))
+	if (!pair_init (m->param + m->nparams, name, value))
 		goto error;
 
-	o->nparams = nparams;
+	m->nparams = nparams;
 	return 1;
 error:
 	return error (&o->error, NULL);
