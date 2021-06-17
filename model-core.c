@@ -116,7 +116,7 @@ int model_add_cell (struct model *o, const char *type, const char *name)
 	m->cell = p;
 
 	if (name == NULL) {
-		snprintf (alias, sizeof (alias), "U%zu", m->nports);
+		snprintf (alias, sizeof (alias), "U%zu", m->ncells);
 		name = alias;
 	}
 
