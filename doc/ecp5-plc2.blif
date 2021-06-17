@@ -142,3 +142,46 @@
 
 .end
 
+# Gates
+
+.model or
+.inputs A B
+.outputs Y
+.blackbox
+.end
+
+.model and
+.inputs A B
+.outputs Y
+.blackbox
+.end
+
+.model xor
+.inputs A B
+.outputs Y
+.blackbox
+.end
+
+.model nxor
+.inputs A B
+.outputs Y
+.blackbox
+.end
+
+.model mux41
+.inputs S0 S1 A B C D
+.outputs Y
+.blackbox
+.end
+
+.model mux21
+.inputs S A B
+.outputs Y
+.blackbox
+.end
+
+.model dff
+.inputs CE CLK R D
+.outputs Q
+.blackbox
+.end
