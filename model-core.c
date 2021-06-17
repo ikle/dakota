@@ -127,6 +127,16 @@ int model_add_cell (struct model *o, const char *type, const char *name)
 	return 1;
 }
 
+const char *model_get_cell (struct model *o)
+{
+	struct model *m = o->last;
+
+	if (m->ncells == 0)
+		return NULL;
+
+	return m->cell[m->ncells - 1].name;
+}
+
 int model_add_model (struct model *o, const char *name)
 {
 	const size_t nmodels = o->nmodels + 1;

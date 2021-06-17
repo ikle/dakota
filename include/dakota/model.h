@@ -24,6 +24,8 @@ int model_add_wire     (struct model *o, const char *sink, const char *source);
 int model_add_cell     (struct model *o, const char *type, const char *name);
 int model_add_model    (struct model *o, const char *name);
 
+const char *model_get_cell (struct model *o);
+
 /*
  * model aoi22
  *	+ inputs A, B, C, D
