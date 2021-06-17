@@ -70,6 +70,18 @@ static int model_write_outputs (struct model *o, FILE *out)
 	return ok;
 }
 
+static int cell_write_binds (struct cell *o, FILE *out)
+{
+	size_t i;
+	int ok = 1;
+
+	for (i = 0; i < o->nparams; ++i)
+		if (strcmp (o->param[i].key, "dakota-bind") == 0)
+			ok &= fprintf (out, " %s", o->param[i].value) > 0;
+
+	return ok;
+}
+
 static int cell_write_params (struct cell *o, FILE *out)
 {
 	const char *name, *value;
@@ -79,6 +91,9 @@ static int cell_write_params (struct cell *o, FILE *out)
 	for (i = 0; i < o->nparams; ++i) {
 		name  = o->param[i].key;
 		value = o->param[i].value;
+
+		if (strcmp (name, "dakota-bind") == 0)
+			continue;
 
 		if (strcmp (name, "cname") == 0)
 			ok &= fprintf (out, ".cname %s\n", value) > 0;
@@ -103,6 +118,7 @@ static int model_write_cells (struct model *o, FILE *out)
 		name = o->cell[i].name;
 
 		ok &= fprintf (out, ".cell %s %s", type, name) > 0;
+		ok &= cell_write_binds (o->cell + i, out);
 		ok &= fprintf (out, "\n") > 0;
 		ok &= cell_write_params (o->cell + i, out);
 		ok &= fprintf (out, "\n") > 0;
