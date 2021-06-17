@@ -37,14 +37,14 @@
 .cname K0
 .param INIT K0.INIT
 
-.subckt ecp_carry CI=FCI GI=H0 P=F0 S=S0 CO=CO
+.subckt ecp_carry CI=FCI G=H0 P=F0 S=S0 CO=CO
 .param INJECT1 INJECT1_0
 
 .subckt ecp_lut4  A=A1 B=B1 C=C1 D=D1 Y0=H1 F=L1
 .cname K1
 .param INIT K1.INIT
 
-.subckt ecp_carry CI=CO  GI=H1 P=F1 S=S1 CO=FCO
+.subckt ecp_carry CI=CO  G=H1 P=F1 S=S1 CO=FCO
 .param INJECT1 INJECT1_1
 
 # muxes
