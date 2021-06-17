@@ -49,11 +49,6 @@ void model_fini (struct model *o)
 	error_fini (&o->error);
 }
 
-const char *model_status (struct model *o)
-{
-	return o->error.reason;
-}
-
 int
 model_add_port (struct model *o, struct cell *cell, const char *name, int type)
 {

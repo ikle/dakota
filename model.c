@@ -36,6 +36,11 @@ void model_free (struct model *o)
 	free (o);
 }
 
+const char *model_status (struct model *o)
+{
+	return o->error.reason;
+}
+
 int model_commit (struct model *o)
 {
 	return model_connect (o);
