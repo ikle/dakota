@@ -67,7 +67,7 @@
 
 # via local routing
 
-.gate  mux21	S=MUX_F0 A=F0 B=OFX0 Y=DIO	# F5 → OFX0
+.gate  mux21	S=MUX_F0 A=F0 B=OFX0 Y=DI0	# F5 → OFX0
 .gate  mux21	S=MUX_F1 A=F1 B=OFX1 Y=DI1	# FX → OFX1
 
 # registers
