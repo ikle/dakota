@@ -67,21 +67,18 @@ static int on_cell (struct model *o, const struct shell_cmd *cmd)
 static int on_table (struct model *o, const struct shell_cmd *cmd)
 {
 	size_t i;
+	int ok = 1;
 
 	if (cmd->argc < 2)
 		return model_error (o, "empty table");
 
-	if (!model_add_cell (o, "table", NULL))
-		return 0;
-
-	if (!model_add_attr (o, "cell-kind", cmd->argv[0] + 1))
-		return 0;
+	ok &= model_add_cell (o, "table", NULL);
+	ok &= model_add_attr (o, "cell-kind", cmd->argv[0] + 1);
 
 	for (i = 1; i < cmd->argc; ++i)
-		if (!model_add_param (o, "dakota-bind", cmd->argv[i]))
-			return 0;
+		ok &= model_add_param (o, "dakota-bind", cmd->argv[i]);
 
-	return 1;
+	return ok;
 }
 
 static int on_tuple (struct model *o, const struct shell_cmd *cmd)
