@@ -15,8 +15,8 @@
 #include "model-connect.h"
 #include "model-core.h"
 
-static
-size_t model_add_sink (struct model *o, struct cell *cell, const char *name)
+static size_t model_add_sink (struct model *o, const char *name,
+			      struct cell *cell, size_t ref)
 {
 	size_t port;
 
@@ -25,7 +25,7 @@ size_t model_add_sink (struct model *o, struct cell *cell, const char *name)
 
 	o->last = o;  /* add local port to this model */
 
-	if (!model_add_port (o, name, PORT_DRIVEN | PORT_LOCAL, cell, 0))
+	if (!model_add_port (o, name, PORT_DRIVEN | PORT_LOCAL, cell, ref))
 		return error_s (&o->error, NULL);
 
 	return o->nports - 1;
@@ -33,15 +33,17 @@ exists:
 	if ((o->port[port].type & PORT_DRIVEN) != 0)
 		return error_s (&o->error, "multiple drivers for %s", name);
 
-	if (o->port[port].cell == NULL)
+	if (o->port[port].cell == NULL) {
 		o->port[port].cell = cell;
+		o->port[port].ref  = ref;
+	}
 
 	o->port[port].type |= PORT_DRIVEN;
 	return port;
 }
 
-static
-size_t model_add_source (struct model *o, struct cell *cell, const char *name)
+static size_t model_add_source (struct model *o, const char *name,
+				struct cell *cell, size_t ref)
 {
 	size_t port;
 
@@ -50,7 +52,7 @@ size_t model_add_source (struct model *o, struct cell *cell, const char *name)
 
 	o->last = o;  /* add local port to this model */
 
-	if (!model_add_port (o, name, PORT_LOCAL, cell, 0))
+	if (!model_add_port (o, name, PORT_LOCAL, cell, ref))
 		return error_s (&o->error, NULL);
 
 	return o->nports - 1;
@@ -62,14 +64,14 @@ static int model_bind_param (struct model *o, struct pair *param)
 	char *name;
 
 	if (strlen (param->value) == 1)
-		return model_add_sink (o, NULL, param->key) != M_UNKNOWN;
+		return model_add_sink (o, param->key, NULL, 0) != M_UNKNOWN;
 
 	for (i = 0; param->value[i] != '\0'; ++i) {
 		name = make_string ("%s[%zu]", param->key, i);
 		if (name == NULL)
 			return model_error (o, NULL);
 
-		port = model_add_sink (o, NULL, name);;
+		port = model_add_sink (o, name, NULL, 0);;
 		free (name);
 
 		if (port == M_UNKNOWN)
@@ -81,8 +83,8 @@ static int model_bind_param (struct model *o, struct pair *param)
 
 static int model_bind_wire (struct model *o, struct wire *wire)
 {
-	wire->to   = model_add_sink   (o, NULL, wire->sink);
-	wire->from = model_add_source (o, NULL, wire->source);
+	wire->to   = model_add_sink   (o, wire->sink,   NULL, 0);
+	wire->from = model_add_source (o, wire->source, NULL, 0);
 
 	return (wire->to != M_UNKNOWN && wire->from != M_UNKNOWN);
 }
@@ -97,11 +99,11 @@ static int model_bind_core (struct model *o, struct cell *cell)
 			name = cell->attr[i].value;
 
 			if (ni > 0) {
-				port = model_add_source (o, cell, name);
+				port = model_add_source (o, name, cell, 0);
 				--ni;
 			}
 			else if (no > 0) {
-				port = model_add_sink (o, cell, name);
+				port = model_add_sink (o, name, cell, 0);
 				--no;
 			}
 			else
@@ -187,8 +189,8 @@ int model_bind_cell (struct model *pool, struct model *o, struct cell *cell)
 			return error (&o->error, NULL);
 
 		port = (m->port[i].type & PORT_INPUT) != 0 ?
-			model_add_source (o, cell, name):
-			model_add_sink   (o, cell, name);
+			model_add_source (o, name, cell, 0):
+			model_add_sink   (o, name, cell, 0);
 		free (name);
 
 		if (port == M_UNKNOWN)
