@@ -127,46 +127,32 @@ no_ports:
 static int model_bind_port (struct model *o, const char *bind,
 			    struct model *type, struct cell *cell, size_t ref)
 {
-	char *p, *l, *r;
+	char *name;
 	size_t port;
-	int ok;
 
 	if (ref >= type->nports)
 		return model_error (o, "too many args for cell %s", cell->type);
 
-	if (sscanf (bind, "%m[^=]=%ms", &p, &r) == 2) {
-		l = make_string ("%s.%s", cell->name, p);
-		free (p);
+	if (sscanf (bind, "%m[^=]=", &name) == 1) {
+		if ((ref = model_get_port (type, name)) == M_UNKNOWN)
+			goto no_ref;
 
-		if ((port = model_get_port (o, l)) == M_UNKNOWN)
-			goto no_port;
-	}
-	else {
-		l = make_string ("%s.%s", cell->name, type->port[ref].name);
-		r = (char *) bind;
-		port = ref;
-
-		if ((type->port[ref].type & PORT_LOCAL) != 0)
-			goto no_port;
+		free (name);
+		bind = strchr (bind, '=') + 1;
 	}
 
-	ok = (type->port[ref].type & PORT_INPUT) != 0 ?
-	     model_add_wire (o, l, r):
-	     model_add_wire (o, r, l);
+	if ((type->port[ref].type & PORT_LOCAL) != 0)
+		return model_error (o, "cannot bind %s to local port of "
+				    "cell %s", bind, cell->type);
 
-	free (l);
+	port = (type->port[ref].type & PORT_INPUT) != 0 ?
+	       model_add_source (o, bind, cell, ref):
+	       model_add_sink   (o, bind, cell, ref);
 
-	if (r != bind)
-		free (r);
-
-	return ok;
-no_port:
-	model_error (o, "cannot find port %s for cell %s", l, cell->type);
-	free (l);
-
-	if (r != bind)
-		free (r);
-
+	return port != M_UNKNOWN;
+no_ref:
+	model_error (o, "cannot find port %s for cell %s", name, cell->type);
+	free (name);
 	return 0;
 }
 
@@ -174,8 +160,7 @@ static
 int model_bind_cell (struct model *pool, struct model *o, struct cell *cell)
 {
 	struct model *m;
-	size_t i, ref, port;
-	char *name;
+	size_t i, ref;
 	const char *bind;
 
 	if (strcmp (cell->type, "table") == 0 ||
@@ -185,23 +170,6 @@ int model_bind_cell (struct model *pool, struct model *o, struct cell *cell)
 	if ((m = model_get_model (pool, cell->type)) == NULL)
 		return error (&o->error, "cannot find model %s for cell %s",
 			      cell->type, cell->name);
-
-	for (i = 0; i < m->nports; ++i) {
-		if ((m->port[i].type & PORT_LOCAL) != 0)
-			continue;
-
-		name = make_string ("%s.%s", cell->name, m->port[i].name);
-		if (name == NULL)
-			return error (&o->error, NULL);
-
-		port = (m->port[i].type & PORT_INPUT) != 0 ?
-			model_add_source (o, name, cell, i):
-			model_add_sink   (o, name, cell, i);
-		free (name);
-
-		if (port == M_UNKNOWN)
-			return 0;
-	}
 
 	for (i = 0, ref = 0; i < cell->nattrs; ++i)
 		if (strcmp (cell->attr[i].key, "cell-bind") == 0) {
