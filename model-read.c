@@ -144,6 +144,7 @@ struct model *model_read (const char *path)
 		     PROC (outputs, outputs) :
 		     PROC (gate,    cell)    :
 		     PROC (subckt,  cell)    :
+		     PROC (names,   cell)    :
 		     PROC (model,   model)   :
 		     PROC (cname,   cname)   :
 		     PROC (param,   param)   :
