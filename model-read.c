@@ -64,6 +64,26 @@ static int on_cell (struct model *o, const struct shell_cmd *cmd)
 	return 1;
 }
 
+static int on_table (struct model *o, const struct shell_cmd *cmd)
+{
+	size_t i;
+
+	if (cmd->argc < 2)
+		return model_error (o, "empty table");
+
+	if (!model_add_cell (o, "table", NULL))
+		return 0;
+
+	if (!model_add_attr (o, "cell-kind", cmd->argv[0] + 1))
+		return 0;
+
+	for (i = 1; i < cmd->argc; ++i)
+		if (!model_add_param (o, "dakota-bind", cmd->argv[i]))
+			return 0;
+
+	return 1;
+}
+
 static int on_tuple (struct model *o, const struct shell_cmd *cmd)
 {
 	return model_add_tuple_v (o, cmd->argc, cmd->argv);
@@ -144,7 +164,7 @@ struct model *model_read (const char *path)
 		     PROC (outputs, outputs) :
 		     PROC (gate,    cell)    :
 		     PROC (subckt,  cell)    :
-		     PROC (names,   cell)    :
+		     PROC (names,   table)   :
 		     PROC (model,   model)   :
 		     PROC (cname,   cname)   :
 		     PROC (param,   param)   :
