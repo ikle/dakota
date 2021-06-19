@@ -20,6 +20,8 @@ struct error {
 void error_init (struct error *o);
 void error_fini (struct error *o);
 
+void error_move (struct error *o, struct error *from);
+
 int error_va (struct error *o, const char *fmt, va_list ap);
 
 int    error   (struct error *o, const char *fmt, ...);

@@ -24,6 +24,15 @@ void error_fini (struct error *o)
 	free (o->reason);
 }
 
+void error_move (struct error *o, struct error *from)
+{
+	error_fini (o);
+
+	*o = *from;
+
+	error_init (from);
+}
+
 static int error_print_va (struct error *o, const char *fmt, va_list ap)
 {
 	if (fmt == NULL)
