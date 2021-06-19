@@ -39,8 +39,8 @@ struct model {
 int  model_init (struct model *o, const char *name);
 void model_fini (struct model *o);
 
-int
-model_add_port (struct model *o, struct cell *cell, const char *name, int type);
+int model_add_port (struct model *o, const char *name, int type,
+		    struct cell *cell, size_t ref);
 
 #define M_UNKNOWN  ((size_t) -1)
 

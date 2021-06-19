@@ -50,8 +50,8 @@ void model_fini (struct model *o)
 	error_fini (&o->error);
 }
 
-int
-model_add_port (struct model *o, struct cell *cell, const char *name, int type)
+int model_add_port (struct model *o, const char *name, int type,
+		    struct cell *cell, size_t ref)
 {
 	struct model *m = o->last;
 	const size_t nports = m->nports + 1;
@@ -68,7 +68,7 @@ model_add_port (struct model *o, struct cell *cell, const char *name, int type)
 		name = alias;
 	}
 
-	if (!port_init (m->port + m->nports, cell, name, type))
+	if (!port_init (m->port + m->nports, name, type, cell, ref))
 		return error (&o->error, NULL);
 
 	m->nports = nports;
@@ -77,12 +77,12 @@ model_add_port (struct model *o, struct cell *cell, const char *name, int type)
 
 int model_add_input (struct model *o, const char *name)
 {
-	return model_add_port (o, NULL, name, PORT_INPUT | PORT_DRIVEN);
+	return model_add_port (o, name, PORT_INPUT | PORT_DRIVEN, NULL, 0);
 }
 
 int model_add_output (struct model *o, const char *name)
 {
-	return model_add_port (o, NULL, name, 0);
+	return model_add_port (o, name, 0, NULL, 0);
 }
 
 int model_add_wire (struct model *o, const char *sink, const char *source)

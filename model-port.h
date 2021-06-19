@@ -18,13 +18,15 @@ enum port_type {
 };
 
 struct port {
-	/* cell = NULL for model ports and local connection points */
-	struct cell *cell;
 	char *name;
 	int type;
+
+	struct cell *cell;	/* binded cell      */
+	size_t ref;		/* binded cell port */
 };
 
-int  port_init (struct port *o, struct cell *cell, const char *name, int type);
+int  port_init (struct port *o, const char *name, int type,
+		struct cell *cell, size_t ref);
 void port_fini (struct port *o);
 
 #endif  /* DAKOTA_MODEL_PORT_H */

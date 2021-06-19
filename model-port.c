@@ -11,13 +11,15 @@
 
 #include "model-port.h"
 
-int port_init (struct port *o, struct cell *cell, const char *name, int type)
+int port_init (struct port *o, const char *name, int type,
+	       struct cell *cell, size_t ref)
 {
 	if ((o->name = strdup (name)) == NULL)
 		return 0;
 
-	o->cell = cell;
 	o->type = type;
+	o->cell = cell;
+	o->ref  = ref;
 	return 1;
 }
 

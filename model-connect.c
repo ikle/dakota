@@ -25,7 +25,7 @@ size_t model_add_sink (struct model *o, struct cell *cell, const char *name)
 
 	o->last = o;  /* add local port to this model */
 
-	if (!model_add_port (o, cell, name, PORT_DRIVEN | PORT_LOCAL))
+	if (!model_add_port (o, name, PORT_DRIVEN | PORT_LOCAL, cell, 0))
 		return error_s (&o->error, NULL);
 
 	return o->nports - 1;
@@ -50,7 +50,7 @@ size_t model_add_source (struct model *o, struct cell *cell, const char *name)
 
 	o->last = o;  /* add local port to this model */
 
-	if (!model_add_port (o, cell, name, PORT_LOCAL))
+	if (!model_add_port (o, name, PORT_LOCAL, cell, 0))
 		return error_s (&o->error, NULL);
 
 	return o->nports - 1;
