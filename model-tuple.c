@@ -27,6 +27,7 @@ int tuple_init (struct tuple *o, size_t size, va_list ap)
 		    (o->m[i] = strdup (value)) == NULL)
 			goto no_value;
 
+	o->size = size;
 	return 1;
 no_value:
 	array_free (o->m, i, free);
@@ -46,6 +47,7 @@ int tuple_init_v (struct tuple *o, size_t size, const char *argv[])
 		    (o->m[i] = strdup (value)) == NULL)
 			goto no_value;
 
+	o->size = size;
 	return 1;
 no_value:
 	array_free (o->m, i, free);
