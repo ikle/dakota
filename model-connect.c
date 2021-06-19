@@ -91,19 +91,23 @@ static int model_bind_wire (struct model *o, struct wire *wire)
 
 static int model_bind_core (struct model *o, struct cell *cell)
 {
-	size_t ni, no, i, port;
+	size_t i, ref, ni, no, port;
 	const char *name;
 
-	for (i = 0, ni = cell->ni, no = cell->no; i < cell->nattrs; ++i)
+	for (
+		i = 0, ref = 0, ni = cell->ni, no = cell->no;
+		i < cell->nattrs;
+		++i
+	)
 		if (strcmp (cell->attr[i].key, "cell-bind") == 0) {
 			name = cell->attr[i].value;
 
 			if (ni > 0) {
-				port = model_add_source (o, name, cell, 0);
+				port = model_add_source (o, name, cell, ref);
 				--ni;
 			}
 			else if (no > 0) {
-				port = model_add_sink (o, name, cell, 0);
+				port = model_add_sink (o, name, cell, ref);
 				--no;
 			}
 			else
@@ -111,6 +115,8 @@ static int model_bind_core (struct model *o, struct cell *cell)
 
 			if (port == M_UNKNOWN)
 				return 0;
+
+			++ref;
 		}
 
 	return 1;
@@ -189,8 +195,8 @@ int model_bind_cell (struct model *pool, struct model *o, struct cell *cell)
 			return error (&o->error, NULL);
 
 		port = (m->port[i].type & PORT_INPUT) != 0 ?
-			model_add_source (o, name, cell, 0):
-			model_add_sink   (o, name, cell, 0);
+			model_add_source (o, name, cell, i):
+			model_add_sink   (o, name, cell, i);
 		free (name);
 
 		if (port == M_UNKNOWN)
