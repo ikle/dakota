@@ -87,6 +87,40 @@ static int model_bind_wire (struct model *o, struct wire *wire)
 	return (wire->to != M_UNKNOWN && wire->from != M_UNKNOWN);
 }
 
+static int model_bind_table (struct model *o, struct cell *cell)
+{
+	const char *sni = cell_get_attr (cell, "cell-inputs");
+	const char *sno = cell_get_attr (cell, "cell-outputs");
+	int ni = atoi (sni);
+	int no = atoi (sno);
+
+	size_t i, port;
+	const char *name;
+
+	for (i = 0; i < cell->nparams; ++i)
+		if (strcmp (cell->param[i].key, "dakota-bind") == 0) {
+			name = cell->param[i].value;
+
+			if (ni > 0) {
+				port = model_add_source (o, cell, name);
+				--ni;
+			}
+			else if (no > 0) {
+				port = model_add_sink (o, cell, name);
+				--no;
+			}
+			else
+				goto no_ports;
+
+			if (port == M_UNKNOWN)
+				return 0;
+		}
+
+	return 1;
+no_ports:
+	return model_error (o, "too many binds for table %s", cell->name);
+}
+
 static int model_bind_port (struct model *o, struct model *type,
 			    struct cell *cell, size_t i, const char *expr)
 {
@@ -140,6 +174,9 @@ int model_bind_cell (struct model *pool, struct model *o, struct cell *cell)
 	size_t i, pos;
 	char *name;
 	size_t port;
+
+	if (strcmp (cell->type, "table") == 0)
+		return model_bind_table (o, cell);
 
 	if ((m = model_get_model (pool, cell->type)) == NULL)
 		return error (&o->error, "cannot find model %s for cell %s",
