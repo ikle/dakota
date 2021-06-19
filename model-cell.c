@@ -21,6 +21,9 @@ int cell_init (struct cell *o, const char *type, const char *name)
 	if ((o->name = strdup (name)) == NULL)
 		goto no_name;
 
+	o->ni = 0;
+	o->no = 0;
+
 	o->ntuples = 0;
 	o->tuple   = NULL;
 	o->nparams = 0;
