@@ -129,6 +129,25 @@ static int cell_write_params (struct cell *o, FILE *out)
 	return ok;
 }
 
+static int cell_write_tuples (struct cell *o, FILE *out)
+{
+	size_t i, j;
+	const char *sep;
+	const struct tuple *tuple;
+	int ok = 1;
+
+	for (i = 0; i < o->ntuples; ++i) {
+		tuple = o->tuple + i;
+
+		for (j = 0, sep = ""; j < tuple->size; ++j, sep = "\t")
+			ok &= fprintf (out, "%s%s", sep, tuple->m[j]) > 0;
+
+		ok &= fprintf (out, "\n") > 0;
+	}
+
+	return ok;
+}
+
 static const char *cell_get_kind (struct cell *o)
 {
 	const char *name, *value;
@@ -157,6 +176,7 @@ static int model_write_cell (struct model *o, size_t i, FILE *out)
 	ok &= cell_write_binds  (o->cell + i, out);
 	ok &= cell_write_attrs  (o->cell + i, out);
 	ok &= cell_write_params (o->cell + i, out);
+	ok &= cell_write_tuples (o->cell + i, out);
 
 	return ok;
 }
