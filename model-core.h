@@ -19,6 +19,7 @@
 #include "model-cell.h"
 
 struct model {
+	struct model *parent;
 	char *name;
 	struct model *last;
 
@@ -36,7 +37,7 @@ struct model {
 	struct error  error;
 };
 
-int  model_init (struct model *o, const char *name);
+int  model_init (struct model *o, struct model *parent, const char *name);
 void model_fini (struct model *o);
 
 int model_add_port (struct model *o, const char *name, int type,

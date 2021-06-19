@@ -13,14 +13,14 @@
 #include "model-connect.h"
 #include "model-core.h"
 
-struct model *model_alloc (const char *name)
+struct model *model_alloc (struct model *parent, const char *name)
 {
 	struct model *o;
 
 	if ((o = malloc (sizeof (*o))) == NULL)
 		return NULL;
 
-	if (!model_init (o, name))
+	if (!model_init (o, parent, name))
 		goto no_init;
 
 	return o;

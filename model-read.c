@@ -158,7 +158,7 @@ static struct model *on_model_root (const struct shell_cmd *cmd)
 	const char *name = (cmd->argc < 2) ? "empty" : cmd->argv[1];
 	struct model *o;
 
-	if ((o = model_alloc (name)) == NULL)
+	if ((o = model_alloc (NULL, name)) == NULL)
 		return NULL;
 
 	if (cmd->argc < 2)

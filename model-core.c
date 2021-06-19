@@ -16,8 +16,10 @@
 
 #include "model-core.h"
 
-int model_init (struct model *o, const char *name)
+int model_init (struct model *o, struct model *parent, const char *name)
 {
+	o->parent = parent;
+
 	if ((o->name = strdup (name)) == NULL)
 		return 0;
 
@@ -147,7 +149,7 @@ int model_add_model (struct model *o, const char *name)
 
 	o->model = p;
 
-	if (!model_init (o->model + o->nmodels, name))
+	if (!model_init (o->model + o->nmodels, o, name))
 		return error (&o->error, NULL);
 
 	o->last = o->model + o->nmodels;

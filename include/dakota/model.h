@@ -12,7 +12,7 @@
 #include <stdarg.h>
 #include <stddef.h>
 
-struct model *model_alloc (const char *name);
+struct model *model_alloc (struct model *parent, const char *name);
 void model_free (struct model *o);
 
 int model_error (struct model *o, const char *fmt, ...);
