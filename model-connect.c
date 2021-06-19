@@ -159,7 +159,7 @@ no_ref:
 static
 int model_bind_cell (struct model *pool, struct model *o, struct cell *cell)
 {
-	struct model *m;
+	struct model *type;
 	size_t i, ref;
 	const char *bind;
 
@@ -167,7 +167,7 @@ int model_bind_cell (struct model *pool, struct model *o, struct cell *cell)
 	    strcmp (cell->type, "latch") == 0)
 		return model_bind_core (o, cell);
 
-	if ((m = model_get_model (pool, cell->type)) == NULL)
+	if ((type = model_get_model (pool, cell->type)) == NULL)
 		return error (&o->error, "cannot find model %s for cell %s",
 			      cell->type, cell->name);
 
@@ -175,7 +175,7 @@ int model_bind_cell (struct model *pool, struct model *o, struct cell *cell)
 		if (strcmp (cell->attr[i].key, "cell-bind") == 0) {
 			bind = cell->attr[i].value;
 
-			if (!model_bind_port (o, bind, m, cell, ref))
+			if (!model_bind_port (o, bind, type, cell, ref))
 				return 0;
 
 			++ref;
