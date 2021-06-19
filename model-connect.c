@@ -56,6 +56,11 @@ size_t model_add_source (struct model *o, struct cell *cell, const char *name)
 	return o->nports - 1;
 }
 
+static int model_bind_param (struct model *o, struct pair *param)
+{
+	return model_add_sink (o, NULL, param->key) != M_UNKNOWN;
+}
+
 static int model_bind_wire (struct model *o, struct wire *wire)
 {
 	wire->to   = model_add_sink   (o, NULL, wire->sink);
@@ -160,6 +165,10 @@ static int model_is_sink (struct model *o, struct port *port)
 int model_connect (struct model *o)
 {
 	size_t i;
+
+	for (i = 0; i < o->nparams; ++i)
+		if (!model_bind_param (o, o->param + i))
+			return 0;
 
 	for (i = 0; i < o->ncells; ++i)
 		if (!model_bind_cell (o, o->cell + i))
