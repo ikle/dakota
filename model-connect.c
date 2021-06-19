@@ -89,18 +89,10 @@ static int model_bind_wire (struct model *o, struct wire *wire)
 
 static int model_bind_core (struct model *o, struct cell *cell)
 {
-	const char *sni = cell_get_attr (cell, "cell-inputs");
-	const char *sno = cell_get_attr (cell, "cell-outputs");
 	size_t ni, no, i, port;
 	const char *name;
 
-	if (sni == NULL || sscanf (sni, "%zu", &ni) != 1)
-		ni = 0;
-
-	if (sno == NULL || sscanf (sno, "%zu", &no) != 1)
-		no = 0;
-
-	for (i = 0; i < cell->nattrs; ++i)
+	for (i = 0, ni = cell->ni, no = cell->no; i < cell->nattrs; ++i)
 		if (strcmp (cell->attr[i].key, "cell-bind") == 0) {
 			name = cell->attr[i].value;
 

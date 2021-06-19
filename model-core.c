@@ -224,10 +224,27 @@ error:
 int model_add_attr (struct model *o, const char *name, const char *value)
 {
 	struct model *m = o->last;
+	size_t n;
 	int ok;
 
 	if (m->ncells == 0)
 		return error (&o->error, "no cell to add attribute");
+
+	if (strcmp (name, "cell-inputs") == 0) {
+		if (sscanf (value, "%zu", &n) != 1)
+			return error (&o->error, "cell-inputs requres number");
+
+		m->cell[m->ncells - 1].ni = n;
+		return 1;
+	}
+
+	if (strcmp (name, "cell-outputs") == 0) {
+		if (sscanf (value, "%zu", &n) != 1)
+			return error (&o->error, "cell-outputs requres number");
+
+		m->cell[m->ncells - 1].no = n;
+		return 1;
+	}
 
 	ok = cell_add_attr (m->cell + m->ncells - 1, name, value);
 
