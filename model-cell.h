@@ -36,4 +36,6 @@ int cell_add_tuple    (struct cell *o, int size, ...);
 int cell_add_param    (struct cell *o, const char *name, const char *value);
 int cell_add_attr     (struct cell *o, const char *name, const char *value);
 
+const char *cell_get_attr (const struct cell *o, const char *name);
+
 #endif  /* DAKOTA_MODEL_CELL_H */

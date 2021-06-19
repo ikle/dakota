@@ -122,3 +122,14 @@ int cell_add_attr  (struct cell *o, const char *name, const char *value)
 	o->nattrs = nattrs;
 	return 1;
 }
+
+const char *cell_get_attr (const struct cell *o, const char *name)
+{
+	size_t i;
+
+	for (i = 0; i < o->nattrs; ++i)
+		if (strcmp (o->attr[i].key, name) == 0)
+			return o->attr[i].value;
+
+	return NULL;
+}
