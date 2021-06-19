@@ -153,37 +153,50 @@
 .model or
 .inputs A B
 .outputs Y
-.blackbox
+.names A B Y
+1- 1
+-1 1
 .end
 
 .model and
 .inputs A B
 .outputs Y
-.blackbox
+.names A B Y
+11 1
 .end
 
 .model xor
 .inputs A B
 .outputs Y
-.blackbox
+.names A B Y
+01 1
+10 1
 .end
 
 .model nxor
 .inputs A B
 .outputs Y
-.blackbox
+.names A B Y
+00 1
+11 1
 .end
 
 .model mux41
 .inputs S0 S1 A B C D
 .outputs Y
-.blackbox
+.names S0 S1 A B C D Y
+001--- 1
+10-1-- 1
+01--1- 1
+11---1 1
 .end
 
 .model mux21
 .inputs S A B
 .outputs Y
-.blackbox
+.names S A B Y
+01- 1
+1-1 1
 .end
 
 .model dff
