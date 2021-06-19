@@ -161,6 +161,33 @@ static const char *cell_get_kind (struct cell *o)
 	return "subckt";
 }
 
+static int model_write_latch (struct model *o, struct cell *c, FILE *out)
+{
+	const char *type = "re", *a[3];
+	size_t i, j;
+	int ok = 1;
+
+	for (i = 0, j = 0; i < c->nattrs && j < 3; ++i)
+		if (strcmp (c->attr[i].key, "cell-edge") == 0)
+			type = c->attr[i].value;
+		else
+		if (strcmp (c->attr[i].key, "cell-bind") == 0) {
+			a[j++] = c->attr[i].value;
+		}
+
+	if (j > 2)
+		ok &= fprintf (out, ".latch %s %s %s %s\n",
+			       a[1], a[2], type, a[0]) > 0;
+	else
+		ok &= fprintf (out, ".latch %s %s\n", a[0], a[1]) > 0;
+
+	ok &= cell_write_attrs  (c, out);
+	ok &= cell_write_params (c, out);
+	ok &= cell_write_tuples (c, out);
+
+	return ok;
+}
+
 static int model_write_cell (struct model *o, size_t i, FILE *out)
 {
 	const char *kind, *type;
@@ -168,6 +195,9 @@ static int model_write_cell (struct model *o, size_t i, FILE *out)
 
 	kind = cell_get_kind (o->cell + i);
 	type = o->cell[i].type;
+
+	if (strcmp (type, "latch") == 0)
+		return model_write_latch (o, o->cell + i, out);
 
 	if (strcmp (type, "table") == 0)
 		ok &= fprintf (out, ".%s", kind) > 0;
