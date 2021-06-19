@@ -126,21 +126,29 @@ static int cell_write_params (struct cell *o, FILE *out)
 	return ok;
 }
 
-static int model_write_cells (struct model *o, FILE *out)
+static int model_write_cell (struct model *o, size_t i, FILE *out)
 {
 	const char *type, *name;
+	int ok = 1;
+
+	type = o->cell[i].type;
+	name = o->cell[i].name;
+
+	ok &= fprintf (out, ".cell %s %s", type, name) > 0;
+	ok &= cell_write_binds  (o->cell + i, out);
+	ok &= cell_write_attrs  (o->cell + i, out);
+	ok &= cell_write_params (o->cell + i, out);
+
+	return ok;
+}
+
+static int model_write_cells (struct model *o, FILE *out)
+{
 	size_t i;
 	int ok = 1;
 
-	for (i = 0; i < o->ncells; ++i) {
-		type = o->cell[i].type;
-		name = o->cell[i].name;
-
-		ok &= fprintf (out, ".cell %s %s", type, name) > 0;
-		ok &= cell_write_binds  (o->cell + i, out);
-		ok &= cell_write_attrs  (o->cell + i, out);
-		ok &= cell_write_params (o->cell + i, out);
-	}
+	for (i = 0; i < o->ncells; ++i)
+		ok &= model_write_cell (o, i, out);
 
 	return ok;
 }
