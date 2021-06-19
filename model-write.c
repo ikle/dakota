@@ -172,7 +172,11 @@ static int model_write_cell (struct model *o, size_t i, FILE *out)
 	kind = cell_get_kind (o->cell + i);
 	type = o->cell[i].type;
 
-	ok &= fprintf (out, ".%s %s", kind, type) > 0;
+	if (strcmp (type, "table") == 0)
+		ok &= fprintf (out, ".%s", kind) > 0;
+	else
+		ok &= fprintf (out, ".%s %s", kind, type) > 0;
+
 	ok &= cell_write_binds  (o->cell + i, out);
 	ok &= cell_write_attrs  (o->cell + i, out);
 	ok &= cell_write_params (o->cell + i, out);
