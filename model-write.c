@@ -92,7 +92,7 @@ static int cell_write_attrs (struct cell *o, FILE *out)
 		name  = o->attr[i].key;
 		value = o->attr[i].value;
 
-		if (strcmp (name, "cell-kind") == 0)
+		if (strncmp (name, "cell-", 5) == 0)
 			continue;
 
 		if (strcmp (name, "cname") == 0)
