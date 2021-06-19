@@ -58,7 +58,7 @@ static int on_cell (struct model *o, const struct shell_cmd *cmd)
 		return 0;
 
 	for (i = 2; i < cmd->argc; ++i)
-		if (!model_add_param (o, "dakota-bind", cmd->argv[i]))
+		if (!model_add_attr (o, "cell-bind", cmd->argv[i]))
 			return 0;
 
 	return 1;
@@ -81,7 +81,7 @@ static int on_table (struct model *o, const struct shell_cmd *cmd)
 	ok &= model_add_attr (o, "cell-outputs", "1");
 
 	for (i = 1; i < cmd->argc; ++i)
-		ok &= model_add_param (o, "dakota-bind", cmd->argv[i]);
+		ok &= model_add_attr (o, "cell-bind", cmd->argv[i]);
 
 	return ok;
 }

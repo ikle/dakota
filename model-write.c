@@ -74,9 +74,9 @@ static int cell_write_binds (struct cell *o, FILE *out)
 	size_t i;
 	int ok = 1;
 
-	for (i = 0; i < o->nparams; ++i)
-		if (strcmp (o->param[i].key, "dakota-bind") == 0)
-			ok &= fprintf (out, " %s", o->param[i].value) > 0;
+	for (i = 0; i < o->nattrs; ++i)
+		if (strcmp (o->attr[i].key, "cell-bind") == 0)
+			ok &= fprintf (out, " %s", o->attr[i].value) > 0;
 
 	ok &= fprintf (out, "\n") > 0;
 	return ok;
@@ -116,9 +116,6 @@ static int cell_write_params (struct cell *o, FILE *out)
 	for (i = 0; i < o->nparams; ++i) {
 		name  = o->param[i].key;
 		value = o->param[i].value;
-
-		if (strcmp (name, "dakota-bind") == 0)
-			continue;
 
 		if (value != NULL)
 			ok &= fprintf (out, ".param %s %s\n", name, value) > 0;

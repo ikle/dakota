@@ -97,9 +97,9 @@ static int model_bind_table (struct model *o, struct cell *cell)
 	size_t i, port;
 	const char *name;
 
-	for (i = 0; i < cell->nparams; ++i)
-		if (strcmp (cell->param[i].key, "dakota-bind") == 0) {
-			name = cell->param[i].value;
+	for (i = 0; i < cell->nattrs; ++i)
+		if (strcmp (cell->attr[i].key, "cell-bind") == 0) {
+			name = cell->attr[i].value;
 
 			if (ni > 0) {
 				port = model_add_source (o, cell, name);
@@ -199,9 +199,9 @@ int model_bind_cell (struct model *pool, struct model *o, struct cell *cell)
 			return 0;
 	}
 
-	for (i = 0, pos = 0; i < cell->nparams; ++i)
-		if (strcmp (cell->param[i].key, "dakota-bind") == 0) {
-			if (!model_bind_port (o, m, cell, pos, cell->param[i].value))
+	for (i = 0, pos = 0; i < cell->nattrs; ++i)
+		if (strcmp (cell->attr[i].key, "cell-bind") == 0) {
+			if (!model_bind_port (o, m, cell, pos, cell->attr[i].value))
 				return 0;
 
 			++pos;
