@@ -178,7 +178,8 @@ int model_bind_cell (struct model *pool, struct model *o, struct cell *cell)
 	char *name;
 	size_t port;
 
-	if (strcmp (cell->type, "table") == 0)
+	if (strcmp (cell->type, "table") == 0 ||
+	    strcmp (cell->type, "latch") == 0)
 		return model_bind_core (o, cell);
 
 	if ((m = model_get_model (pool, cell->type)) == NULL)
