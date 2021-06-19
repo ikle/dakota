@@ -58,7 +58,25 @@ size_t model_add_source (struct model *o, struct cell *cell, const char *name)
 
 static int model_bind_param (struct model *o, struct pair *param)
 {
-	return model_add_sink (o, NULL, param->key) != M_UNKNOWN;
+	size_t i, port;
+	char *name;
+
+	if (strlen (param->value) == 1)
+		return model_add_sink (o, NULL, param->key) != M_UNKNOWN;
+
+	for (i = 0; param->value[i] != '\0'; ++i) {
+		name = make_string ("%s[%zu]", param->key, i);
+		if (name == NULL)
+			return model_error (o, NULL);
+
+		port = model_add_sink (o, NULL, name);;
+		free (name);
+
+		if (port == M_UNKNOWN)
+			return 0;
+	}
+
+	return 1;
 }
 
 static int model_bind_wire (struct model *o, struct wire *wire)
