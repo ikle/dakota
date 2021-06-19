@@ -202,5 +202,10 @@
 .model dff
 .inputs CE CLK R D
 .outputs Q
-.blackbox
+
+# bug here: reset should be asynchronous
+.names CE R D Q next
+0--1 1
+101- 1
+.latch next Q re CLK
 .end
