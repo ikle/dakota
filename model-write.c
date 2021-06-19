@@ -163,23 +163,31 @@ static const char *cell_get_kind (struct cell *o)
 
 static int model_write_latch (struct model *o, struct cell *c, FILE *out)
 {
-	const char *type = "re", *a[3];
+	const char *type = "re", *a[3], *init = NULL;
 	size_t i, j;
 	int ok = 1;
 
-	for (i = 0, j = 0; i < c->nattrs && j < 3; ++i)
+	for (i = 0, j = 0; i < c->nattrs; ++i)
 		if (strcmp (c->attr[i].key, "cell-edge") == 0)
 			type = c->attr[i].value;
 		else
-		if (strcmp (c->attr[i].key, "cell-bind") == 0) {
+		if (strcmp (c->attr[i].key, "cell-bind") == 0 && j < 3) {
 			a[j++] = c->attr[i].value;
 		}
+		else
+		if (strcmp (c->attr[i].key, "cell-init") == 0)
+			init = c->attr[i].value;
 
 	if (j > 2)
-		ok &= fprintf (out, ".latch %s %s %s %s\n",
+		ok &= fprintf (out, ".latch %s %s %s %s",
 			       a[1], a[2], type, a[0]) > 0;
 	else
-		ok &= fprintf (out, ".latch %s %s\n", a[0], a[1]) > 0;
+		ok &= fprintf (out, ".latch %s %s", a[0], a[1]) > 0;
+
+	if (init != NULL)
+		ok &= fprintf (out, " %s\n", init) > 0;
+	else
+		ok &= fprintf (out, "\n") > 0;
 
 	ok &= cell_write_attrs  (c, out);
 	ok &= cell_write_params (c, out);
