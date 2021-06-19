@@ -71,7 +71,7 @@ static int on_cname (struct model *o, const struct shell_cmd *cmd)
 	if (cmd->argc < 2)
 		return model_error (o, "no common name given");
 
-	return model_add_param (o, "cname", cmd->argv[1]);
+	return model_add_attr (o, "cname", cmd->argv[1]);
 }
 
 static int on_param (struct model *o, const struct shell_cmd *cmd)
