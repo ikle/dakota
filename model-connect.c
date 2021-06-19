@@ -121,7 +121,7 @@ static int model_bind_core (struct model *o, struct cell *cell)
 
 	return 1;
 no_ports:
-	return model_error (o, "too many binds for table %s", cell->name);
+	return model_error (o, "too many binds for core cell %s", cell->name);
 }
 
 static int model_bind_port (struct model *o, struct model *type,
