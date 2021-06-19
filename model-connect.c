@@ -127,13 +127,13 @@ no_ports:
 static int model_bind_port (struct model *o, const char *bind,
 			    struct model *type, struct cell *cell, size_t ref)
 {
-	char *name;
+	char *name, fake;
 	size_t port;
 
 	if (ref >= type->nports)
 		return model_error (o, "too many args for cell %s", cell->type);
 
-	if (sscanf (bind, "%m[^=]=", &name) == 1) {
+	if (sscanf (bind, "%m[^=]=%c", &name, &fake) == 2) {
 		if ((ref = model_get_port (type, name)) == M_UNKNOWN)
 			goto no_ref;
 
