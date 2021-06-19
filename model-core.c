@@ -270,11 +270,14 @@ struct model *model_get_model (struct model *o, const char *name)
 {
 	size_t i;
 
+	if (o == NULL)
+		return NULL;
+
 	/* ToDo: create hash table to map model name to model index */
 
 	for (i = 0; i < o->nmodels; ++i)
 		if (strcmp (o->model[i].name, name) == 0)
 			return o->model + i;
 
-	return NULL;
+	return model_get_model (o->parent, name);
 }
