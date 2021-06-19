@@ -69,7 +69,7 @@
 
 # registers
 
-.gate  or	A=CEMUX[0] B=CE  Y=GEG
+.gate  or	A=CEMUX[0] B=CE  Y=CEG
 .gate  xor	A=CEMUX[1] B=CEG Y=CEI
 
 .gate  xor	A=CLKMUX B=CLK  Y=CLKI
