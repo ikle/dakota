@@ -111,7 +111,7 @@ static int on_latch (struct model *o, const struct shell_cmd *cmd)
 	ok &= model_add_attr (o, "cell-bind", cmd->argv[2]);
 
 	if (cmd->argc >= 6)
-		ok &= model_add_param (o, "init", cmd->argv[5]);
+		ok &= model_add_attr (o, "cell-init", cmd->argv[5]);
 
 	return ok;
 }
