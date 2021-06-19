@@ -91,11 +91,14 @@ static int model_bind_table (struct model *o, struct cell *cell)
 {
 	const char *sni = cell_get_attr (cell, "cell-inputs");
 	const char *sno = cell_get_attr (cell, "cell-outputs");
-	int ni = atoi (sni);
-	int no = atoi (sno);
-
-	size_t i, port;
+	size_t ni, no, i, port;
 	const char *name;
+
+	if (sni == NULL || sscanf (sni, "%zu", &ni) != 1)
+		ni = 0;
+
+	if (sno == NULL || sscanf (sno, "%zu", &no) != 1)
+		no = 0;
 
 	for (i = 0; i < cell->nattrs; ++i)
 		if (strcmp (cell->attr[i].key, "cell-bind") == 0) {
