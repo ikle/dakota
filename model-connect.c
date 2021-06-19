@@ -124,17 +124,17 @@ no_ports:
 	return model_error (o, "too many binds for core cell %s", cell->name);
 }
 
-static int model_bind_port (struct model *o, struct model *type,
-			    struct cell *cell, size_t i, const char *expr)
+static int model_bind_port (struct model *o, const char *bind,
+			    struct model *type, struct cell *cell, size_t ref)
 {
 	char *p, *l, *r;
 	size_t port;
 	int ok;
 
-	if (i >= type->nports)
+	if (ref >= type->nports)
 		return model_error (o, "too many args for cell %s", cell->type);
 
-	if (sscanf (expr, "%m[^=]=%ms", &p, &r) == 2) {
+	if (sscanf (bind, "%m[^=]=%ms", &p, &r) == 2) {
 		l = make_string ("%s.%s", cell->name, p);
 		free (p);
 
@@ -142,21 +142,21 @@ static int model_bind_port (struct model *o, struct model *type,
 			goto no_port;
 	}
 	else {
-		l = make_string ("%s.%s", cell->name, type->port[i].name);
-		r = (char *) expr;
-		port = i;
+		l = make_string ("%s.%s", cell->name, type->port[ref].name);
+		r = (char *) bind;
+		port = ref;
 
-		if ((type->port[i].type & PORT_LOCAL) != 0)
+		if ((type->port[ref].type & PORT_LOCAL) != 0)
 			goto no_port;
 	}
 
-	ok = (type->port[i].type & PORT_INPUT) != 0 ?
+	ok = (type->port[ref].type & PORT_INPUT) != 0 ?
 	     model_add_wire (o, l, r):
 	     model_add_wire (o, r, l);
 
 	free (l);
 
-	if (r != expr)
+	if (r != bind)
 		free (r);
 
 	return ok;
@@ -164,7 +164,7 @@ no_port:
 	model_error (o, "cannot find port %s for cell %s", l, cell->type);
 	free (l);
 
-	if (r != expr)
+	if (r != bind)
 		free (r);
 
 	return 0;
@@ -174,9 +174,9 @@ static
 int model_bind_cell (struct model *pool, struct model *o, struct cell *cell)
 {
 	struct model *m;
-	size_t i, pos;
+	size_t i, ref, port;
 	char *name;
-	size_t port;
+	const char *bind;
 
 	if (strcmp (cell->type, "table") == 0 ||
 	    strcmp (cell->type, "latch") == 0)
@@ -203,12 +203,14 @@ int model_bind_cell (struct model *pool, struct model *o, struct cell *cell)
 			return 0;
 	}
 
-	for (i = 0, pos = 0; i < cell->nattrs; ++i)
+	for (i = 0, ref = 0; i < cell->nattrs; ++i)
 		if (strcmp (cell->attr[i].key, "cell-bind") == 0) {
-			if (!model_bind_port (o, m, cell, pos, cell->attr[i].value))
+			bind = cell->attr[i].value;
+
+			if (!model_bind_port (o, bind, m, cell, ref))
 				return 0;
 
-			++pos;
+			++ref;
 		}
 
 	return 1;
