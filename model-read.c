@@ -54,6 +54,9 @@ static int on_cell (struct model *o, const struct shell_cmd *cmd)
 	if (!model_add_cell (o, cmd->argv[1], NULL))
 		return 0;
 
+	if (!model_add_attr (o, "cell-kind", cmd->argv[0] + 1))
+		return 0;
+
 	for (i = 2; i < cmd->argc; ++i)
 		if (!model_add_param (o, "dakota-bind", cmd->argv[i]))
 			return 0;
