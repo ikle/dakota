@@ -156,8 +156,7 @@ no_ref:
 	return 0;
 }
 
-static
-int model_bind_cell (struct model *pool, struct model *o, struct cell *cell)
+static int model_bind_cell (struct model *o, struct cell *cell)
 {
 	struct model *type;
 	size_t i, ref;
@@ -167,7 +166,7 @@ int model_bind_cell (struct model *pool, struct model *o, struct cell *cell)
 	    strcmp (cell->type, "latch") == 0)
 		return model_bind_core (o, cell);
 
-	if ((type = model_get_model (pool, cell->type)) == NULL)
+	if ((type = model_get_model (o, cell->type)) == NULL)
 		return error (&o->error, "cannot find model %s for cell %s",
 			      cell->type, cell->name);
 
@@ -192,7 +191,7 @@ static int model_is_sink (struct model *o, struct port *port)
 	return error (&o->error, "no driver for %s", port->name);
 }
 
-int model_connect_one (struct model *pool, struct model *o)
+int model_connect (struct model *o)
 {
 	size_t i;
 
@@ -201,7 +200,7 @@ int model_connect_one (struct model *pool, struct model *o)
 			return 0;
 
 	for (i = 0; i < o->ncells; ++i)
-		if (!model_bind_cell (pool, o, o->cell + i))
+		if (!model_bind_cell (o, o->cell + i))
 			return 0;
 
 	for (i = 0; i < o->nwires; ++i)
@@ -213,15 +212,10 @@ int model_connect_one (struct model *pool, struct model *o)
 			return 0;
 
 	for (i = 0; i < o->nmodels; ++i)
-		if (!model_connect_one (pool, o->model + i)) {
+		if (!model_connect (o->model + i)) {
 			error_move (&o->error, &o->model[i].error);
 			return 0;
 		}
 
 	return 1;
-}
-
-int model_connect (struct model *o)
-{
-	return model_connect_one (o, o);
 }
