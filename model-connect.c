@@ -202,7 +202,8 @@ int model_connect (struct model *o)
 
 	for (i = 0; i < o->nmodels; ++i)
 		if (!model_connect (o->model + i))
-			return 0;
+			return model_error (o, "%s",
+					    model_status (o->model + i));
 
 	return 1;
 }
