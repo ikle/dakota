@@ -87,7 +87,7 @@ static int model_bind_wire (struct model *o, struct wire *wire)
 	return (wire->to != M_UNKNOWN && wire->from != M_UNKNOWN);
 }
 
-static int model_bind_table (struct model *o, struct cell *cell)
+static int model_bind_core (struct model *o, struct cell *cell)
 {
 	const char *sni = cell_get_attr (cell, "cell-inputs");
 	const char *sno = cell_get_attr (cell, "cell-outputs");
@@ -179,7 +179,7 @@ int model_bind_cell (struct model *pool, struct model *o, struct cell *cell)
 	size_t port;
 
 	if (strcmp (cell->type, "table") == 0)
-		return model_bind_table (o, cell);
+		return model_bind_core (o, cell);
 
 	if ((m = model_get_model (pool, cell->type)) == NULL)
 		return error (&o->error, "cannot find model %s for cell %s",
