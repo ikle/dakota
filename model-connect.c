@@ -239,9 +239,10 @@ int model_connect_one (struct model *pool, struct model *o)
 			return 0;
 
 	for (i = 0; i < o->nmodels; ++i)
-		if (!model_connect_one (pool, o->model + i))
-			return model_error (o, "%s",
-					    model_status (o->model + i));
+		if (!model_connect_one (pool, o->model + i)) {
+			error_move (&o->error, &o->model[i].error);
+			return 0;
+		}
 
 	return 1;
 }
