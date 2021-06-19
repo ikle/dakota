@@ -49,8 +49,11 @@
 
 # muxes
 
-.gate  mux41	S0=MODE[0] S1=MODE[2] A=L0 B=S0 C= D= Y=F0  # F{0,2,4,6}_SLICE
-.gate  mux41	S0=MODE[1] S1=MODE[2] A=L1 B=S0 C= D= Y=F1  # F{1,3,5,7}_SLICE
+#.gate  mux41	S0=MODE[0] S1=MODE[2] A=L0 B=S0 C= D= Y=F0  # F{0,2,4,6}_SLICE
+#.gate  mux41	S0=MODE[1] S1=MODE[2] A=L1 B=S0 C= D= Y=F1  # F{1,3,5,7}_SLICE
+
+.gate  mux21	S=MODE[0] A=L0 B=S0 Y=F0  # F{0,2,4,6}_SLICE
+.gate  mux21	S=MODE[1] A=L1 B=S0 Y=F1  # F{1,3,5,7}_SLICE
 
 # LUT5, LUT6, LUT7
 
