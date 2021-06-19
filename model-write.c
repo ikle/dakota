@@ -82,6 +82,28 @@ static int cell_write_binds (struct cell *o, FILE *out)
 	return ok;
 }
 
+static int cell_write_attrs (struct cell *o, FILE *out)
+{
+	const char *name, *value;
+	size_t i;
+	int ok = 1;
+
+	for (i = 0; i < o->nattrs; ++i) {
+		name  = o->attr[i].key;
+		value = o->attr[i].value;
+
+		if (strcmp (name, "cname") == 0)
+			ok &= fprintf (out, ".cname %s\n", value) > 0;
+		else
+		if (value != NULL)
+			ok &= fprintf (out, ".attr %s %s\n", name, value) > 0;
+		else
+			ok &= fprintf (out, ".attr %s\n", name) > 0;
+	}
+
+	return ok;
+}
+
 static int cell_write_params (struct cell *o, FILE *out)
 {
 	const char *name, *value;
@@ -95,9 +117,6 @@ static int cell_write_params (struct cell *o, FILE *out)
 		if (strcmp (name, "dakota-bind") == 0)
 			continue;
 
-		if (strcmp (name, "cname") == 0)
-			ok &= fprintf (out, ".cname %s\n", value) > 0;
-		else
 		if (value != NULL)
 			ok &= fprintf (out, ".param %s %s\n", name, value) > 0;
 		else
@@ -119,6 +138,7 @@ static int model_write_cells (struct model *o, FILE *out)
 
 		ok &= fprintf (out, ".cell %s %s", type, name) > 0;
 		ok &= cell_write_binds  (o->cell + i, out);
+		ok &= cell_write_attrs  (o->cell + i, out);
 		ok &= cell_write_params (o->cell + i, out);
 	}
 
