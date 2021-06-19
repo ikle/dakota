@@ -38,7 +38,7 @@ static int model_write_inputs (struct model *o, FILE *out)
 	int ok = 1;
 
 	for (i = 0, prefix = ".inputs "; i < o->nports; ++i)
-		if ((o->port[i].type & PORT_INPUT) != 0) {
+		if ((o->port[i].type & (PORT_INPUT | PORT_LOCAL)) == PORT_INPUT) {
 			name = o->port[i].name;
 			ok &= fprintf (out, "%s%s", prefix, name) > 0;
 			prefix = " ";
