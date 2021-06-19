@@ -105,7 +105,7 @@
 
 # select data
 
-.gate  mux	S=SD A=M B=D Y=DI
+.gate  mux21	S=SD A=M B=D Y=DI
 
 .gate  and	A=LSRMODE B=M Y=LD
 .gate  mux21	S=SSR A=DI B=LD Y=V
