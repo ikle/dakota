@@ -92,6 +92,9 @@ static int cell_write_attrs (struct cell *o, FILE *out)
 		name  = o->attr[i].key;
 		value = o->attr[i].value;
 
+		if (strcmp (name, "cell-kind") == 0)
+			continue;
+
 		if (strcmp (name, "cname") == 0)
 			ok &= fprintf (out, ".cname %s\n", value) > 0;
 		else
@@ -126,15 +129,31 @@ static int cell_write_params (struct cell *o, FILE *out)
 	return ok;
 }
 
+static const char *cell_get_kind (struct cell *o)
+{
+	const char *name, *value;
+	size_t i;
+
+	for (i = 0; i < o->nattrs; ++i) {
+		name  = o->attr[i].key;
+		value = o->attr[i].value;
+
+		if (strcmp (name, "cell-kind") == 0)
+			return value;
+	}
+
+	return "subckt";
+}
+
 static int model_write_cell (struct model *o, size_t i, FILE *out)
 {
-	const char *type, *name;
+	const char *kind, *type;
 	int ok = 1;
 
+	kind = cell_get_kind (o->cell + i);
 	type = o->cell[i].type;
-	name = o->cell[i].name;
 
-	ok &= fprintf (out, ".cell %s %s", type, name) > 0;
+	ok &= fprintf (out, ".%s %s", kind, type) > 0;
 	ok &= cell_write_binds  (o->cell + i, out);
 	ok &= cell_write_attrs  (o->cell + i, out);
 	ok &= cell_write_params (o->cell + i, out);
