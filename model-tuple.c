@@ -54,7 +54,12 @@ no_value:
 	return 0;
 }
 
+static void tuple_entry_fini (char **entry)
+{
+	free (*entry);
+}
+
 void tuple_fini (struct tuple *o)
 {
-	array_free (o->m, o->size, free);
+	array_free (o->m, o->size, tuple_entry_fini);
 }
