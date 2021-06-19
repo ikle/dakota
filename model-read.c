@@ -86,6 +86,36 @@ static int on_table (struct model *o, const struct shell_cmd *cmd)
 	return ok;
 }
 
+static int on_latch (struct model *o, const struct shell_cmd *cmd)
+{
+	int ok = 1;
+
+	if (cmd->argc < 3)
+		return model_error (o, "no latch input and output given");
+
+	ok &= model_add_cell (o, "latch", NULL);
+	ok &= model_add_attr (o, "cell-kind", "latch");
+
+	if (cmd->argc >= 4)
+		ok &= model_add_attr (o, "cell-edge", cmd->argv[3]);
+
+	if (cmd->argc >= 5 && strcmp (cmd->argv[4], "NIL") != 0) {
+		ok &= model_add_attr (o, "cell-inputs",  "2");
+		ok &= model_add_attr (o, "cell-bind", cmd->argv[4]);
+	}
+	else
+		ok &= model_add_attr (o, "cell-inputs",  "1");
+
+	ok &= model_add_attr (o, "cell-bind", cmd->argv[1]);
+	ok &= model_add_attr (o, "cell-outputs", "1");
+	ok &= model_add_attr (o, "cell-bind", cmd->argv[2]);
+
+	if (cmd->argc >= 6)
+		ok &= model_add_param (o, "init", cmd->argv[5]);
+
+	return ok;
+}
+
 static int on_tuple (struct model *o, const struct shell_cmd *cmd)
 {
 	return model_add_tuple_v (o, cmd->argc, cmd->argv);
@@ -167,6 +197,7 @@ struct model *model_read (const char *path)
 		     PROC (gate,    cell)    :
 		     PROC (subckt,  cell)    :
 		     PROC (names,   table)   :
+		     PROC (latch,   latch)   :
 		     PROC (model,   model)   :
 		     PROC (cname,   cname)   :
 		     PROC (param,   param)   :
