@@ -72,11 +72,18 @@ static int model_write_outputs (struct model *o, FILE *out)
 static int cell_write_binds (struct cell *o, FILE *out)
 {
 	size_t i;
+	const char *port, *value;
 	int ok = 1;
 
-	for (i = 0; i < o->nattrs; ++i)
-		if (strcmp (o->attr[i].key, "cell-bind") == 0)
-			ok &= fprintf (out, " %s", o->attr[i].value) > 0;
+	for (i = 0; i < o->nbinds; ++i) {
+		port  = o->bind[i].key;
+		value = o->bind[i].value;
+
+		if (port == NULL)
+			ok &= fprintf (out, " %s", value) > 0;
+		else
+			ok &= fprintf (out, " %s=%s", port, value) > 0;
+	}
 
 	ok &= fprintf (out, "\n") > 0;
 	return ok;
@@ -163,26 +170,24 @@ static const char *cell_get_kind (struct cell *o)
 
 static int model_write_latch (struct model *o, struct cell *c, FILE *out)
 {
-	const char *type = "re", *a[3], *init = NULL;
-	size_t i, j;
+	const char *type = "re", *init = NULL;
+	size_t i;
 	int ok = 1;
 
-	for (i = 0, j = 0; i < c->nattrs; ++i)
+	for (i = 0; i < c->nattrs; ++i)
 		if (strcmp (c->attr[i].key, "cell-edge") == 0)
 			type = c->attr[i].value;
-		else
-		if (strcmp (c->attr[i].key, "cell-bind") == 0 && j < 3) {
-			a[j++] = c->attr[i].value;
-		}
 		else
 		if (strcmp (c->attr[i].key, "cell-init") == 0)
 			init = c->attr[i].value;
 
-	if (j > 2)
+	if (c->nbinds > 2)
 		ok &= fprintf (out, ".latch %s %s %s %s",
-			       a[1], a[2], type, a[0]) > 0;
+			       c->bind[1].value, c->bind[2].value,
+			       type, c->bind[0].value) > 0;
 	else
-		ok &= fprintf (out, ".latch %s %s", a[0], a[1]) > 0;
+		ok &= fprintf (out, ".latch %s %s",
+			       c->bind[0].value, c->bind[1].value) > 0;
 
 	if (init != NULL)
 		ok &= fprintf (out, " %s\n", init) > 0;
