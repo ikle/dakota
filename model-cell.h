@@ -19,8 +19,6 @@ struct cell {
 	char *type;
 	char *name;
 
-	size_t ni, no;		/* hint for number of inputs and outputs */
-
 	size_t        nbinds;
 	struct pair  *bind;
 	size_t        ntuples;
