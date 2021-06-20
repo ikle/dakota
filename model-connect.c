@@ -91,55 +91,44 @@ static int model_bind_wire (struct model *o, struct wire *wire)
 
 static int model_bind_core (struct model *o, struct cell *cell)
 {
-	size_t i, ref, ni, no, port;
+	size_t ref, ni, no, port;
 	const char *name;
 
 	for (
-		i = 0, ref = 0, ni = cell->ni, no = cell->no;
-		i < cell->nattrs;
-		++i
-	)
-		if (strcmp (cell->attr[i].key, "cell-bind") == 0) {
-			name = cell->attr[i].value;
+		ref = 0, ni = cell->ni, no = cell->no;
+		ref < cell->nbinds;
+		++ref
+	) {
+		name = cell->bind[ref].value;
 
-			if (ni > 0) {
-				port = model_add_source (o, name, cell, ref);
-				--ni;
-			}
-			else if (no > 0) {
-				port = model_add_sink (o, name, cell, ref);
-				--no;
-			}
-			else
-				goto no_ports;
-
-			if (port == M_UNKNOWN)
-				return 0;
-
-			++ref;
+		if (ni > 0) {
+			port = model_add_source (o, name, cell, ref);
+			--ni;
+		}
+		else if (no > 0) {
+			port = model_add_sink (o, name, cell, ref);
+			--no;
 		}
 
+		if (port == M_UNKNOWN)
+			return 0;
+	}
+
 	return 1;
-no_ports:
-	return model_error (o, "too many binds for core cell %s", cell->name);
 }
 
-static int model_bind_port (struct model *o, const char *bind,
+static int model_bind_port (struct model *o, const char *name, const char *bind,
 			    struct model *type, struct cell *cell, size_t ref)
 {
-	char *name, fake;
 	size_t port;
 
 	if (ref >= type->nports)
 		return model_error (o, "too many args for cell %s", cell->type);
 
-	if (sscanf (bind, "%m[^=]=%c", &name, &fake) == 2) {
-		if ((ref = model_get_port (type, name)) == M_UNKNOWN)
-			goto no_ref;
-
-		free (name);
-		bind = strchr (bind, '=') + 1;
-	}
+	if (name != NULL &&
+	    (ref = model_get_port (type, name)) == M_UNKNOWN)
+		return model_error (o, "cannot find port %s for cell %s",
+				    name, cell->type);
 
 	if ((type->port[ref].type & PORT_LOCAL) != 0)
 		return model_error (o, "cannot bind %s to local port of "
@@ -150,17 +139,13 @@ static int model_bind_port (struct model *o, const char *bind,
 	       model_add_sink   (o, bind, cell, ref);
 
 	return port != M_UNKNOWN;
-no_ref:
-	model_error (o, "cannot find port %s for cell %s", name, cell->type);
-	free (name);
-	return 0;
 }
 
 static int model_bind_cell (struct model *o, struct cell *cell)
 {
 	struct model *type;
-	size_t i, ref;
-	const char *bind;
+	size_t ref;
+	const char *port, *value;
 
 	if (strcmp (cell->type, "table") == 0 ||
 	    strcmp (cell->type, "latch") == 0)
@@ -170,15 +155,13 @@ static int model_bind_cell (struct model *o, struct cell *cell)
 		return error (&o->error, "cannot find model %s for cell %s",
 			      cell->type, cell->name);
 
-	for (i = 0, ref = 0; i < cell->nattrs; ++i)
-		if (strcmp (cell->attr[i].key, "cell-bind") == 0) {
-			bind = cell->attr[i].value;
+	for (ref = 0; ref < cell->nbinds; ++ref) {
+		port  = cell->bind[ref].key;
+		value = cell->bind[ref].value;
 
-			if (!model_bind_port (o, bind, type, cell, ref))
-				return 0;
-
-			++ref;
-		}
+		if (!model_bind_port (o, port, value, type, cell, ref))
+			return 0;
+	}
 
 	return 1;
 }
