@@ -115,6 +115,14 @@ static int on_latch (struct model *o, const struct shell_cmd *cmd)
 	return ok;
 }
 
+static int on_wire (struct model *o, const struct shell_cmd *cmd)
+{
+	if (cmd->argc < 3)
+		return model_error (o, "no wire input and output given");
+
+	return model_add_wire (o, cmd->argv[2], cmd->argv[1]);
+}
+
 static int on_tuple (struct model *o, const struct shell_cmd *cmd)
 {
 	return model_add_tuple_v (o, cmd->argc, (const char **) cmd->argv);
@@ -197,6 +205,7 @@ struct model *model_read (const char *path)
 		     PROC (subckt,  cell)    :
 		     PROC (names,   table)   :
 		     PROC (latch,   latch)   :
+		     PROC (conn,    wire)    :
 		     PROC (model,   model)   :
 		     PROC (cname,   cname)   :
 		     PROC (param,   param)   :
