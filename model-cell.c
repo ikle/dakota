@@ -24,6 +24,8 @@ int cell_init (struct cell *o, const char *type, const char *name)
 	o->ni = 0;
 	o->no = 0;
 
+	o->nbinds  = 0;
+	o->bind    = NULL;
 	o->ntuples = 0;
 	o->tuple   = NULL;
 	o->nparams = 0;
@@ -41,9 +43,27 @@ void cell_fini (struct cell *o)
 	free (o->type);
 	free (o->name);
 
+	array_free (o->bind,  o->nbinds,  pair_fini);
 	array_free (o->tuple, o->ntuples, tuple_fini);
 	array_free (o->param, o->nparams, pair_fini);
 	array_free (o->attr,  o->nattrs,  pair_fini);
+}
+
+int cell_add_bind (struct cell *o, const char *port, const char *value)
+{
+	const size_t nbinds = o->nbinds + 1;
+	struct pair *p;
+
+	if ((p = array_resize (o->bind, nbinds)) == NULL)
+		return 0;
+
+	o->bind = p;
+
+	if (!pair_init (o->bind + o->nbinds, port, value))
+		return 0;
+
+	o->nbinds = nbinds;
+	return 1;
 }
 
 int cell_add_tuple_va (struct cell *o, int size, va_list ap)

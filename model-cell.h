@@ -21,6 +21,8 @@ struct cell {
 
 	size_t ni, no;		/* hint for number of inputs and outputs */
 
+	size_t        nbinds;
+	struct pair  *bind;
 	size_t        ntuples;
 	struct tuple *tuple;
 	size_t        nparams;
@@ -31,6 +33,8 @@ struct cell {
 
 int  cell_init (struct cell *o, const char *type, const char *name);
 void cell_fini (struct cell *o);
+
+int cell_add_bind     (struct cell *o, const char *port, const char *value);
 
 int cell_add_tuple_va (struct cell *o, int size, va_list ap);
 int cell_add_tuple_v  (struct cell *o, int size, const char *argv[]);
