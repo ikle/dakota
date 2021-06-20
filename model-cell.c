@@ -109,7 +109,7 @@ int cell_add_param (struct cell *o, const char *name, const char *value)
 	return 1;
 }
 
-int cell_add_attr  (struct cell *o, const char *name, const char *value)
+int cell_add_attr (struct cell *o, const char *name, const char *value)
 {
 	const size_t nattrs = o->nattrs + 1;
 	struct pair *p;
