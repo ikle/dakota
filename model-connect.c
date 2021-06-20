@@ -101,6 +101,11 @@ static int model_bind_core (struct model *o, struct cell *cell)
 	) {
 		name = cell->bind[ref].value;
 
+		if (strcmp (name, "->") == 0) {
+			output = ref + 1;
+			continue;
+		}
+
 		port = (ref < output) ?
 		       model_add_source (o, name, cell, ref):
 		       model_add_sink   (o, name, cell, ref);
