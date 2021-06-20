@@ -46,10 +46,17 @@ static int on_outputs (struct model *o, const struct shell_cmd *cmd)
 
 static int add_bind (struct model *o, char *expr)
 {
+	char *p;
+
 	if (!model_add_attr (o, "cell-bind", expr))
 		return 0;
 
-	return 1;
+	if ((p = strchr (expr, '=')) == NULL)
+		return model_add_bind (o, NULL, expr);
+
+	*p++ = '\0';
+
+	return model_add_bind (o, expr, p);
 }
 
 static int on_cell (struct model *o, const struct shell_cmd *cmd)
