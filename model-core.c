@@ -129,6 +129,19 @@ int model_add_cell (struct model *o, const char *type, const char *name)
 	return 1;
 }
 
+int model_add_bind (struct model *o, const char *port, const char *value)
+{
+	struct model *m = o->last;
+	int ok;
+
+	if (m->ncells == 0)
+		return error (&o->error, "no cell to bind to");
+
+	ok = cell_add_bind (m->cell + m->ncells - 1, port, value);
+
+	return ok ? 1 : error (&o->error, NULL);
+}
+
 const char *model_get_cell (struct model *o)
 {
 	struct model *m = o->last;

@@ -25,6 +25,7 @@ int model_add_input    (struct model *o, const char *name);
 int model_add_output   (struct model *o, const char *name);
 int model_add_wire     (struct model *o, const char *sink, const char *source);
 int model_add_cell     (struct model *o, const char *type, const char *name);
+int model_add_bind     (struct model *o, const char *port, const char *value);
 int model_add_model    (struct model *o, const char *name);
 
 const char *model_get_cell (struct model *o);
