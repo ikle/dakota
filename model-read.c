@@ -48,9 +48,6 @@ static int add_bind (struct model *o, char *expr)
 {
 	char *p;
 
-	if (!model_add_attr (o, "cell-bind", expr))
-		return 0;
-
 	if ((p = strchr (expr, '=')) == NULL)
 		return model_add_bind (o, NULL, expr);
 
