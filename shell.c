@@ -122,7 +122,7 @@ static int resize_line (struct shell *o, size_t size)
 static int resize_words (struct shell *o, size_t count)
 {
 	size_t next;
-	const char **p;
+	char **p;
 
 	if (count <= o->nwords)
 		return 1;
