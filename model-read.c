@@ -79,18 +79,13 @@ static int on_cell (struct model *o, const struct shell_cmd *cmd)
 static int on_table (struct model *o, const struct shell_cmd *cmd)
 {
 	size_t i;
-	char count[22];
 	int ok = 1;
 
 	if (cmd->argc < 2)
 		return model_error (o, "empty table");
 
-	snprintf (count, sizeof (count), "%zu", cmd->argc - 2);
-
 	ok &= model_add_cell (o, "table", NULL);
 	ok &= model_add_attr (o, "cell-kind", cmd->argv[0] + 1);
-	ok &= model_add_attr (o, "cell-inputs", count);
-	ok &= model_add_attr (o, "cell-outputs", "1");
 
 	for (i = 1; i < cmd->argc; ++i)
 		ok &= add_bind (o, cmd->argv[i]);
