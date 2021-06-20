@@ -216,7 +216,7 @@ static int model_write_wires (struct model *o, FILE *out)
 			return model_error (o, "broken wire from %s to %s",
 					    source, sink);
 
-		ok &= fprintf (out, ".wire %s %s\n", sink, source) > 0;
+		ok &= fprintf (out, ".conn %s %s\n", source, sink) > 0;
 	}
 
 	return ok;
