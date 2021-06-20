@@ -13,15 +13,18 @@
 
 int pair_init (struct pair *o, const char *key, const char *value)
 {
-	if ((o->key = strdup (key)) == NULL)
+	if ((o->value = strdup (value)) == NULL)
 		return 0;
 
-	if ((o->value = strdup (value)) == NULL)
-		goto no_value;
+	if (key == NULL)
+		o->key = NULL;
+	else
+	if ((o->key = strdup (key)) == NULL)
+		goto no_key;
 
 	return 1;
-no_value:
-	free (o->key);
+no_key:
+	free (o->value);
 	return 0;
 }
 
