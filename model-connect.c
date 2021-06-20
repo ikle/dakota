@@ -91,24 +91,19 @@ static int model_bind_wire (struct model *o, struct wire *wire)
 
 static int model_bind_core (struct model *o, struct cell *cell)
 {
-	size_t ref, ni, no, port;
+	size_t ref, output, port;
 	const char *name;
 
 	for (
-		ref = 0, ni = cell->ni, no = cell->no;
+		ref = 0, output = cell->nbinds - 1;
 		ref < cell->nbinds;
 		++ref
 	) {
 		name = cell->bind[ref].value;
 
-		if (ni > 0) {
-			port = model_add_source (o, name, cell, ref);
-			--ni;
-		}
-		else if (no > 0) {
-			port = model_add_sink (o, name, cell, ref);
-			--no;
-		}
+		port = (ref < output) ?
+		       model_add_source (o, name, cell, ref):
+		       model_add_sink   (o, name, cell, ref);
 
 		if (port == M_UNKNOWN)
 			return 0;
