@@ -118,7 +118,7 @@ static int on_latch (struct model *o, const struct shell_cmd *cmd)
 
 static int on_tuple (struct model *o, const struct shell_cmd *cmd)
 {
-	return model_add_tuple_v (o, cmd->argc, cmd->argv);
+	return model_add_tuple_v (o, cmd->argc, (const char **) cmd->argv);
 }
 
 static int on_cname (struct model *o, const struct shell_cmd *cmd)
