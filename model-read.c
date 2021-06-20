@@ -100,6 +100,7 @@ static int on_table (struct model *o, const struct shell_cmd *cmd)
 
 static int on_latch (struct model *o, const struct shell_cmd *cmd)
 {
+	size_t i;
 	int ok = 1;
 
 	if (cmd->argc < 3)
@@ -108,22 +109,8 @@ static int on_latch (struct model *o, const struct shell_cmd *cmd)
 	ok &= model_add_cell (o, "latch", NULL);
 	ok &= model_add_attr (o, "cell-kind", "latch");
 
-	if (cmd->argc >= 4)
-		ok &= model_add_attr (o, "cell-edge", cmd->argv[3]);
-
-	if (cmd->argc >= 5 && strcmp (cmd->argv[4], "NIL") != 0) {
-		ok &= model_add_attr (o, "cell-inputs",  "2");
-		ok &= add_bind (o, cmd->argv[4]);
-	}
-	else
-		ok &= model_add_attr (o, "cell-inputs",  "1");
-
-	ok &= add_bind (o, cmd->argv[1]);
-	ok &= model_add_attr (o, "cell-outputs", "1");
-	ok &= add_bind (o, cmd->argv[2]);
-
-	if (cmd->argc >= 6)
-		ok &= model_add_attr (o, "cell-init", cmd->argv[5]);
+	for (i = 1; i < cmd->argc; ++i)
+		ok &= add_bind (o, cmd->argv[i]);
 
 	return ok;
 }

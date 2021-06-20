@@ -168,39 +168,6 @@ static const char *cell_get_kind (struct cell *o)
 	return "subckt";
 }
 
-static int model_write_latch (struct model *o, struct cell *c, FILE *out)
-{
-	const char *type = "re", *init = NULL;
-	size_t i;
-	int ok = 1;
-
-	for (i = 0; i < c->nattrs; ++i)
-		if (strcmp (c->attr[i].key, "cell-edge") == 0)
-			type = c->attr[i].value;
-		else
-		if (strcmp (c->attr[i].key, "cell-init") == 0)
-			init = c->attr[i].value;
-
-	if (c->nbinds > 2)
-		ok &= fprintf (out, ".latch %s %s %s %s",
-			       c->bind[1].value, c->bind[2].value,
-			       type, c->bind[0].value) > 0;
-	else
-		ok &= fprintf (out, ".latch %s %s",
-			       c->bind[0].value, c->bind[1].value) > 0;
-
-	if (init != NULL)
-		ok &= fprintf (out, " %s\n", init) > 0;
-	else
-		ok &= fprintf (out, "\n") > 0;
-
-	ok &= cell_write_attrs  (c, out);
-	ok &= cell_write_params (c, out);
-	ok &= cell_write_tuples (c, out);
-
-	return ok;
-}
-
 static int model_write_cell (struct model *o, size_t i, FILE *out)
 {
 	const char *kind, *type;
@@ -209,10 +176,7 @@ static int model_write_cell (struct model *o, size_t i, FILE *out)
 	kind = cell_get_kind (o->cell + i);
 	type = o->cell[i].type;
 
-	if (strcmp (type, "latch") == 0)
-		return model_write_latch (o, o->cell + i, out);
-
-	if (strcmp (type, "table") == 0)
+	if (strcmp (type, "table") == 0 || strcmp (type, "latch") == 0)
 		ok &= fprintf (out, ".%s", kind) > 0;
 	else
 		ok &= fprintf (out, ".%s %s", kind, type) > 0;

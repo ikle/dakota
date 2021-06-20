@@ -117,6 +117,28 @@ static int model_bind_core (struct model *o, struct cell *cell)
 	return 1;
 }
 
+static int model_bind_latch (struct model *o, struct cell *c)
+{
+	int ok = 1;
+
+	switch (c->nbinds) {
+	case 5:
+		/* init-val at index 4 */
+	case 4:
+		ok &= model_add_source (o, c->bind[3].value, c, 3) != M_UNKNOWN;
+	case 3:
+		/* init-val at index 2 */
+	case 2:
+		ok &= model_add_source (o, c->bind[0].value, c, 0) != M_UNKNOWN;
+		ok &= model_add_sink   (o, c->bind[1].value, c, 1) != M_UNKNOWN;
+		break;
+	default:
+		return model_error (o, "wrong number of arguments for latch");
+	}
+
+	return ok;
+}
+
 static int model_bind_port (struct model *o, const char *name, const char *bind,
 			    struct model *type, struct cell *cell, size_t ref)
 {
@@ -147,9 +169,11 @@ static int model_bind_cell (struct model *o, struct cell *cell)
 	size_t ref;
 	const char *port, *value;
 
-	if (strcmp (cell->type, "table") == 0 ||
-	    strcmp (cell->type, "latch") == 0)
+	if (strcmp (cell->type, "table") == 0)
 		return model_bind_core (o, cell);
+
+	if (strcmp (cell->type, "latch") == 0)
+		return model_bind_latch (o, cell);
 
 	if ((type = model_get_model (o, cell->type)) == NULL)
 		return error (&o->error, "cannot find model %s for cell %s",
