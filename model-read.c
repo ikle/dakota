@@ -199,6 +199,7 @@ struct model *model_read (const char *path)
 		     PROC (gate,    cell)    :
 		     PROC (subckt,  cell)    :
 		     PROC (names,   table)   :
+		     PROC (table,   table)   :
 		     PROC (latch,   latch)   :
 		     PROC (conn,    wire)    :
 		     PROC (model,   model)   :
