@@ -178,12 +178,21 @@ static int get_word_char (struct shell *o)
 static size_t get_word (struct shell *o)
 {
 	int a;
-start:
+l_start:
+	for (o->cmd.indent = 0; (a = fgetc (o->in)) != EOF; )
+		if (a == ' ')
+			++o->cmd.indent;
+		else
+		if (a == '\t')
+			o->cmd.indent = (o->cmd.indent + 8) & ~7;
+		else
+			break;
+w_start:
 	switch (a = get_word_char (o)) {
 	case EOF:
 	case '\n':	goto end;
 	case '\t':
-	case ' ':	goto start;
+	case ' ':	goto w_start;
 	case '"':	goto string;
 	default:	goto w_head;
 	}
@@ -228,7 +237,7 @@ tail:
 	debug ("got word %s", o->cmd.argv[o->cmd.argc - 1]);
 
 	if (a != '\n')
-		goto start;
+		goto w_start;
 end:
 	++o->cmd.lineno;
 
@@ -243,7 +252,7 @@ end:
 	}
 
 	debug ("skip empty line");
-	goto start;
+	goto l_start;
 }
 
 const struct shell_cmd *shell_next (struct shell *o)
