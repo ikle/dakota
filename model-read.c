@@ -93,6 +93,14 @@ static int on_table (struct model *o, const struct shell_cmd *cmd)
 	return ok;
 }
 
+static int on_wire (struct model *o, const struct shell_cmd *cmd)
+{
+	if (cmd->argc < 3)
+		return model_error (o, "no wire input and output given");
+
+	return model_add_wire (o, cmd->argv[2], cmd->argv[1]);
+}
+
 static int on_latch (struct model *o, const struct shell_cmd *cmd)
 {
 	size_t i;
@@ -108,14 +116,6 @@ static int on_latch (struct model *o, const struct shell_cmd *cmd)
 		ok &= add_bind (o, cmd->argv[i]);
 
 	return ok;
-}
-
-static int on_wire (struct model *o, const struct shell_cmd *cmd)
-{
-	if (cmd->argc < 3)
-		return model_error (o, "no wire input and output given");
-
-	return model_add_wire (o, cmd->argv[2], cmd->argv[1]);
 }
 
 static int on_tuple (struct model *o, const struct shell_cmd *cmd)
@@ -200,8 +200,8 @@ struct model *model_read (const char *path)
 		     PROC (subckt,  cell)    :
 		     PROC (names,   table)   :
 		     PROC (table,   table)   :
-		     PROC (latch,   latch)   :
 		     PROC (conn,    wire)    :
+		     PROC (latch,   latch)   :
 		     PROC (model,   model)   :
 		     PROC (cname,   cname)   :
 		     PROC (param,   param)   :
