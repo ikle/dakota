@@ -85,6 +85,20 @@ int on_text (struct shell *sh, struct symbol *o, const struct shell_cmd *cmd)
 	return symbol_text (o, x, y, cmd->argv[3][0], cmd->argv[4]);
 }
 
+static
+int on_blit (struct shell *sh, struct symbol *o, const struct shell_cmd *cmd)
+{
+	int x, y;
+
+	if (cmd->argc != 5)
+		return 0;
+
+	x = atoi (cmd->argv[1]);
+	y = atoi (cmd->argv[2]);
+
+	return symbol_blit (o, x, y, cmd->argv[3][0], cmd->argv[4]);
+}
+
 static struct symbol *
 symbol_parse (struct shell *sh, struct symbol *parent, const char *name);
 
@@ -130,6 +144,7 @@ symbol_parse (struct shell *sh, struct symbol *parent, const char *name)
 		     PROC (arc,  arc)  :
 		     PROC (mark, mark) :
 		     PROC (text, text) :
+		     PROC (blit, blit) :
 		     PROC (tile, tile) :
 		     0;
 

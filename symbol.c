@@ -26,6 +26,10 @@ struct node {
 			int dir;
 			char string[1];
 		} text;
+		struct {
+			int dir;
+			char name[1];
+		} blit;
 	};
 };
 
@@ -111,19 +115,6 @@ symbol_add_node (struct symbol *o, int type, int x, int y, size_t extra)
 	return s;
 }
 
-static void symbol_drop_tail (struct symbol *o, struct node *last)
-{
-	if (last == NULL) {
-		node_free (o->head);
-		o->last = o->head = NULL;
-		return;
-	}
-
-	node_free (last->next);
-	last->next = NULL;
-	o->last = last;
-}
-
 int symbol_move (struct symbol *o, int x, int y)
 {
 	struct node *s = o->last;
@@ -187,6 +178,19 @@ int symbol_text (struct symbol *o, int x, int y, int dir, const char *text)
 	return 1;
 }
 
+int symbol_blit (struct symbol *o, int x, int y, int dir, const char *name)
+{
+	struct node *s;
+	const size_t extra = sizeof (s->blit) + strlen (name);
+
+	if ((s = symbol_add_node (o, SYMBOL_BLIT, x, y, extra)) == NULL)
+		return 0;
+
+	s->blit.dir = dir;
+	strcpy (s->blit.name, name);
+	return 1;
+}
+
 int symbol_add_tile (struct symbol *o, struct symbol *tile)
 {
 	const size_t ntiles = o->ntiles + 1;
@@ -201,70 +205,6 @@ int symbol_add_tile (struct symbol *o, struct symbol *tile)
 	o->tile   = p;
 	o->ntiles = ntiles;
 	return 1;
-}
-
-static void vector_rotate (int x, int y, int dir, int *nx, int *ny)
-{
-	switch (dir) {
-	default:	*nx =  x; *ny =  y; return;
-	case 'N':	*nx = -y; *ny =  x; return;
-	case 'W':	*nx = -x; *ny = -y; return;
-	case 'S':	*nx =  y; *ny = -x; return;
-	}
-}
-
-static int dir_index (int dir)
-{
-	switch (dir) {
-	default:	return 0;
-	case 'N':	return 1;
-	case 'W':	return 2;
-	case 'S':	return 3;
-	}
-}
-
-static int dir_rotate (int dira, int dirb)
-{
-	char ring[4] = "ONWS";
-
-	return ring[(dir_index (dira) + dir_index (dirb)) & 3];
-}
-
-int symbol_blit (struct symbol *o, int x, int y, int dir,
-		 const struct symbol *tile)
-{
-	struct node *last = o->last;
-	const struct node *s;
-	int nx, ny, ndir, ok = 1;
-
-	for (s = tile->head; s != NULL; s = s->next) {
-		vector_rotate (s->x, s->y, dir, &nx, &ny);
-
-		switch (s->type) {
-		case SYMBOL_MOVE:
-			ok &= symbol_move (o, x + nx, y + ny);
-			break;
-		case SYMBOL_LINE:
-			ok &= symbol_line (o, x + nx, y + ny);
-			break;
-		case SYMBOL_ARC:
-			ok &= symbol_arc  (o, x + nx, y + ny, s->arc.angle);
-			break;
-		case SYMBOL_MARK:
-			ok &= symbol_mark (o, x + nx, y + ny, s->mark);
-			break;
-		case SYMBOL_TEXT:
-			ndir = dir_rotate (s->text.dir, dir);
-			ok &= symbol_text (o, x + nx, y + ny,
-					   ndir, s->text.string);
-			break;
-		}
-	}
-
-	if (!ok)
-		symbol_drop_tail (o, last);
-
-	return ok;
 }
 
 int symbol_walk (const struct symbol *o, symbol_fn *fn, void *cookie)
@@ -290,6 +230,10 @@ int symbol_walk (const struct symbol *o, symbol_fn *fn, void *cookie)
 		case SYMBOL_TEXT:
 			ok = fn (cookie, s->type, s->x, s->y, s->text.dir,
 				 s->text.string);
+			break;
+		case SYMBOL_BLIT:
+			ok = fn (cookie, s->type, s->x, s->y, s->blit.dir,
+				 s->blit.name);
 			break;
 		}
 

@@ -63,6 +63,11 @@ static int writer (void *cookie, int type, int x, int y, ...)
 		text = va_arg (ap, const char *);
 		n = fprintf (c->out, "text %d %d %c %s\n", x, y, dir, text);
 		break;
+	case SYMBOL_BLIT:
+		dir = va_arg (ap, int);
+		name = va_arg (ap, const char *);
+		n = fprintf (c->out, "blit %d %d %c %s\n", x, y, dir, name);
+		break;
 	case SYMBOL_TILE:
 		name = va_arg (ap, const char *);
 		n = fprintf (c->out, "tile %s\n", name);
