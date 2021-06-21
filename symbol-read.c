@@ -88,15 +88,16 @@ int on_text (struct shell *sh, struct symbol *o, const struct shell_cmd *cmd)
 static
 int on_blit (struct shell *sh, struct symbol *o, const struct shell_cmd *cmd)
 {
-	int x, y;
+	int x, y, dir;
 
 	if (cmd->argc != 5)
 		return 0;
 
-	x = atoi (cmd->argv[1]);
-	y = atoi (cmd->argv[2]);
+	x   = atoi (cmd->argv[1]);
+	y   = atoi (cmd->argv[2]);
+	dir = atoi (cmd->argv[3]);
 
-	return symbol_blit (o, x, y, cmd->argv[3][0], cmd->argv[4]);
+	return symbol_blit (o, x, y, dir, cmd->argv[4]);
 }
 
 static struct symbol *
