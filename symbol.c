@@ -207,6 +207,22 @@ int symbol_add_tile (struct symbol *o, struct symbol *tile)
 	return 1;
 }
 
+struct symbol *symbol_get_tile (struct symbol *o, const char *name)
+{
+	size_t i;
+
+	if (o == NULL)
+		return NULL;
+
+	/* ToDo: create hash table to map symbol name to symbol index */
+
+	for (i = 0; i < o->ntiles; ++i)
+		if (strcmp (o->tile[i]->name, name) == 0)
+			return o->tile[i];
+
+	return symbol_get_tile (o->parent, name);
+}
+
 int symbol_walk (const struct symbol *o, symbol_fn *fn, void *cookie)
 {
 	const struct node *s;

@@ -24,6 +24,7 @@ int symbol_add_text (struct symbol *o, int x, int y, int dir, const char *text);
 int symbol_add_blit (struct symbol *o, int x, int y, int dir, const char *name);
 
 int symbol_add_tile (struct symbol *o, struct symbol *tile);
+struct symbol *symbol_get_tile (struct symbol *o, const char *name);
 
 struct symbol *symbol_read (const char *name, const char *path);
 int symbol_write (const struct symbol *o, const char *path);
