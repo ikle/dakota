@@ -13,9 +13,13 @@
 
 #include <dakota/symbol.h>
 
+struct ctx {
+	FILE *out;
+};
+
 static int writer (void *cookie, int type, int x, int y, ...)
 {
-	FILE *out = cookie;
+	struct ctx *c = cookie;
 	va_list ap;
 	int n, angle, dir;
 	const char *mark, *text, *name;
@@ -24,30 +28,30 @@ static int writer (void *cookie, int type, int x, int y, ...)
 
 	switch (type) {
 	case SYMBOL_MOVE:
-		n = fprintf (out, "move %d %d\n", x, y);
+		n = fprintf (c->out, "move %d %d\n", x, y);
 		break;
 	case SYMBOL_LINE:
-		n = fprintf (out, "line %d %d\n", x, y);
+		n = fprintf (c->out, "line %d %d\n", x, y);
 		break;
 	case SYMBOL_ARC:
 		angle = va_arg (ap, int);
-		n = fprintf (out, "arc %d %d %d\n", x, y, angle);
+		n = fprintf (c->out, "arc %d %d %d\n", x, y, angle);
 		break;
 	case SYMBOL_MARK:
 		mark = va_arg (ap, const char *);
-		n = fprintf (out, "mark %d %d %s\n", x, y, mark);
+		n = fprintf (c->out, "mark %d %d %s\n", x, y, mark);
 		break;
 	case SYMBOL_TEXT:
 		dir = va_arg (ap, int);
 		text = va_arg (ap, const char *);
-		n = fprintf (out, "text %d %d %c %s\n", x, y, dir, text);
+		n = fprintf (c->out, "text %d %d %c %s\n", x, y, dir, text);
 		break;
 	case SYMBOL_TILE:
 		name = va_arg (ap, const char *);
-		n = fprintf (out, "tile %s\n", name);
+		n = fprintf (c->out, "tile %s\n", name);
 		break;
 	case SYMBOL_END:
-		n = fprintf (out, "end\n");
+		n = fprintf (c->out, "end\n");
 		break;
 	default:
 		n = 0;
@@ -59,16 +63,16 @@ static int writer (void *cookie, int type, int x, int y, ...)
 
 int symbol_write (const struct symbol *o, const char *path)
 {
-	FILE *out;
+	struct ctx c;
 
-	if ((out = fopen (path, "w")) == NULL)
+	if ((c.out = fopen (path, "w")) == NULL)
 		return 0;
 
-	if (!symbol_walk (o, writer, out))
+	if (!symbol_walk (o, writer, &c))
 		goto no_walk;
 
-	return fclose (out) == 0;
+	return fclose (c.out) == 0;
 no_walk:
-	fclose (out);
+	fclose (c.out);
 	return 0;
 }
