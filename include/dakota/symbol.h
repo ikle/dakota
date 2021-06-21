@@ -26,4 +26,16 @@ int symbol_blit (struct symbol *o, int x, int y, const struct symbol *tile);
 struct symbol *symbol_read (const char *path);
 int symbol_write (const struct symbol *o, const char *path);
 
+enum symbol_type {
+	SYMBOL_MOVE,
+	SYMBOL_LINE,
+	SYMBOL_ARC,
+	SYMBOL_MARK,
+	SYMBOL_TEXT,
+};
+
+typedef int symbol_fn (void *cookie, int type, int x, int y, ...);
+
+int symbol_walk (const struct symbol *o, symbol_fn *fn, void *cookie);
+
 #endif  /* DAKOTA_SYMBOL_H */

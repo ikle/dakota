@@ -13,17 +13,9 @@
 
 #include <dakota/symbol.h>
 
-enum node_type {
-	NODE_MOVE,
-	NODE_LINE,
-	NODE_ARC,
-	NODE_MARK,
-	NODE_TEXT,
-};
-
 struct node {
 	struct node *next;
-	enum node_type type;
+	enum symbol_type type;
 	int x, y;
 	union {
 		struct {
@@ -37,7 +29,7 @@ struct node {
 	};
 };
 
-static struct node *node_alloc (enum node_type type, int x, int y, size_t extra)
+static struct node *node_alloc (int type, int x, int y, size_t extra)
 {
 	struct node *o;
 
@@ -119,13 +111,13 @@ int symbol_move (struct symbol *o, int x, int y)
 {
 	struct node *s = o->last;
 
-	if (s != NULL && s->type == NODE_MOVE) {
+	if (s != NULL && s->type == SYMBOL_MOVE) {
 		s->x = x;
 		s->y = y;
 		return 1;
 	}
 
-	if ((s = symbol_add_node (o, NODE_MOVE, x, y, 0)) == NULL)
+	if ((s = symbol_add_node (o, SYMBOL_MOVE, x, y, 0)) == NULL)
 		return 0;
 
 	return 1;
@@ -135,7 +127,7 @@ int symbol_line (struct symbol *o, int x, int y)
 {
 	struct node *s;
 
-	if ((s = symbol_add_node (o, NODE_LINE, x, y, 0)) == NULL)
+	if ((s = symbol_add_node (o, SYMBOL_LINE, x, y, 0)) == NULL)
 		return 0;
 
 	return 1;
@@ -146,7 +138,7 @@ int symbol_arc (struct symbol *o, int x, int y, int angle)
 	struct node *s;
 	const size_t extra = sizeof (s->arc);
 
-	if ((s = symbol_add_node (o, NODE_ARC, x, y, extra)) == NULL)
+	if ((s = symbol_add_node (o, SYMBOL_ARC, x, y, extra)) == NULL)
 		return 0;
 
 	s->arc.angle = angle;
@@ -158,7 +150,7 @@ int symbol_mark (struct symbol *o, int x, int y, const char *mark)
 	struct node *s;
 	const size_t extra = sizeof (s->mark) + strlen (mark);
 
-	if ((s = symbol_add_node (o, NODE_MARK, x, y, extra)) == NULL)
+	if ((s = symbol_add_node (o, SYMBOL_MARK, x, y, extra)) == NULL)
 		return 0;
 
 	strcpy (s->mark, mark);
@@ -170,7 +162,7 @@ int symbol_text (struct symbol *o, int x, int y, int dir, const char *text)
 	struct node *s;
 	const size_t extra = sizeof (s->text) + strlen (text);
 
-	if ((s = symbol_add_node (o, NODE_TEXT, x, y, extra)) == NULL)
+	if ((s = symbol_add_node (o, SYMBOL_TEXT, x, y, extra)) == NULL)
 		return 0;
 
 	s->text.dir = dir;
@@ -186,19 +178,19 @@ int symbol_blit (struct symbol *o, int x, int y, const struct symbol *tile)
 
 	for (s = tile->head; s != NULL; s = s->next)
 		switch (s->type) {
-		case NODE_MOVE:
+		case SYMBOL_MOVE:
 			ok &= symbol_move (o, x + s->x, y + s->y);
 			break;
-		case NODE_LINE:
+		case SYMBOL_LINE:
 			ok &= symbol_line (o, x + s->x, y + s->y);
 			break;
-		case NODE_ARC:
+		case SYMBOL_ARC:
 			ok &= symbol_arc  (o, x + s->x, y + s->y, s->arc.angle);
 			break;
-		case NODE_MARK:
+		case SYMBOL_MARK:
 			ok &= symbol_mark (o, x + s->x, y + s->y, s->mark);
 			break;
-		case NODE_TEXT:
+		case SYMBOL_TEXT:
 			ok &= symbol_text (o, x + s->x, y + s->y,
 					   s->text.dir, s->text.string);
 			break;
@@ -206,6 +198,34 @@ int symbol_blit (struct symbol *o, int x, int y, const struct symbol *tile)
 
 	if (!ok)
 		symbol_drop_tail (o, last);
+
+	return ok;
+}
+
+int symbol_walk (const struct symbol *o, symbol_fn *fn, void *cookie)
+{
+	const struct node *s;
+	int ok = 1;
+
+	for (s = o->head; ok && s != NULL; s = s->next)
+		switch (s->type) {
+		case SYMBOL_MOVE:
+			ok = fn (cookie, s->type, s->x, s->y);
+			break;
+		case SYMBOL_LINE:
+			ok = fn (cookie, s->type, s->x, s->y);
+			break;
+		case SYMBOL_ARC:
+			ok = fn (cookie, s->type, s->x, s->y, s->arc.angle);
+			break;
+		case SYMBOL_MARK:
+			ok = fn (cookie, s->type, s->x, s->y, s->mark);
+			break;
+		case SYMBOL_TEXT:
+			ok = fn (cookie, s->type, s->x, s->y, s->text.dir,
+				 s->text.string);
+			break;
+		}
 
 	return ok;
 }
