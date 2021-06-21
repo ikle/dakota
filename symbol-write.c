@@ -18,7 +18,7 @@ static int writer (void *cookie, int type, int x, int y, ...)
 	FILE *out = cookie;
 	va_list ap;
 	int n, angle, dir;
-	const char *mark, *text;
+	const char *mark, *text, *name;
 
 	va_start (ap, y);
 
@@ -41,6 +41,13 @@ static int writer (void *cookie, int type, int x, int y, ...)
 		dir = va_arg (ap, int);
 		text = va_arg (ap, const char *);
 		n = fprintf (out, "text %d %d %c %s\n", x, y, dir, text);
+		break;
+	case SYMBOL_TILE:
+		name = va_arg (ap, const char *);
+		n = fprintf (out, "tile %s\n", name);
+		break;
+	case SYMBOL_END:
+		n = fprintf (out, "end\n");
 		break;
 	default:
 		n = 0;
