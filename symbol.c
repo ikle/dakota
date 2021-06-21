@@ -27,10 +27,10 @@ struct node {
 	int x, y;
 	union {
 		int degree;
-		char *mark;
+		char mark[1];
 		struct {
 			int dir;
-			char *string;
+			char string[1];
 		} text;
 	};
 };
@@ -49,32 +49,13 @@ static struct node *node_alloc (enum node_type type, int x, int y, size_t extra)
 	return o;
 }
 
-static void node_free_one (struct node *o)
-{
-	if (o == NULL)
-		return;
-
-	switch (o->type) {
-	case NODE_MARK:
-		free (o->mark);
-		break;
-	case NODE_TEXT:
-		free (o->text.string);
-		break;
-	default:
-		break;
-	}
-
-	free (o);
-}
-
 static void node_free (struct node *o)
 {
 	struct node *next;
 
 	for (; o != NULL; o = next) {
 		next = o->next;
-		node_free_one (o);
+		free (o);
 	}
 }
 
@@ -171,37 +152,27 @@ int symbol_arc (struct symbol *o, int x, int y, int degree)
 
 int symbol_mark (struct symbol *o, int x, int y, const char *mark)
 {
-	struct node *last = o->last;
 	struct node *s;
+	const size_t extra = strlen (mark) + 1;
 
-	if ((s = symbol_add_node (o, NODE_MARK, x, y, 0)) == NULL)
+	if ((s = symbol_add_node (o, NODE_MARK, x, y, extra)) == NULL)
 		return 0;
 
-	if ((s->mark = strdup (mark)) == NULL)
-		goto no_mark;
-
+	strcpy (s->mark, mark);
 	return 1;
-no_mark:
-	symbol_drop_tail (o, last);
-	return 0;
 }
 
 int symbol_text (struct symbol *o, int x, int y, int dir, const char *text)
 {
-	struct node *last = o->last;
 	struct node *s;
+	const size_t extra = strlen (text) + 1;
 
-	if ((s = symbol_add_node (o, NODE_TEXT, x, y, 0)) == NULL)
+	if ((s = symbol_add_node (o, NODE_TEXT, x, y, extra)) == NULL)
 		return 0;
 
-	if ((s->text.string = strdup (text)) == NULL)
-		goto no_text;
-
 	s->text.dir = dir;
+	strcpy (s->text.string, text);
 	return 1;
-no_text:
-	symbol_drop_tail (o, last);
-	return 0;
 }
 
 int symbol_blit (struct symbol *o, int x, int y, const struct symbol *tile)
