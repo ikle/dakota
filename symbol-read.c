@@ -85,6 +85,27 @@ int on_text (struct shell *sh, struct symbol *o, const struct shell_cmd *cmd)
 	return symbol_text (o, x, y, cmd->argv[3][0], cmd->argv[4]);
 }
 
+static struct symbol *
+symbol_parse (struct shell *sh, struct symbol *parent, const char *name);
+
+static
+int on_tile (struct shell *sh, struct symbol *o, const struct shell_cmd *cmd)
+{
+	struct symbol *tile;
+
+	if (cmd->argc != 2)
+		return 0;
+
+	if ((tile = symbol_parse (sh, o, cmd->argv[1])) == NULL)
+		return 0;
+
+	if (symbol_add_tile (o, tile))
+		return 1;
+
+	symbol_free (tile);
+	return 0;
+}
+
 static int is_end (const struct shell_cmd *cmd)
 {
 	return cmd->argc == 1 && strcmp (cmd->argv[0], "end") == 0;
@@ -109,6 +130,7 @@ symbol_parse (struct shell *sh, struct symbol *parent, const char *name)
 		     PROC (arc,  arc)  :
 		     PROC (mark, mark) :
 		     PROC (text, text) :
+		     PROC (tile, tile) :
 		     0;
 
 	if (ok)
