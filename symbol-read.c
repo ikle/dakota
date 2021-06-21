@@ -161,7 +161,7 @@ struct symbol *symbol_read (const char *name, const char *path)
 	struct shell *sh;
 	struct symbol *o;
 
-	if ((sh = shell_alloc ("symbol", path)) == NULL)
+	if ((sh = shell_alloc ("symbols", path)) == NULL)
 		return NULL;
 
 	o = symbol_parse (sh, NULL, name);
