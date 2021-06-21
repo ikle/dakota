@@ -94,6 +94,9 @@ symbol_parse (struct shell *sh, struct symbol *parent, const char *name)
 		return NULL;
 
 	while (ok && (cmd = shell_next (sh)) != NULL) {
+		if (strcmp (cmd->argv[0], "end") == 0)
+			break;
+
 		ok = PROC (move, move) :
 		     PROC (line, line) :
 		     PROC (arc,  arc)  :
