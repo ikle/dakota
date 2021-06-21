@@ -81,7 +81,7 @@ static int on_text (struct symbol *o, const struct shell_cmd *cmd)
 }
 
 #define PROC(name, func) \
-	strcmp (cmd->argv[0], "." #name)  == 0 ? on_ ## func (o, cmd)
+	strcmp (cmd->argv[0], #name)  == 0 ? on_ ## func (o, cmd)
 
 static struct symbol *
 symbol_parse (struct shell *sh, struct symbol *parent, const char *name)
