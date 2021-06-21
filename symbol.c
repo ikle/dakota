@@ -35,11 +35,11 @@ struct node {
 	};
 };
 
-static struct node *node_alloc (enum node_type type, int x, int y)
+static struct node *node_alloc (enum node_type type, int x, int y, size_t extra)
 {
 	struct node *o;
 
-	if ((o = malloc (sizeof (*o))) == NULL)
+	if ((o = malloc (sizeof (*o) + extra)) == NULL)
 		return NULL;
 
 	o->next = NULL;
@@ -103,11 +103,11 @@ void symbol_free (struct symbol *o)
 }
 
 static struct node *
-symbol_add_node (struct symbol *o, enum node_type type, int x, int y)
+symbol_add_node (struct symbol *o, int type, int x, int y, size_t extra)
 {
 	struct node *s;
 
-	if ((s = node_alloc (type, x, y)) == NULL)
+	if ((s = node_alloc (type, x, y, extra)) == NULL)
 		return NULL;
 
 	if (o->head == NULL)
@@ -142,7 +142,7 @@ int symbol_move (struct symbol *o, int x, int y)
 		return 1;
 	}
 
-	if ((s = symbol_add_node (o, NODE_MOVE, x, y)) == NULL)
+	if ((s = symbol_add_node (o, NODE_MOVE, x, y, 0)) == NULL)
 		return 0;
 
 	return 1;
@@ -152,7 +152,7 @@ int symbol_line (struct symbol *o, int x, int y)
 {
 	struct node *s;
 
-	if ((s = symbol_add_node (o, NODE_LINE, x, y)) == NULL)
+	if ((s = symbol_add_node (o, NODE_LINE, x, y, 0)) == NULL)
 		return 0;
 
 	return 1;
@@ -162,7 +162,7 @@ int symbol_arc (struct symbol *o, int x, int y, int degree)
 {
 	struct node *s;
 
-	if ((s = symbol_add_node (o, NODE_ARC, x, y)) == NULL)
+	if ((s = symbol_add_node (o, NODE_ARC, x, y, 0)) == NULL)
 		return 0;
 
 	s->degree = degree;
@@ -174,7 +174,7 @@ int symbol_mark (struct symbol *o, int x, int y, const char *mark)
 	struct node *last = o->last;
 	struct node *s;
 
-	if ((s = symbol_add_node (o, NODE_MARK, x, y)) == NULL)
+	if ((s = symbol_add_node (o, NODE_MARK, x, y, 0)) == NULL)
 		return 0;
 
 	if ((s->mark = strdup (mark)) == NULL)
@@ -191,7 +191,7 @@ int symbol_text (struct symbol *o, int x, int y, int dir, const char *text)
 	struct node *last = o->last;
 	struct node *s;
 
-	if ((s = symbol_add_node (o, NODE_TEXT, x, y)) == NULL)
+	if ((s = symbol_add_node (o, NODE_TEXT, x, y, 0)) == NULL)
 		return 0;
 
 	if ((s->text.string = strdup (text)) == NULL)
