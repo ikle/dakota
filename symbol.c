@@ -39,7 +39,7 @@ static struct node *node_alloc (enum node_type type, int x, int y, size_t extra)
 {
 	struct node *o;
 
-	if ((o = malloc (sizeof (*o) + extra)) == NULL)
+	if ((o = malloc (offsetof (struct node, degree) + extra)) == NULL)
 		return NULL;
 
 	o->next = NULL;
@@ -142,8 +142,9 @@ int symbol_line (struct symbol *o, int x, int y)
 int symbol_arc (struct symbol *o, int x, int y, int degree)
 {
 	struct node *s;
+	const size_t extra = sizeof (s->degree);
 
-	if ((s = symbol_add_node (o, NODE_ARC, x, y, 0)) == NULL)
+	if ((s = symbol_add_node (o, NODE_ARC, x, y, extra)) == NULL)
 		return 0;
 
 	s->degree = degree;
@@ -153,7 +154,7 @@ int symbol_arc (struct symbol *o, int x, int y, int degree)
 int symbol_mark (struct symbol *o, int x, int y, const char *mark)
 {
 	struct node *s;
-	const size_t extra = strlen (mark) + 1;
+	const size_t extra = sizeof (s->mark) + strlen (mark);
 
 	if ((s = symbol_add_node (o, NODE_MARK, x, y, extra)) == NULL)
 		return 0;
@@ -165,7 +166,7 @@ int symbol_mark (struct symbol *o, int x, int y, const char *mark)
 int symbol_text (struct symbol *o, int x, int y, int dir, const char *text)
 {
 	struct node *s;
-	const size_t extra = strlen (text) + 1;
+	const size_t extra = sizeof (s->text) + strlen (text);
 
 	if ((s = symbol_add_node (o, NODE_TEXT, x, y, extra)) == NULL)
 		return 0;
