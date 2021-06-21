@@ -14,7 +14,8 @@
 #include <dakota/shell.h>
 #include <dakota/symbol.h>
 
-static int on_move (struct symbol *o, const struct shell_cmd *cmd)
+static
+int on_move (struct shell *sh, struct symbol *o, const struct shell_cmd *cmd)
 {
 	int x, y;
 
@@ -27,7 +28,8 @@ static int on_move (struct symbol *o, const struct shell_cmd *cmd)
 	return symbol_move (o, x, y);
 }
 
-static int on_line (struct symbol *o, const struct shell_cmd *cmd)
+static
+int on_line (struct shell *sh, struct symbol *o, const struct shell_cmd *cmd)
 {
 	int x, y;
 
@@ -40,7 +42,8 @@ static int on_line (struct symbol *o, const struct shell_cmd *cmd)
 	return symbol_line (o, x, y);
 }
 
-static int on_arc (struct symbol *o, const struct shell_cmd *cmd)
+static
+int on_arc (struct shell *sh, struct symbol *o, const struct shell_cmd *cmd)
 {
 	int x, y, degree;
 
@@ -54,7 +57,8 @@ static int on_arc (struct symbol *o, const struct shell_cmd *cmd)
 	return symbol_arc (o, x, y, degree);
 }
 
-static int on_mark (struct symbol *o, const struct shell_cmd *cmd)
+static
+int on_mark (struct shell *sh, struct symbol *o, const struct shell_cmd *cmd)
 {
 	int x, y;
 
@@ -67,7 +71,8 @@ static int on_mark (struct symbol *o, const struct shell_cmd *cmd)
 	return symbol_mark (o, x, y, cmd->argv[3]);
 }
 
-static int on_text (struct symbol *o, const struct shell_cmd *cmd)
+static
+int on_text (struct shell *sh, struct symbol *o, const struct shell_cmd *cmd)
 {
 	int x, y;
 
@@ -86,7 +91,7 @@ static int is_end (const struct shell_cmd *cmd)
 }
 
 #define PROC(name, func) \
-	strcmp (cmd->argv[0], #name)  == 0 ? on_ ## func (o, cmd)
+	strcmp (cmd->argv[0], #name)  == 0 ? on_ ## func (sh, o, cmd)
 
 static struct symbol *
 symbol_parse (struct shell *sh, struct symbol *parent, const char *name)
