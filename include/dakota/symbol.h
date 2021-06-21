@@ -29,15 +29,15 @@ struct symbol *symbol_read (const char *name, const char *path);
 int symbol_write (const struct symbol *o, const char *path);
 
 enum symbol_type {
-	SYMBOL_MOVE,
-	SYMBOL_LINE,
-	SYMBOL_ARC,
-	SYMBOL_MARK,
-	SYMBOL_TEXT,
-	SYMBOL_BLIT,
+	SYMBOL_MOVE	= 0,
+	SYMBOL_LINE	= 1,
+	SYMBOL_ARC	= 2,
+	SYMBOL_MARK	= 3,
+	SYMBOL_TEXT	= 4,
+	SYMBOL_BLIT	= 5,
 
-	SYMBOL_TILE,
-	SYMBOL_END,
+	SYMBOL_TILE	= 14,
+	SYMBOL_END	= 15,
 };
 
 typedef int symbol_fn (void *cookie, int type, int x, int y, ...);
