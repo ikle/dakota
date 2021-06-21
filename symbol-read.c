@@ -82,7 +82,7 @@ static int on_text (struct symbol *o, const struct shell_cmd *cmd)
 
 static int is_end (const struct shell_cmd *cmd)
 {
-	return strcmp (cmd->argv[0], "end") == 0;
+	return cmd->argc == 1 && strcmp (cmd->argv[0], "end") == 0;
 }
 
 #define PROC(name, func) \
