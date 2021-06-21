@@ -213,6 +213,11 @@ int symbol_walk (const struct symbol *o, symbol_fn *fn, void *cookie)
 	int ok = 1;
 	size_t i;
 
+	for (i = 0; ok && i < o->ntiles; ++i)
+		ok = fn (cookie, SYMBOL_TILE, 0, 0, o->tile[i]->name)	&&
+		     symbol_walk (o->tile[i], fn, cookie)		&&
+		     fn (cookie, SYMBOL_END, 0, 0);
+
 	for (s = o->head; ok && s != NULL; s = s->next)
 		switch (s->type) {
 		case SYMBOL_MOVE:
@@ -236,11 +241,6 @@ int symbol_walk (const struct symbol *o, symbol_fn *fn, void *cookie)
 				 s->blit.name);
 			break;
 		}
-
-	for (i = 0; ok && i < o->ntiles; ++i)
-		ok = fn (cookie, SYMBOL_TILE, 0, 0, o->tile[i]->name)	&&
-		     symbol_walk (o->tile[i], fn, cookie)		&&
-		     fn (cookie, SYMBOL_END, 0, 0);
 
 	return ok;
 }
