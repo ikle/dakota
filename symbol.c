@@ -11,6 +11,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <dakota/array.h>
 #include <dakota/symbol.h>
 
 struct node {
@@ -57,6 +58,9 @@ struct symbol {
 	struct symbol *parent;
 	char *name;
 	struct node *head, *last;
+
+	size_t ntiles;
+	struct symbol **tile;
 };
 
 struct symbol *symbol_alloc (struct symbol *parent, const char *name)
@@ -72,6 +76,8 @@ struct symbol *symbol_alloc (struct symbol *parent, const char *name)
 		goto no_name;
 
 	o->last = o->head = NULL;
+	o->ntiles = 0;
+	o->tile   = NULL;
 	return o;
 no_name:
 	free (o);
@@ -83,6 +89,7 @@ void symbol_free (struct symbol *o)
 	if (o == NULL)
 		return;
 
+	array_free (o->tile, o->ntiles, symbol_free);
 	node_free (o->head);
 	free (o->name);
 	free (o);
@@ -178,6 +185,22 @@ int symbol_text (struct symbol *o, int x, int y, int dir, const char *text)
 
 	s->text.dir = dir;
 	strcpy (s->text.string, text);
+	return 1;
+}
+
+int symbol_add_tile (struct symbol *o, struct symbol *tile)
+{
+	const size_t ntiles = o->ntiles + 1;
+	struct symbol **p;
+
+	if ((p = array_resize (o->tile, ntiles)) == NULL)
+		return 0;
+
+	tile->parent = o;
+	p[o->ntiles] = tile;
+
+	o->tile   = p;
+	o->ntiles = ntiles;
 	return 1;
 }
 

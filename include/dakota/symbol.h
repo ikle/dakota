@@ -23,6 +23,8 @@ int symbol_mark (struct symbol *o, int x, int y, const char *mark);
 int symbol_text (struct symbol *o, int x, int y, int dir, const char *text);
 int symbol_blit (struct symbol *o, int x, int y, const struct symbol *tile);
 
+int symbol_add_tile (struct symbol *o, struct symbol *tile);
+
 struct symbol *symbol_read (const char *name, const char *path);
 int symbol_write (const struct symbol *o, const char *path);
 
