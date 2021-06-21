@@ -26,7 +26,9 @@ struct node {
 	enum node_type type;
 	int x, y;
 	union {
-		int angle;
+		struct {
+			int angle;
+		} arc;
 		char mark[1];
 		struct {
 			int dir;
@@ -39,7 +41,7 @@ static struct node *node_alloc (enum node_type type, int x, int y, size_t extra)
 {
 	struct node *o;
 
-	if ((o = malloc (offsetof (struct node, angle) + extra)) == NULL)
+	if ((o = malloc (offsetof (struct node, arc) + extra)) == NULL)
 		return NULL;
 
 	o->next = NULL;
@@ -142,12 +144,12 @@ int symbol_line (struct symbol *o, int x, int y)
 int symbol_arc (struct symbol *o, int x, int y, int angle)
 {
 	struct node *s;
-	const size_t extra = sizeof (s->angle);
+	const size_t extra = sizeof (s->arc);
 
 	if ((s = symbol_add_node (o, NODE_ARC, x, y, extra)) == NULL)
 		return 0;
 
-	s->angle = angle;
+	s->arc.angle = angle;
 	return 1;
 }
 
@@ -191,7 +193,7 @@ int symbol_blit (struct symbol *o, int x, int y, const struct symbol *tile)
 			ok &= symbol_line (o, x + s->x, y + s->y);
 			break;
 		case NODE_ARC:
-			ok &= symbol_arc  (o, x + s->x, y + s->y, s->angle);
+			ok &= symbol_arc  (o, x + s->x, y + s->y, s->arc.angle);
 			break;
 		case NODE_MARK:
 			ok &= symbol_mark (o, x + s->x, y + s->y, s->mark);
