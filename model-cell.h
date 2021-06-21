@@ -12,6 +12,8 @@
 #include <stdarg.h>
 #include <stddef.h>
 
+#include <dakota/bitmap.h>
+
 #include "model-pair.h"
 #include "model-tuple.h"
 
@@ -27,6 +29,8 @@ struct cell {
 	struct pair  *param;
 	size_t        nattrs;
 	struct pair  *attr;
+
+	struct bitmap *map;
 };
 
 int  cell_init (struct cell *o, const char *type, const char *name);
@@ -39,6 +43,8 @@ int cell_add_tuple_v  (struct cell *o, int size, const char *argv[]);
 int cell_add_tuple    (struct cell *o, int size, ...);
 int cell_add_param    (struct cell *o, const char *name, const char *value);
 int cell_add_attr     (struct cell *o, const char *name, const char *value);
+
+int cell_load_bitmap  (struct cell *o, const char *path);
 
 const char *cell_get_attr (const struct cell *o, const char *name);
 

@@ -29,6 +29,8 @@ int cell_init (struct cell *o, const char *type, const char *name)
 	o->param   = NULL;
 	o->nattrs  = 0;
 	o->attr    = NULL;
+
+	o->map = NULL;
 	return 1;
 no_name:
 	free (o->type);
@@ -44,6 +46,8 @@ void cell_fini (struct cell *o)
 	array_free (o->tuple, o->ntuples, tuple_fini);
 	array_free (o->param, o->nparams, pair_fini);
 	array_free (o->attr,  o->nattrs,  pair_fini);
+
+	bitmap_free (o->map);
 }
 
 int cell_add_bind (struct cell *o, const char *port, const char *value)
@@ -141,6 +145,13 @@ int cell_add_attr (struct cell *o, const char *name, const char *value)
 
 	o->nattrs = nattrs;
 	return 1;
+}
+
+int cell_load_bitmap (struct cell *o, const char *path)
+{
+	bitmap_free (o->map);
+
+	return (o->map = bitmap_import (path)) != NULL;
 }
 
 const char *cell_get_attr (const struct cell *o, const char *name)
