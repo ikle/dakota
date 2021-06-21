@@ -25,7 +25,7 @@ int on_move (struct shell *sh, struct symbol *o, const struct shell_cmd *cmd)
 	x = atoi (cmd->argv[1]);
 	y = atoi (cmd->argv[2]);
 
-	return symbol_move (o, x, y);
+	return symbol_add_move (o, x, y);
 }
 
 static
@@ -39,7 +39,7 @@ int on_line (struct shell *sh, struct symbol *o, const struct shell_cmd *cmd)
 	x = atoi (cmd->argv[1]);
 	y = atoi (cmd->argv[2]);
 
-	return symbol_line (o, x, y);
+	return symbol_add_line (o, x, y);
 }
 
 static
@@ -54,7 +54,7 @@ int on_arc (struct shell *sh, struct symbol *o, const struct shell_cmd *cmd)
 	y      = atoi (cmd->argv[2]);
 	degree = atoi (cmd->argv[3]);
 
-	return symbol_arc (o, x, y, degree);
+	return symbol_add_arc (o, x, y, degree);
 }
 
 static
@@ -68,7 +68,7 @@ int on_mark (struct shell *sh, struct symbol *o, const struct shell_cmd *cmd)
 	x = atoi (cmd->argv[1]);
 	y = atoi (cmd->argv[2]);
 
-	return symbol_mark (o, x, y, cmd->argv[3]);
+	return symbol_add_mark (o, x, y, cmd->argv[3]);
 }
 
 static
@@ -82,7 +82,7 @@ int on_text (struct shell *sh, struct symbol *o, const struct shell_cmd *cmd)
 	x = atoi (cmd->argv[1]);
 	y = atoi (cmd->argv[2]);
 
-	return symbol_text (o, x, y, cmd->argv[3][0], cmd->argv[4]);
+	return symbol_add_text (o, x, y, cmd->argv[3][0], cmd->argv[4]);
 }
 
 static
@@ -97,7 +97,7 @@ int on_blit (struct shell *sh, struct symbol *o, const struct shell_cmd *cmd)
 	y   = atoi (cmd->argv[2]);
 	dir = atoi (cmd->argv[3]);
 
-	return symbol_blit (o, x, y, dir, cmd->argv[4]);
+	return symbol_add_blit (o, x, y, dir, cmd->argv[4]);
 }
 
 static struct symbol *

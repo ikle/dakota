@@ -115,7 +115,7 @@ symbol_add_node (struct symbol *o, int type, int x, int y, size_t extra)
 	return s;
 }
 
-int symbol_move (struct symbol *o, int x, int y)
+int symbol_add_move (struct symbol *o, int x, int y)
 {
 	struct node *s = o->last;
 
@@ -131,7 +131,7 @@ int symbol_move (struct symbol *o, int x, int y)
 	return 1;
 }
 
-int symbol_line (struct symbol *o, int x, int y)
+int symbol_add_line (struct symbol *o, int x, int y)
 {
 	struct node *s;
 
@@ -141,7 +141,7 @@ int symbol_line (struct symbol *o, int x, int y)
 	return 1;
 }
 
-int symbol_arc (struct symbol *o, int x, int y, int angle)
+int symbol_add_arc (struct symbol *o, int x, int y, int angle)
 {
 	struct node *s;
 	const size_t extra = sizeof (s->arc);
@@ -153,7 +153,7 @@ int symbol_arc (struct symbol *o, int x, int y, int angle)
 	return 1;
 }
 
-int symbol_mark (struct symbol *o, int x, int y, const char *mark)
+int symbol_add_mark (struct symbol *o, int x, int y, const char *mark)
 {
 	struct node *s;
 	const size_t extra = sizeof (s->mark) + strlen (mark);
@@ -165,7 +165,7 @@ int symbol_mark (struct symbol *o, int x, int y, const char *mark)
 	return 1;
 }
 
-int symbol_text (struct symbol *o, int x, int y, int dir, const char *text)
+int symbol_add_text (struct symbol *o, int x, int y, int dir, const char *text)
 {
 	struct node *s;
 	const size_t extra = sizeof (s->text) + strlen (text);
@@ -178,7 +178,7 @@ int symbol_text (struct symbol *o, int x, int y, int dir, const char *text)
 	return 1;
 }
 
-int symbol_blit (struct symbol *o, int x, int y, int dir, const char *name)
+int symbol_add_blit (struct symbol *o, int x, int y, int dir, const char *name)
 {
 	struct node *s;
 	const size_t extra = sizeof (s->blit) + strlen (name);

@@ -16,12 +16,12 @@
 struct symbol *symbol_alloc (struct symbol *parent, const char *name);
 void symbol_free (struct symbol *o);
 
-int symbol_move (struct symbol *o, int x, int y);
-int symbol_line (struct symbol *o, int x, int y);
-int symbol_arc  (struct symbol *o, int x, int y, int angle);
-int symbol_mark (struct symbol *o, int x, int y, const char *mark);
-int symbol_text (struct symbol *o, int x, int y, int dir, const char *text);
-int symbol_blit (struct symbol *o, int x, int y, int dir, const char *name);
+int symbol_add_move (struct symbol *o, int x, int y);
+int symbol_add_line (struct symbol *o, int x, int y);
+int symbol_add_arc  (struct symbol *o, int x, int y, int angle);
+int symbol_add_mark (struct symbol *o, int x, int y, const char *mark);
+int symbol_add_text (struct symbol *o, int x, int y, int dir, const char *text);
+int symbol_add_blit (struct symbol *o, int x, int y, int dir, const char *name);
 
 int symbol_add_tile (struct symbol *o, struct symbol *tile);
 
