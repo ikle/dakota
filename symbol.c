@@ -54,18 +54,28 @@ static void node_free (struct node *o)
 }
 
 struct symbol {
+	struct symbol *parent;
+	char *name;
 	struct node *head, *last;
 };
 
-struct symbol *symbol_alloc (void)
+struct symbol *symbol_alloc (struct symbol *parent, const char *name)
 {
 	struct symbol *o;
 
 	if ((o = malloc (sizeof (*o))) == NULL)
 		return NULL;
 
+	o->parent = parent;
+
+	if ((o->name = strdup (name)) == NULL)
+		goto no_name;
+
 	o->last = o->head = NULL;
 	return o;
+no_name:
+	free (o);
+	return NULL;
 }
 
 void symbol_free (struct symbol *o)
@@ -74,6 +84,7 @@ void symbol_free (struct symbol *o)
 		return;
 
 	node_free (o->head);
+	free (o->name);
 	free (o);
 }
 

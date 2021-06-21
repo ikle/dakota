@@ -83,14 +83,14 @@ static int on_text (struct symbol *o, const struct shell_cmd *cmd)
 #define PROC(name, func) \
 	strcmp (cmd->argv[0], "." #name)  == 0 ? on_ ## func (o, cmd)
 
-struct symbol *symbol_read (const char *path)
+struct symbol *symbol_read (const char *name, const char *path)
 {
 	struct symbol *o;
 	struct shell *sh;
 	const struct shell_cmd *cmd;
 	int ok = 1;
 
-	if ((o = symbol_alloc ()) == NULL)
+	if ((o = symbol_alloc (NULL, name)) == NULL)
 		return NULL;
 
 	if ((sh = shell_alloc ("symbol", path)) == NULL)
