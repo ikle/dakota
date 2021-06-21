@@ -239,6 +239,7 @@ int symbol_walk (const struct symbol *o, symbol_fn *fn, void *cookie)
 {
 	const struct node *s;
 	int ok = 1;
+	size_t i;
 
 	for (s = o->head; ok && s != NULL; s = s->next)
 		switch (s->type) {
@@ -259,6 +260,11 @@ int symbol_walk (const struct symbol *o, symbol_fn *fn, void *cookie)
 				 s->text.string);
 			break;
 		}
+
+	for (i = 0; ok && i < o->ntiles; ++i)
+		ok = fn (cookie, SYMBOL_TILE, 0, 0, o->tile[i]->name)	&&
+		     symbol_walk (o->tile[i], fn, cookie)		&&
+		     fn (cookie, SYMBOL_END, 0, 0);
 
 	return ok;
 }

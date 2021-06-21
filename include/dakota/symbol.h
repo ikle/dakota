@@ -34,6 +34,9 @@ enum symbol_type {
 	SYMBOL_ARC,
 	SYMBOL_MARK,
 	SYMBOL_TEXT,
+
+	SYMBOL_TILE,
+	SYMBOL_END,
 };
 
 typedef int symbol_fn (void *cookie, int type, int x, int y, ...);
