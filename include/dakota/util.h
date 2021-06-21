@@ -9,8 +9,8 @@
 #ifndef DAKOTA_UTIL_H
 #define DAKOTA_UTIL_H
 
-#include <dakota/shell.h>
+#include <stdio.h>
 
-struct shell *dakota_open (const char *category, const char *path);
+FILE *dakota_open (const char *category, const char *path);
 
 #endif  /* DAKOTA_UTIL_H */

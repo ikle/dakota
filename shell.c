@@ -12,7 +12,7 @@
 #include <string.h>
 
 #include <dakota/shell.h>
-#include <dakota/string.h>
+#include <dakota/util.h>
 
 struct shell {
 	FILE *in;
@@ -22,26 +22,18 @@ struct shell {
 	struct shell_cmd cmd;
 };
 
-struct shell *shell_alloc (const char *fmt, ...)
+struct shell *shell_alloc (const char *category, const char *path)
 {
 	struct shell *o;
-	va_list ap;
-	char *path;
 
 	if ((o = malloc (sizeof (*o))) == NULL)
 		return NULL;
 
-	va_start(ap, fmt);
-	path = make_string_va (fmt, ap);
-	va_end(ap);
-
 	if (strcmp (path, "-") == 0)
 		o->in = stdin;
 	else
-	if ((o->in = fopen (path, "r")) == NULL)
+	if ((o->in = dakota_open (category, path)) == NULL)
 		goto no_file;
-
-	free (path);
 
 	o->nchars     = 0;
 	o->line       = NULL;
@@ -49,7 +41,6 @@ struct shell *shell_alloc (const char *fmt, ...)
 	o->cmd.argv   = NULL;
 	return o;
 no_file:
-	free (path);
 	free (o);
 	return NULL;
 }

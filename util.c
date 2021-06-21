@@ -8,6 +8,7 @@
 
 #include <stdlib.h>
 
+#include <dakota/string.h>
 #include <dakota/util.h>
 
 #ifndef PREFIX
@@ -22,27 +23,39 @@
 #define USER_DATADIR	".local/share"
 #endif
 
-struct shell *dakota_open (const char *category, const char *path)
+FILE *dakota_open (const char *category, const char *path)
 {
-	struct shell *sh;
+	const char *mode = "r";
+	FILE *f;
 	const char *home, *fmt;
+	char *p;
 
-	if (path[0] != '+')
-		return shell_alloc ("%s", path);
+	if (category == NULL || path[0] != '+')
+		return fopen (path, mode);
 
 	++path;
 
 	home = getenv ("HOME");
-	fmt  = "%s/" USER_DATADIR "/dakota/%s/%s";
 
-	if (home != NULL &&
-	    (sh = shell_alloc (fmt, home, category, path)) != NULL)
-		return sh;
+	if (home != NULL) {
+		fmt = "%s/" USER_DATADIR "/dakota/%s/%s";
+
+		if ((p = make_string (fmt, home, category, path)) == NULL)
+			return NULL;
+
+		f = fopen (p, mode);
+		free (p);
+
+		if (f != NULL)
+			return f;
+	}
 
 	fmt = DATADIR "/dakota/%s/%s";
 
-	if ((sh = shell_alloc (fmt, category, path)) != NULL)
-		return sh;
+	if ((p = make_string (fmt, category, path)) == NULL)
+		return NULL;
 
-	return NULL;
+	f = fopen (p, mode);
+	free (p);
+	return f;
 }

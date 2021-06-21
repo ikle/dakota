@@ -11,8 +11,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <dakota/shell.h>
 #include <dakota/symbol.h>
-#include <dakota/util.h>
 
 static int on_move (struct symbol *o, const struct shell_cmd *cmd)
 {
@@ -93,7 +93,7 @@ struct symbol *symbol_read (const char *path)
 	if ((o = symbol_alloc ()) == NULL)
 		return NULL;
 
-	if ((sh = dakota_open ("symbol", path)) == NULL)
+	if ((sh = shell_alloc ("symbol", path)) == NULL)
 		goto no_shell;
 
 	while ((cmd = shell_next (sh)) != NULL) {

@@ -11,7 +11,7 @@
 
 #include <stddef.h>
 
-struct shell *shell_alloc (const char *fmt, ...);
+struct shell *shell_alloc (const char *category, const char *path);
 void shell_free (struct shell *o);
 
 struct shell_cmd {

@@ -176,7 +176,7 @@ struct model *model_read (const char *path)
 	const struct shell_cmd *cmd;
 	int ok;
 
-	if ((sh = shell_alloc ("%s", path)) == NULL)
+	if ((sh = shell_alloc ("model", path)) == NULL)
 		return NULL;
 
 	while ((cmd = shell_next (sh)) != NULL) {

@@ -20,7 +20,7 @@ int main (int argc, char *argv[])
 	if (argc != 2)
 		errx (1, "\n\tshell-test <input-file>");
 
-	if ((o = shell_alloc ("%s", argv[1])) == NULL)
+	if ((o = shell_alloc (NULL, argv[1])) == NULL)
 		err (1, "cannot open %s", argv[1]);
 
 	while ((cmd = shell_next (o)) != NULL) {
