@@ -29,8 +29,6 @@ int model_init (struct model *o, struct model *parent, const char *name)
 	o->param   = NULL;
 	o->nports  = 0;
 	o->port    = NULL;
-	o->nwires  = 0;
-	o->wire    = NULL;
 	o->ncells  = 0;
 	o->cell    = NULL;
 	o->nmodels = 0;
@@ -45,7 +43,6 @@ void model_fini (struct model *o)
 	free (o->name);
 
 	array_free (o->port,  o->nports,  port_fini);
-	array_free (o->wire,  o->nwires,  wire_fini);
 	array_free (o->cell,  o->ncells,  cell_fini);
 	array_free (o->model, o->nmodels, model_fini);
 
@@ -90,19 +87,14 @@ int model_add_output (struct model *o, const char *name)
 int model_add_wire (struct model *o, const char *sink, const char *source)
 {
 	struct model *m = o->last;
-	const size_t nwires = m->nwires + 1;
-	struct wire *p;
+	int ok = 1;
 
-	if ((p = array_resize (m->wire, nwires)) == NULL)
-		return error (&o->error, NULL);
+	ok &= model_add_cell (m, "table", NULL);
+	ok &= model_add_attr (m, "cell-kind", "conn");
+	ok &= model_add_bind (m, NULL, source);
+	ok &= model_add_bind (m, NULL, sink);
 
-	m->wire = p;
-
-	if (!wire_init (m->wire + m->nwires, sink, source))
-		return error (&o->error, NULL);
-
-	m->nwires = nwires;
-	return 1;
+	return ok;
 }
 
 int model_add_cell (struct model *o, const char *type, const char *name)
