@@ -39,6 +39,7 @@ struct shell *shell_alloc (const char *category, const char *path)
 	o->line       = NULL;
 	o->nwords     = 0;
 	o->cmd.argv   = NULL;
+	o->cmd.lineno = 0;
 	return o;
 no_file:
 	free (o);
@@ -167,6 +168,7 @@ static int get_word_char (struct shell *o)
 			return '\\';
 		}
 
+		++o->cmd.lineno;
 		/* collapse backspace + newline, concatenate lines */
 	}
 
@@ -228,6 +230,8 @@ tail:
 	if (a != '\n')
 		goto start;
 end:
+	++o->cmd.lineno;
+
 	if (o->cmd.argc > 0) {
 		debug ("got %zu words", o->cmd.argc);
 		return o->cmd.argc;

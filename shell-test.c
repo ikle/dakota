@@ -24,7 +24,7 @@ int main (int argc, char *argv[])
 		err (1, "cannot open %s", argv[1]);
 
 	while ((cmd = shell_next (o)) != NULL) {
-		printf ("got %zu words:", cmd->argc);
+		printf ("%zu: got %zu words:", cmd->lineno, cmd->argc);
 
 		for (i = 0; i < cmd->argc; ++i)
 			printf (" %s", cmd->argv[i]);
