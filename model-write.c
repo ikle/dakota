@@ -200,28 +200,6 @@ static int model_write_cells (struct model *o, FILE *out)
 	return ok;
 }
 
-static int model_write_wires (struct model *o, FILE *out)
-{
-	const char *sink, *source;
-	size_t i, to, from;
-	int ok = 1;
-
-	for (i = 0; i < o->nwires; ++i) {
-		sink   = o->wire[i].sink;
-		source = o->wire[i].source;
-		to     = o->wire[i].to;
-		from   = o->wire[i].from;
-
-		if (to == M_UNKNOWN || from == M_UNKNOWN)
-			return model_error (o, "broken wire from %s to %s",
-					    source, sink);
-
-		ok &= fprintf (out, ".conn %s %s\n", source, sink) > 0;
-	}
-
-	return ok;
-}
-
 static int model_write_one (struct model *o, FILE *out)
 {
 	int ok = 1;
@@ -232,7 +210,6 @@ static int model_write_one (struct model *o, FILE *out)
 	ok &= model_write_inputs  (o, out);
 	ok &= model_write_outputs (o, out);
 	ok &= model_write_cells   (o, out);
-	ok &= model_write_wires   (o, out);
 
 	ok &= fprintf (out, ".end\n") > 0;
 
