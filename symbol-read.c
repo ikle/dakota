@@ -71,13 +71,13 @@ static int on_text (struct symbol *o, const struct shell_cmd *cmd)
 {
 	int x, y;
 
-	if (cmd->argc != 4)
+	if (cmd->argc != 5)
 		return 0;
 
 	x = atoi (cmd->argv[1]);
 	y = atoi (cmd->argv[2]);
 
-	return symbol_text (o, x, y, cmd->argv[3]);
+	return symbol_text (o, x, y, cmd->argv[3][0], cmd->argv[4]);
 }
 
 #define PROC(name, func) \

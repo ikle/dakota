@@ -20,7 +20,7 @@ int symbol_move (struct symbol *o, int x, int y);
 int symbol_line (struct symbol *o, int x, int y);
 int symbol_arc  (struct symbol *o, int x, int y, int degree);
 int symbol_mark (struct symbol *o, int x, int y, const char *mark);
-int symbol_text (struct symbol *o, int x, int y, const char *text);
+int symbol_text (struct symbol *o, int x, int y, int dir, const char *text);
 int symbol_blit (struct symbol *o, int x, int y, const struct symbol *tile);
 
 struct symbol *symbol_read (const char *path);

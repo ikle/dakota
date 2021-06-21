@@ -28,7 +28,10 @@ struct node {
 	union {
 		int degree;
 		char *mark;
-		char *text;
+		struct {
+			int dir;
+			char *string;
+		} text;
 	};
 };
 
@@ -56,7 +59,7 @@ static void node_free_one (struct node *o)
 		free (o->mark);
 		break;
 	case NODE_TEXT:
-		free (o->text);
+		free (o->text.string);
 		break;
 	default:
 		break;
@@ -183,7 +186,7 @@ no_mark:
 	return 0;
 }
 
-int symbol_text (struct symbol *o, int x, int y, const char *text)
+int symbol_text (struct symbol *o, int x, int y, int dir, const char *text)
 {
 	struct node *last = o->last;
 	struct node *s;
@@ -191,9 +194,10 @@ int symbol_text (struct symbol *o, int x, int y, const char *text)
 	if ((s = symbol_add_node (o, NODE_TEXT, x, y)) == NULL)
 		return 0;
 
-	if ((s->text = strdup (text)) == NULL)
+	if ((s->text.string = strdup (text)) == NULL)
 		goto no_text;
 
+	s->text.dir = dir;
 	return 1;
 no_text:
 	symbol_drop_tail (o, last);
@@ -221,7 +225,8 @@ int symbol_blit (struct symbol *o, int x, int y, const struct symbol *tile)
 			ok &= symbol_mark (o, x + s->x, y + s->y, s->mark);
 			break;
 		case NODE_TEXT:
-			ok &= symbol_text (o, x + s->x, y + s->y, s->text);
+			ok &= symbol_text (o, x + s->x, y + s->y,
+					   s->text.dir, s->text.string);
 			break;
 		}
 
