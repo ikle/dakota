@@ -27,7 +27,7 @@ int main (int argc, char *argv[])
 
 	bits = chip_bits_parse (sample);
 
-	if (!bitmap_add (tile, bits))
+	if (!bitmap_add_bits (tile, bits))
 		err (1, "cammot add bits to tile");
 
 	ok = bitmap_blit (image,  0,  0, tile) &&

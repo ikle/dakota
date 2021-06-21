@@ -124,7 +124,7 @@ static int bitmap_put (struct bitmap *o, size_t x, size_t y, int value)
 	return 1;
 }
 
-int bitmap_add (struct bitmap *o, const unsigned *bits)
+int bitmap_add_bits (struct bitmap *o, const unsigned *bits)
 {
 	int x, y;
 
@@ -157,7 +157,7 @@ static void bitmap_drop (struct bitmap *o, size_t x, size_t y)
 	o->mask[i] &= ~pattern;
 }
 
-void bitmap_sub (struct bitmap *o, const unsigned *bits)
+void bitmap_sub_bits (struct bitmap *o, const unsigned *bits)
 {
 	int x, y;
 

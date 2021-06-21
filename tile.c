@@ -33,7 +33,7 @@ static int tile_add_bits (struct tile *o, const char *value, int invert)
 	if (invert)
 		chip_bits_invert (bits);
 
-	ok = bitmap_add (o->map, bits);
+	ok = bitmap_add_bits (o->map, bits);
 	free (bits);
 	return ok;
 }
@@ -96,7 +96,7 @@ void tile_free (struct tile *o)
 
 int tile_set_raw (struct tile *o, const unsigned *bits)
 {
-	return bitmap_add (o->map, bits);
+	return bitmap_add_bits (o->map, bits);
 }
 
 int tile_set_mux (struct tile *o, const char *name, const char *source)
