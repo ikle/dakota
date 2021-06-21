@@ -83,39 +83,41 @@ static int on_text (struct symbol *o, const struct shell_cmd *cmd)
 #define PROC(name, func) \
 	strcmp (cmd->argv[0], "." #name)  == 0 ? on_ ## func (o, cmd)
 
-struct symbol *symbol_read (const char *name, const char *path)
+static struct symbol *
+symbol_parse (struct shell *sh, struct symbol *parent, const char *name)
 {
 	struct symbol *o;
-	struct shell *sh;
 	const struct shell_cmd *cmd;
 	int ok = 1;
 
-	if ((o = symbol_alloc (NULL, name)) == NULL)
+	if ((o = symbol_alloc (parent, name)) == NULL)
 		return NULL;
 
-	if ((sh = shell_alloc ("symbol", path)) == NULL)
-		goto no_shell;
-
-	while ((cmd = shell_next (sh)) != NULL) {
+	while (ok && (cmd = shell_next (sh)) != NULL) {
 		ok = PROC (move, move) :
 		     PROC (line, line) :
 		     PROC (arc,  arc)  :
 		     PROC (mark, mark) :
 		     PROC (text, text) :
 		     0;
-
-		if (!ok)
-			break;
 	}
 
-	shell_free (sh);
+	if (ok)
+		return o;
 
-	if (!ok)
-		goto no_parse;
-
-	return o;
-no_parse:
-no_shell:
 	symbol_free (o);
 	return NULL;
+}
+
+struct symbol *symbol_read (const char *name, const char *path)
+{
+	struct shell *sh;
+	struct symbol *o;
+
+	if ((sh = shell_alloc ("symbol", path)) == NULL)
+		return NULL;
+
+	o = symbol_parse (sh, NULL, name);
+	shell_free (sh);
+	return o;
 }
