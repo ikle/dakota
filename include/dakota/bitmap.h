@@ -27,6 +27,9 @@ void bitmap_free (struct bitmap *o);
 
 int bitmap_resize (struct bitmap *o, size_t x, size_t y);
 
+int  bitmap_add (struct bitmap *o, size_t x, size_t y, int value);
+void bitmap_sub (struct bitmap *o, size_t x, size_t y);
+
 int  bitmap_add_bits (struct bitmap *o, const unsigned *bits);
 void bitmap_sub_bits (struct bitmap *o, const unsigned *bits);
 

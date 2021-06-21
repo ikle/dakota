@@ -104,7 +104,7 @@ no_mask:
 	return 0;
 }
 
-static int bitmap_put (struct bitmap *o, size_t x, size_t y, int value)
+int bitmap_add (struct bitmap *o, size_t x, size_t y, int value)
 {
 	size_t i;
 	unsigned char pattern;
@@ -135,7 +135,7 @@ int bitmap_add_bits (struct bitmap *o, const unsigned *bits)
 		x = chip_bit_x (*bits);
 		y = chip_bit_y (*bits);
 
-		if (!bitmap_put (o, x, y, chip_bit_value (*bits)))
+		if (!bitmap_add (o, x, y, chip_bit_value (*bits)))
 			return 0;
 	}
 	while (!chip_bit_last (*bits++));
@@ -143,7 +143,7 @@ int bitmap_add_bits (struct bitmap *o, const unsigned *bits)
 	return 1;
 }
 
-static void bitmap_drop (struct bitmap *o, size_t x, size_t y)
+void bitmap_sub (struct bitmap *o, size_t x, size_t y)
 {
 	size_t i;
 	unsigned char pattern;
@@ -168,7 +168,7 @@ void bitmap_sub_bits (struct bitmap *o, const unsigned *bits)
 		x = chip_bit_x (*bits);
 		y = chip_bit_y (*bits);
 
-		bitmap_drop (o, x, y);
+		bitmap_sub (o, x, y);
 	}
 	while (!chip_bit_last (*bits++));
 }
