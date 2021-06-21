@@ -167,7 +167,7 @@ static int get_word_char (struct shell *o)
 			return '\\';
 		}
 
-		/* collapse backspash + newline, concatenate lines */
+		/* collapse backspace + newline, concatenate lines */
 	}
 
 	return a;  /* unreachable */
