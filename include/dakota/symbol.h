@@ -21,7 +21,9 @@ int symbol_line (struct symbol *o, int x, int y);
 int symbol_arc  (struct symbol *o, int x, int y, int angle);
 int symbol_mark (struct symbol *o, int x, int y, const char *mark);
 int symbol_text (struct symbol *o, int x, int y, int dir, const char *text);
-int symbol_blit (struct symbol *o, int x, int y, const struct symbol *tile);
+
+int symbol_blit (struct symbol *o, int x, int y, int dir,
+		 const struct symbol *tile);
 
 int symbol_add_tile (struct symbol *o, struct symbol *tile);
 

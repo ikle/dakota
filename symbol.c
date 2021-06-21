@@ -203,31 +203,63 @@ int symbol_add_tile (struct symbol *o, struct symbol *tile)
 	return 1;
 }
 
-int symbol_blit (struct symbol *o, int x, int y, const struct symbol *tile)
+static void vector_rotate (int x, int y, int dir, int *nx, int *ny)
+{
+	switch (dir) {
+	default:	*nx =  x; *ny =  y; return;
+	case 'N':	*nx = -y; *ny =  x; return;
+	case 'W':	*nx = -x; *ny = -y; return;
+	case 'S':	*nx =  y; *ny = -x; return;
+	}
+}
+
+static int dir_index (int dir)
+{
+	switch (dir) {
+	default:	return 0;
+	case 'N':	return 1;
+	case 'W':	return 2;
+	case 'S':	return 3;
+	}
+}
+
+static int dir_rotate (int dira, int dirb)
+{
+	char ring[4] = "ONWS";
+
+	return ring[(dir_index (dira) + dir_index (dirb)) & 3];
+}
+
+int symbol_blit (struct symbol *o, int x, int y, int dir,
+		 const struct symbol *tile)
 {
 	struct node *last = o->last;
 	const struct node *s;
-	int ok = 1;
+	int nx, ny, ndir, ok = 1;
 
-	for (s = tile->head; s != NULL; s = s->next)
+	for (s = tile->head; s != NULL; s = s->next) {
+		vector_rotate (s->x, s->y, dir, &nx, &ny);
+
 		switch (s->type) {
 		case SYMBOL_MOVE:
-			ok &= symbol_move (o, x + s->x, y + s->y);
+			ok &= symbol_move (o, x + nx, y + ny);
 			break;
 		case SYMBOL_LINE:
-			ok &= symbol_line (o, x + s->x, y + s->y);
+			ok &= symbol_line (o, x + nx, y + ny);
 			break;
 		case SYMBOL_ARC:
-			ok &= symbol_arc  (o, x + s->x, y + s->y, s->arc.angle);
+			ok &= symbol_arc  (o, x + nx, y + ny, s->arc.angle);
 			break;
 		case SYMBOL_MARK:
-			ok &= symbol_mark (o, x + s->x, y + s->y, s->mark);
+			ok &= symbol_mark (o, x + nx, y + ny, s->mark);
 			break;
 		case SYMBOL_TEXT:
-			ok &= symbol_text (o, x + s->x, y + s->y,
-					   s->text.dir, s->text.string);
+			ndir = dir_rotate (s->text.dir, dir);
+			ok &= symbol_text (o, x + nx, y + ny,
+					   ndir, s->text.string);
 			break;
 		}
+	}
 
 	if (!ok)
 		symbol_drop_tail (o, last);
