@@ -80,6 +80,11 @@ static int on_text (struct symbol *o, const struct shell_cmd *cmd)
 	return symbol_text (o, x, y, cmd->argv[3][0], cmd->argv[4]);
 }
 
+static int is_end (const struct shell_cmd *cmd)
+{
+	return strcmp (cmd->argv[0], "end") == 0;
+}
+
 #define PROC(name, func) \
 	strcmp (cmd->argv[0], #name)  == 0 ? on_ ## func (o, cmd)
 
@@ -93,17 +98,13 @@ symbol_parse (struct shell *sh, struct symbol *parent, const char *name)
 	if ((o = symbol_alloc (parent, name)) == NULL)
 		return NULL;
 
-	while (ok && (cmd = shell_next (sh)) != NULL) {
-		if (strcmp (cmd->argv[0], "end") == 0)
-			break;
-
+	while (ok && (cmd = shell_next (sh)) != NULL && !is_end (cmd))
 		ok = PROC (move, move) :
 		     PROC (line, line) :
 		     PROC (arc,  arc)  :
 		     PROC (mark, mark) :
 		     PROC (text, text) :
 		     0;
-	}
 
 	if (ok)
 		return o;
