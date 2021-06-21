@@ -16,8 +16,7 @@
 
 struct node {
 	struct node *next;
-	enum symbol_type type;
-	int x, y;
+	int type, x, y;
 	union {
 		struct {
 			int angle;
