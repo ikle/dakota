@@ -15,7 +15,18 @@
 
 struct ctx {
 	FILE *out;
+	int indent;
 };
+
+static int show_indent (struct ctx *c)
+{
+	int n, ok = 1;
+
+	for (n = c->indent; n > 0; --n)
+		ok &= fputc ('\t', c->out) != EOF;
+
+	return ok;
+}
 
 static int writer (void *cookie, int type, int x, int y, ...)
 {
@@ -23,6 +34,12 @@ static int writer (void *cookie, int type, int x, int y, ...)
 	va_list ap;
 	int n, angle, dir;
 	const char *mark, *text, *name;
+
+	if (type == SYMBOL_END)
+		--c->indent;
+
+	if (!show_indent (c))
+		return 0;
 
 	va_start (ap, y);
 
@@ -49,6 +66,7 @@ static int writer (void *cookie, int type, int x, int y, ...)
 	case SYMBOL_TILE:
 		name = va_arg (ap, const char *);
 		n = fprintf (c->out, "tile %s\n", name);
+		++c->indent;
 		break;
 	case SYMBOL_END:
 		n = fprintf (c->out, "end\n");
@@ -63,7 +81,7 @@ static int writer (void *cookie, int type, int x, int y, ...)
 
 int symbol_write (const struct symbol *o, const char *path)
 {
-	struct ctx c;
+	struct ctx c = {NULL, 0};
 
 	if ((c.out = fopen (path, "w")) == NULL)
 		return 0;
