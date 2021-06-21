@@ -81,14 +81,6 @@ static int model_bind_param (struct model *o, struct pair *param)
 	return 1;
 }
 
-static int model_bind_wire (struct model *o, struct wire *wire)
-{
-	wire->to   = model_add_sink   (o, wire->sink,   NULL, 0);
-	wire->from = model_add_source (o, wire->source, NULL, 0);
-
-	return (wire->to != M_UNKNOWN && wire->from != M_UNKNOWN);
-}
-
 static int model_bind_core (struct model *o, struct cell *cell)
 {
 	size_t ref, ninputs, port;
@@ -208,10 +200,6 @@ int model_connect (struct model *o)
 
 	for (i = 0; i < o->ncells; ++i)
 		if (!model_bind_cell (o, o->cell + i))
-			return 0;
-
-	for (i = 0; i < o->nwires; ++i)
-		if (!model_bind_wire (o, o->wire + i))
 			return 0;
 
 	for (i = 0; i < o->nports; ++i)
