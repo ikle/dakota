@@ -52,3 +52,27 @@ def arc_to (c, x1, y1, angle):
 		arc_to (c, mx, my, angle)
 		arc_to (c, x1, y1, angle)
 
+def mark_to (c, x1, y1, kind):
+	x0, y0 = c.get_current_point ()
+	c.line_to (x1, y1)
+	c.stroke ()
+
+	if kind == "arrow":
+		nx, ny = x0 - x1, y0 - y1
+		n = 0.3 / math.hypot (nx, ny)
+		nx, ny = n * nx, n * ny
+		ox, oy = x1 + nx, y1 + ny
+
+		nx, ny = 0.5 * nx, 0.5 * ny
+		ax, ay = ox - ny, oy + nx
+		bx, by = ox + ny, oy - nx
+
+		c.save ()
+		c.move_to (x1, y1)
+		c.line_to (ax, ay)
+		c.line_to (bx, by)
+		c.close_path ()
+		c.fill_preserve ()
+		c.stroke ()
+		c.move_to (x1, y1)
+
