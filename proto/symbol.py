@@ -67,12 +67,12 @@ def mark_to (c, x1, y1, kind):
 		ax, ay = ox - ny, oy + nx
 		bx, by = ox + ny, oy - nx
 
-		c.save ()
 		c.move_to (x1, y1)
 		c.line_to (ax, ay)
 		c.line_to (bx, by)
 		c.close_path ()
 		c.fill_preserve ()
 		c.stroke ()
+
 		c.move_to (x1, y1)
 
