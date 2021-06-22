@@ -161,14 +161,16 @@ c.stroke ()
 c.move_to (x0, y0)
 arc_to (c, x1, y1, α, True)
 
+import symbol as s
+
 c.move_to (1, 7)
-arc_to (c, 1, 13, math.radians (320))
+s.arc_to (c, 1, 13, math.radians (320))
 c.stroke ()
 
 c.move_to (2, 7)
 c.line_to (4, 7)
-arc_to (c, 7, 10, math.radians (90))
-arc_to (c, 4, 13, math.radians (90))
+s.arc_to (c, 7, 10, math.radians (90))
+s.arc_to (c, 4, 13, math.radians (90))
 c.line_to (2, 13)
 c.stroke ()
 
