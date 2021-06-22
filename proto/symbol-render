@@ -2,6 +2,8 @@
 
 import cairo, math
 
+import symbol as s
+
 def font_size (c, size, right = True):
 	xx = size
 	yy = -size if right else size
@@ -81,15 +83,6 @@ def mark (c, name, x, y, show = True, right = True):
 		c.stroke ()
 		c.restore ()
 
-def quad_to (c, x1, y1, x2, y2):
-	x0, y0 = c.get_current_point ()
-	k = 2.0 / 3.0
-
-	ax, ay = x0 + k * (x1 - x0), y0 + k * (y1 - y0)
-	bx, by = x2 + k * (x1 - x2), y2 + k * (y1 - y2)
-
-	c.curve_to (ax, ay, bx, by, x2, y2)
-
 def arc_split (c, x1, y1, angle, debug = False):
 	x0, y0 = c.get_current_point ()
 
@@ -130,8 +123,8 @@ def arc_draw (c, mrx, mry, mx, my, x1, y1, angle, debug = False):
 	bx,  by  = mx - vqx, my - vqy
 
 	if not debug:
-		quad_to (c, ax, ay, mx, my)
-		quad_to (c, bx, by, x1, y1)
+		s.quad_to (c, ax, ay, mx, my)
+		s.quad_to (c, bx, by, x1, y1)
 	if debug:
 		mark (c, "VQ", vqx, vqy, 0)
 		mark (c, "A ",  ax,  ay)
@@ -160,8 +153,6 @@ c.stroke ()
 
 c.move_to (x0, y0)
 arc_to (c, x1, y1, α, True)
-
-import symbol as s
 
 c.move_to (1, 7)
 s.arc_to (c, 1, 13, math.radians (320))
