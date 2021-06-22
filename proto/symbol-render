@@ -26,11 +26,8 @@ def arc_split (c, x1, y1, angle, debug = False):
 	if debug:
 		mark (c, "P0",  x0,  y0)
 		mark (c, "P1",  x1,  y1)
-		mark (c, "VO", vox, voy, 0)
 		mark (c, "O ",  ox,  oy)
-		mark (c, "VR", vrx, vry, 0)
 		mark (c, "R ",  rx,  ry)
-		mark (c, "MR", mrx, mry, 0)
 		mark (c, "M ",  mx,  my)
 		c.move_to (x0, y0)
 
@@ -48,7 +45,6 @@ def arc_draw (c, mrx, mry, mx, my, x1, y1, angle, debug = False):
 		s.quad_to (c, ax, ay, mx, my)
 		s.quad_to (c, bx, by, x1, y1)
 	if debug:
-		mark (c, "VQ", vqx, vqy, 0)
 		mark (c, "A ",  ax,  ay)
 		mark (c, "B ",  bx,  by)
 
