@@ -76,3 +76,13 @@ def mark_to (c, x1, y1, kind):
 
 		c.move_to (x1, y1)
 
+	elif kind == "dot":
+		c.save ()
+		c.move_to (x1, y1)
+		c.line_to (x1, y1)
+		c.scale (3, 3)
+		c.stroke ()
+		c.restore ()
+
+		c.move_to (x1, y1)
+
