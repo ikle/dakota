@@ -86,3 +86,18 @@ def mark_to (c, x1, y1, kind):
 
 		c.move_to (x1, y1)
 
+	elif kind == "odot":
+		c.move_to (x1, y1)
+		c.line_to (x1, y1)
+		c.save ()
+		c.scale (5, 5)
+		c.stroke_preserve ()
+		c.restore ()
+		c.save ()
+		c.set_source_rgb (1.0, 1.0, 1.0)
+		c.scale (3, 3)
+		c.stroke ()
+		c.restore ()
+
+		c.move_to (x1, y1)
+

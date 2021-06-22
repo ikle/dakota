@@ -28,6 +28,10 @@ s.mark_to (c, 4, 7, "arrow")
 s.arc_to (c, 7, 10, math.radians (90))
 s.arc_to (c, 4, 13, math.radians (90))
 s.mark_to (c, 2, 13, "arrow")
+
+c.move_to (3, 6)
+s.mark_to (c, 3, 7, "odot")
+
 c.stroke ()
 
 surface.write_to_png ("proto/symbol-render.png")
