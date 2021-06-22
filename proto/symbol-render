@@ -90,7 +90,7 @@ def quad_to (c, x1, y1, x2, y2):
 
 	c.curve_to (ax, ay, bx, by, x2, y2)
 
-def arc_split (x, x1, y1, angle, debug = False): 
+def arc_split (c, x1, y1, angle, debug = False):
 	x0, y0 = c.get_current_point ()
 
 	# calculate middle point
