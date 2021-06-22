@@ -32,6 +32,11 @@ s.mark_to (c, 2, 13, "arrow")
 c.move_to (3, 6)
 s.mark_to (c, 3, 7, "odot")
 
-c.stroke ()
+c.set_font_face (cairo.ToyFontFace ("monospace"))
+sheet.font_size (c, 0.55)
+
+s.gate (c, 7, 15)
+s.gate (c, 7, 12, "1")
+s.gate (c, 7, 9, "=1", False)
 
 surface.write_to_png ("proto/symbol-render.png")

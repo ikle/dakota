@@ -101,3 +101,32 @@ def mark_to (c, x1, y1, kind):
 
 		c.move_to (x1, y1)
 
+def gate (c, x, y, kind = "&", inv = True):
+	c.save ()
+	c.translate (x, y)
+
+	c.move_to (1.0, 0)
+	c.line_to (2.5, 0)
+	c.line_to (2.5, 2)
+	c.line_to (1.0, 2)
+	c.line_to (1.0, 0)
+	c.stroke ()
+
+	c.move_to (1.25, 1.3)
+	c.show_text (kind)
+
+	c.move_to (3, 0.5)
+
+	if inv:
+		mark_to (c, 2.5, 0.5, "odot")
+	else:
+		c.line_to (2.5, 0.5)
+
+	c.move_to (0.5, 0.5)
+	c.line_to (1.0, 0.5)
+	c.move_to (0.5, 1.5)
+	c.line_to (1.0, 1.5)
+	c.stroke ()
+
+	c.restore ()
+
