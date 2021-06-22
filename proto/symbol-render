@@ -152,7 +152,7 @@ def arc_to (c, x1, y1, angle, debug = False):
 
 surface, c = cairo_init (8, 20, 20)
 
-x0, y0, x1, y1, α = 10, 2, 18, 17, 60 * math.pi / 180
+x0, y0, x1, y1, α = 10, 2, 18, 17, math.radians (60)
 
 c.move_to (x0, y0)
 arc_to (c, x1, y1, α)
@@ -162,13 +162,13 @@ c.move_to (x0, y0)
 arc_to (c, x1, y1, α, True)
 
 c.move_to (1, 7)
-arc_to (c, 1, 13, 320 * math.pi / 180)
+arc_to (c, 1, 13, math.radians (320))
 c.stroke ()
 
 c.move_to (2, 7)
 c.line_to (4, 7)
-arc_to (c, 7, 10, 90 * math.pi / 180)
-arc_to (c, 4, 13, 90 * math.pi / 180)
+arc_to (c, 7, 10, math.radians (90))
+arc_to (c, 4, 13, math.radians (90))
 c.line_to (2, 13)
 c.stroke ()
 
