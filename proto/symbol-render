@@ -1,0 +1,175 @@
+#!/usr/bin/python3
+
+import cairo, math
+
+def font_size (c, size, right = True):
+	xx = size
+	yy = -size if right else size
+
+	c.set_font_matrix (cairo.Matrix (xx, 0, 0, yy, 0, 0))
+
+def cairo_init (M, W, H, S = 20, right = True, grid = True):
+	SW, SH = W * S, H * S
+	IW, IH = SW + M * 2 + 1, SH + M * 2 + 1
+
+	surface = cairo.ImageSurface (cairo.FORMAT_ARGB32, IW, IH)
+	# surface = cairo.SVGSurface ("cairo.svg", W, H)
+
+	c = cairo.Context (surface)
+
+	if right:
+		# use right-handed Cartesian coordinate system
+		c.scale (1.0, -1.0)
+		c.translate (0, -IH)
+
+	# white background
+	c.set_source_rgb (1.0, 1.0, 1.0)
+	c.rectangle (0, 0, IW, IH)
+	c.fill ()
+
+	# clip out margins
+	c.rectangle (M, M, SW + 1, SH + 1)
+	c.clip ()
+
+	# coordinates in center of pixels in user area
+	c.translate (M + 0.5, M + 0.5)
+
+	c.set_line_cap (1)  # cairo.LineCap.ROUND
+
+	if grid:
+		c.set_source_rgb (0.0, 0.0, 0.0)
+		c.set_line_width (1.0)
+		c.set_dash ([0, 4])
+
+		for i in range (0, SW + 1, S):
+			c.move_to (i,  0)
+			c.line_to (i, SH)
+			c.stroke ()
+
+		for j in range (0, SH + 1, S):
+			c.move_to (0,  j)
+			c.line_to (SW, j)
+			c.stroke ()
+
+		c.set_dash ([])
+
+	# scale to user coordinates
+	c.scale (S, S)
+	c.set_line_width (0.07)
+	font_size (c, 0.5)
+
+	return surface, c
+
+def mark (c, name, x, y, show = True, right = True):
+	print ("{} = ({:.2f}, {:.2f})".format (name, x, y))
+
+	if show:
+		c.save ()
+		c.translate (x, y)
+		c.set_line_width (0.07)
+		c.set_source_rgb (0.5, 0.0, 0.0)
+
+		c.move_to (-0.1, -0.1)
+		c.line_to (+0.1, +0.1)
+		c.move_to (-0.1, +0.1)
+		c.line_to (+0.1, -0.1)
+
+		c.move_to (+0.2, +0.2)
+		font_size (c, 0.5, right)
+		c.show_text (name)
+
+		c.stroke ()
+		c.restore ()
+
+def quad_to (c, x1, y1, x2, y2):
+	x0, y0 = c.get_current_point ()
+	k = 2.0 / 3.0
+
+	ax, ay = x0 + k * (x1 - x0), y0 + k * (y1 - y0)
+	bx, by = x2 + k * (x1 - x2), y2 + k * (y1 - y2)
+
+	c.curve_to (ax, ay, bx, by, x2, y2)
+
+def arc_split (x, x1, y1, angle, debug = False): 
+	x0, y0 = c.get_current_point ()
+
+	# calculate middle point
+
+	ta  = math.tan (angle * 0.5)
+	cta = 1 / ta
+	sa  = math.sin (angle * 0.5)
+	csa = 1 / sa
+
+	vox, voy = (x1 - x0) * 0.5, (y1 - y0) * 0.5
+	ox,  oy  = x0 + vox, y0 + voy
+	vnx, vny = -voy, vox
+	vrx, vry = vnx * cta, vny * cta
+	rx,  ry  = ox + vrx, oy + vry
+	mrx, mry = vnx * csa, vny * csa  # from M to R
+	mx,  my  = rx - mrx, ry - mry
+
+	if debug:
+		mark (c, "P0",  x0,  y0)
+		mark (c, "P1",  x1,  y1)
+		mark (c, "VO", vox, voy, 0)
+		mark (c, "O ",  ox,  oy)
+		mark (c, "VR", vrx, vry, 0)
+		mark (c, "R ",  rx,  ry)
+		mark (c, "MR", mrx, mry, 0)
+		mark (c, "M ",  mx,  my)
+		c.move_to (x0, y0)
+
+	return mx, my, mrx, mry
+
+def arc_draw (c, mrx, mry, mx, my, x1, y1, angle, debug = False):
+	tb  = math.tan (angle * 0.25)
+	ctb = 1 / tb
+
+	vqx, vqy = -mry * tb, mrx * tb  # MR, π/2 rotated and scaled
+	ax,  ay  = mx + vqx, my + vqy
+	bx,  by  = mx - vqx, my - vqy
+
+	if not debug:
+		quad_to (c, ax, ay, mx, my)
+		quad_to (c, bx, by, x1, y1)
+	if debug:
+		mark (c, "VQ", vqx, vqy, 0)
+		mark (c, "A ",  ax,  ay)
+		mark (c, "B ",  bx,  by)
+
+def arc_to (c, x1, y1, angle, debug = False):
+	mx, my, mrx, mry = arc_split (c, x1, y1, angle, debug)
+
+	if angle <= 1.05:
+		arc_draw (c, mrx, mry, mx, my, x1, y1, angle, debug)
+	else:
+		angle /= 2
+		arc_to (c, mx, my, angle, debug)
+		arc_to (c, x1, y1, angle, debug)
+
+	if debug:
+		c.move_to (x1, y1)
+
+surface, c = cairo_init (8, 20, 20)
+
+x0, y0, x1, y1, α = 10, 2, 18, 17, 60 * math.pi / 180
+
+c.move_to (x0, y0)
+arc_to (c, x1, y1, α)
+c.stroke ()
+
+c.move_to (x0, y0)
+arc_to (c, x1, y1, α, True)
+
+c.move_to (1, 7)
+arc_to (c, 1, 13, 320 * math.pi / 180)
+c.stroke ()
+
+c.move_to (2, 7)
+c.line_to (4, 7)
+arc_to (c, 7, 10, 90 * math.pi / 180)
+arc_to (c, 4, 13, 90 * math.pi / 180)
+c.line_to (2, 13)
+c.stroke ()
+
+surface.write_to_png ("proto/symbol-render.png")
