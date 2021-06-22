@@ -80,7 +80,7 @@ def mark_to (c, x1, y1, kind):
 		c.save ()
 		c.move_to (x1, y1)
 		c.line_to (x1, y1)
-		c.scale (3, 3)
+		c.scale (4, 4)
 		c.stroke ()
 		c.restore ()
 
