@@ -134,7 +134,7 @@ def gate (c, x, y, kind = "&", inv = True):
 
 	c.restore ()
 
-def pnp (c, x, y):
+def bjt (c, x, y, npn = True):
 	c.save ()
 	c.translate (x, y)
 
@@ -148,9 +148,23 @@ def pnp (c, x, y):
 	c.line_to (1.5, 1)
 	c.move_to (2.5, 2)
 	c.line_to (1.5, 1.25)
-	c.move_to (2.5, 0)
-	mark_to (c, 1.5 + normal, 0.75 - normal/2, "arrow")
+
+	if npn:
+		c.move_to (1.5, 0.75)
+		k = 0.65 - normal
+		rx, ry = 1 * k, -0.75 * k
+		mark_to (c, 1.5 + rx, 0.75 + ry, "arrow")
+		c.line_to (2.5, 0)
+	else:
+		c.move_to (2.5, 0)
+		mark_to (c, 1.5 + normal, 0.75 - normal/2, "arrow")
 
 	c.stroke ()
 	c.restore ()
+
+def npn (c, x, y):
+	bjt (c, x, y, True)
+
+def pnp (c, x, y):
+	bjt (c, x, y, False)
 
