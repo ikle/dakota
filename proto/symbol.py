@@ -74,8 +74,6 @@ def mark_to (c, x1, y1, kind, scale = 1):
 		c.fill_preserve ()
 		c.stroke ()
 
-		c.move_to (x1, y1)
-
 	elif kind == "dot":
 		c.save ()
 		c.move_to (x1, y1)
@@ -83,8 +81,6 @@ def mark_to (c, x1, y1, kind, scale = 1):
 		c.scale (4, 4)
 		c.stroke ()
 		c.restore ()
-
-		c.move_to (x1, y1)
 
 	elif kind == "odot":
 		c.move_to (x1, y1)
@@ -99,7 +95,7 @@ def mark_to (c, x1, y1, kind, scale = 1):
 		c.stroke ()
 		c.restore ()
 
-		c.move_to (x1, y1)
+	c.move_to (x1, y1)
 
 def enter (c, x, y):
 	c.save ()
