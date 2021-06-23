@@ -56,7 +56,7 @@ def create (M, W, H, S = 20, right = True, grid = True):
 
 	# scale to user coordinates
 	c.scale (S, S)
-	c.set_line_width (0.07)
+	c.set_line_width (0.0625)
 	font_size (c, 0.5)
 
 	return surface, c
