@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-import cairo, math
+import cairo, math, sheet
 
 thin   = 0.05
 normal = 0.07
@@ -56,14 +56,14 @@ def arc_to (c, x1, y1, angle):
 		arc_to (c, mx, my, angle)
 		arc_to (c, x1, y1, angle)
 
-def mark_to (c, x1, y1, kind):
+def mark_to (c, x1, y1, kind, scale = 1):
 	x0, y0 = c.get_current_point ()
 	c.line_to (x1, y1)
 	c.stroke ()
 
 	if kind == "arrow":
 		nx, ny = x0 - x1, y0 - y1
-		n = 0.3 / math.hypot (nx, ny)
+		n = 0.3 * scale / math.hypot (nx, ny)
 		nx, ny = n * nx, n * ny
 		ox, oy = x1 + nx, y1 + ny
 
@@ -105,119 +105,121 @@ def mark_to (c, x1, y1, kind):
 
 		c.move_to (x1, y1)
 
-def gate (c, x, y, kind = "&", inv = True):
+def enter (c, x, y):
 	c.save ()
 	c.translate (x, y)
+	c.scale (0.125, 0.125)
+	c.set_line_width (normal * 8)
+	c.set_font_face (cairo.ToyFontFace ("monospace"))
+	sheet.font_size (c, 4.5)
 
-	c.move_to (0.5, 0)
-	c.line_to (2.0, 0)
-	c.line_to (2.0, 2)
-	c.line_to (0.5, 2)
-	c.line_to (0.5, 0)
+def leave (c):
+	c.stroke ()
+	c.restore ()
+
+def gate (c, x, y, kind = "&", inv = True):
+	enter (c, x, y)
+
+	c.move_to (4,   0)
+	c.line_to (16,  0)
+	c.line_to (16, 16)
+	c.line_to (4,  16)
+	c.line_to (4,   0)
 	c.stroke ()
 
-	c.move_to (0.75, 1.3)
+	c.move_to (6, 10)
 	c.show_text (kind)
 
-	c.move_to (2.5, 0.5)
+	c.move_to (20, 4)
 
 	if inv:
-		mark_to (c, 2.0, 0.5, "odot")
+		mark_to (c, 16, 4, "odot")
 	else:
-		c.line_to (2.0, 0.5)
+		c.line_to (16, 4)
 
-	c.move_to (0.0, 0.5)
-	c.line_to (0.5, 0.5)
-	c.move_to (0.0, 1.5)
-	c.line_to (0.5, 1.5)
-	c.stroke ()
+	c.move_to (0, 4)
+	c.line_to (4, 4)
+	c.move_to (0, 12)
+	c.line_to (4, 12)
 
-	c.restore ()
+	leave (c)
 
 def resistor (c, x, y):
-	c.save ()
-	c.translate (x, y)
+	enter (c, x, y)
 
-	c.move_to (0.0, 0.5)
-	c.line_to (0.5, 0.5)
+	c.move_to (0, 4)
+	c.line_to (4, 4)
 
-	c.move_to (2.0, 0.5)
-	c.line_to (1.5, 0.5)
+	c.move_to (16, 4)
+	c.line_to (12, 4)
 
-	c.move_to (0.5, 0.25)
-	c.line_to (0.5, 0.75)
-	c.line_to (1.5, 0.75)
-	c.line_to (1.5, 0.25)
+	c.move_to (4,  2)
+	c.line_to (4,  6)
+	c.line_to (12, 6)
+	c.line_to (12, 2)
 	c.close_path ()
 
-	c.stroke ()
-	c.restore ()
+	leave (c)
 
 def capasitor (c, x, y):
-	c.save ()
-	c.translate (x, y)
+	enter (c, x, y)
 
-	c.move_to (0.0, 0.5)
-	c.line_to (0.875, 0.5)
+	c.move_to (0, 4)
+	c.line_to (7, 4)
 
-	c.move_to (2.0, 0.5)
-	c.line_to (1.125, 0.5)
+	c.move_to (16, 4)
+	c.line_to (9, 4)
 
-	c.move_to (0.875, 0.0)
-	c.line_to (0.875, 1.0)
+	c.move_to (7, 0)
+	c.line_to (7, 8)
 
-	c.move_to (1.125, 0.0)
-	c.line_to (1.125, 1.0)
+	c.move_to (9, 0)
+	c.line_to (9, 8)
 
-	c.stroke ()
-	c.restore ()
+	leave (c)
 
 def diode (c, x, y):
-	c.save ()
-	c.translate (x, y)
+	enter (c, x, y)
 
-	c.move_to (0.0, 0.5)
-	c.line_to (2.0, 0.5)
+	c.move_to (0,  4)
+	c.line_to (16, 4)
 
-	c.move_to (0.75, 0.75)
-	c.line_to (1.25, 0.5)
-	c.line_to (0.75, 0.25)
+	c.move_to (6,  6)
+	c.line_to (10, 4)
+	c.line_to (6,  2)
 	c.close_path ()
 
-	c.move_to (1.25, 0.75)
-	c.line_to (1.25, 0.25)
+	c.move_to (10, 6)
+	c.line_to (10, 2)
 
-	c.stroke ()
-	c.restore ()
+	leave (c)
 
 def bjt (c, x, y, npn = True):
-	c.save ()
-	c.translate (x, y)
+	enter (c, x, y)
 
-	c.move_to (0.5, 1)
-	arc_to (c, 2.0, 1, math.radians (180))
-	arc_to (c, 0.5, 1, math.radians (180))
+	c.move_to (4,  8)
+	arc_to (c, 16, 8, math.radians (180))
+	arc_to (c, 4,  8, math.radians (180))
 
-	c.move_to (1.0, 0.5)
-	c.line_to (1.0, 1.5)
-	c.move_to (0.0, 1)
-	c.line_to (1.0, 1)
-	c.move_to (2.0, 2)
-	c.line_to (1.0, 1.25)
+	c.move_to (8,  4)
+	c.line_to (8,  12)
+	c.move_to (0,  8)
+	c.line_to (8,  8)
+	c.move_to (16, 16)
+	c.line_to (8,  10)
 
 	if npn:
-		c.move_to (1.0, 0.75)
+		c.move_to (8, 6)
 		k = 0.5
-		rx, ry = 1 * k, -0.75 * k
-		mark_to (c, 1.0 + rx, 0.75 + ry, "arrow")
-		c.line_to (2.0, 0)
+		rx, ry = 8 * k, -6 * k
+		mark_to (c, 8 + rx, 6 + ry, "arrow", 8)
+		c.line_to (16, 0)
 	else:
-		c.move_to (2.0, 0)
-		mark_to (c, 1.0 + normal, 0.75 - normal/2, "arrow")
-		c.line_to (1.0, 0.75)
+		c.move_to (16, 0)
+		mark_to (c, 8 + normal * 8, 6 - normal * 4, "arrow", 8)
+		c.line_to (8, 6)
 
-	c.stroke ()
-	c.restore ()
+	leave (c)
 
 def npn (c, x, y):
 	bjt (c, x, y, True)
