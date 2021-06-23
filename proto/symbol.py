@@ -228,15 +228,18 @@ def bjt (c, x, y, npn = True, case = True):
 	c.line_to (8,  12)
 	c.move_to (0,  8)
 	c.line_to (8,  8)
-	c.move_to (16, 16)
-	c.line_to (8,  10)
+
+	c.move_to (8,  10)
+	c.line_to (12, 14)
+	c.line_to (12, 16)
 
 	if npn:
 		c.move_to (8, 6)
 		mark_to (c, 12, 3, "arrow", 8)
-		c.line_to (16, 0)
+		c.line_to (12, 0)
 	else:
-		c.move_to (16, 0)
+		c.move_to (12, 0)
+		c.line_to (12, 3)
 		dot = c.get_line_width ()
 		mark_to (c, 8 + dot, 6 - (6/8) * dot, "arrow", 8)
 		c.line_to (8, 6)
