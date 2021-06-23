@@ -207,9 +207,7 @@ def bjt (c, x, y, npn = True):
 
 	if npn:
 		c.move_to (8, 6)
-		k = 0.5
-		rx, ry = 8 * k, -6 * k
-		mark_to (c, 8 + rx, 6 + ry, "arrow", 8)
+		mark_to (c, 12, 3, "arrow", 8)
 		c.line_to (16, 0)
 	else:
 		c.move_to (16, 0)
