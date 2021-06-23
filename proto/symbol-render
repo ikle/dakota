@@ -43,5 +43,6 @@ s.pnp (c, 7.5, 6)
 s.npn (c, 7.5, 3.5)
 s.diode (c, 5.0, 4.0)
 s.resistor (c, 5.0, 5.0)
+s.capasitor (c, 5.0, 6.0)
 
 surface.write_to_png ("proto/symbol-render.png")

@@ -153,6 +153,25 @@ def resistor (c, x, y):
 	c.stroke ()
 	c.restore ()
 
+def capasitor (c, x, y):
+	c.save ()
+	c.translate (x, y)
+
+	c.move_to (0.0, 0.5)
+	c.line_to (0.875, 0.5)
+
+	c.move_to (2.0, 0.5)
+	c.line_to (1.125, 0.5)
+
+	c.move_to (0.875, 0.0)
+	c.line_to (0.875, 1.0)
+
+	c.move_to (1.125, 0.0)
+	c.line_to (1.125, 1.0)
+
+	c.stroke ()
+	c.restore ()
+
 def diode (c, x, y):
 	c.save ()
 	c.translate (x, y)
