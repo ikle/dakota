@@ -139,7 +139,7 @@ def bjt (c, x, y, npn = True):
 	c.translate (x, y)
 
 	c.move_to (1, 1)
-	arc_to (c, 2.6, 1, math.radians (180))
+	arc_to (c, 2.5, 1, math.radians (180))
 	arc_to (c, 1.0, 1, math.radians (180))
 
 	c.move_to (1.5, 0.5)
@@ -151,7 +151,7 @@ def bjt (c, x, y, npn = True):
 
 	if npn:
 		c.move_to (1.5, 0.75)
-		k = 0.65 - normal
+		k = 0.5
 		rx, ry = 1 * k, -0.75 * k
 		mark_to (c, 1.5 + rx, 0.75 + ry, "arrow")
 		c.line_to (2.5, 0)
