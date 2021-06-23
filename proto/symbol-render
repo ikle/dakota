@@ -42,5 +42,6 @@ s.gate (c, 7.5, 9, "=1", False)
 s.pnp (c, 7.5, 6)
 s.npn (c, 7.5, 3.5)
 s.diode (c, 5.0, 4.0)
+s.resistor (c, 5.0, 5.0)
 
 surface.write_to_png ("proto/symbol-render.png")

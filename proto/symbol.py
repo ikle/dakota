@@ -134,6 +134,25 @@ def gate (c, x, y, kind = "&", inv = True):
 
 	c.restore ()
 
+def resistor (c, x, y):
+	c.save ()
+	c.translate (x, y)
+
+	c.move_to (0.0, 0.5)
+	c.line_to (0.5, 0.5)
+
+	c.move_to (2.0, 0.5)
+	c.line_to (1.5, 0.5)
+
+	c.move_to (0.5, 0.25)
+	c.line_to (0.5, 0.75)
+	c.line_to (1.5, 0.75)
+	c.line_to (1.5, 0.25)
+	c.close_path ()
+
+	c.stroke ()
+	c.restore ()
+
 def diode (c, x, y):
 	c.save ()
 	c.translate (x, y)
