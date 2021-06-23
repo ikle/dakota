@@ -39,4 +39,6 @@ s.gate (c, 7, 15)
 s.gate (c, 7, 12, "1")
 s.gate (c, 7, 9, "=1", False)
 
+s.pnp (c, 7, 6)
+
 surface.write_to_png ("proto/symbol-render.png")

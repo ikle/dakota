@@ -130,3 +130,23 @@ def gate (c, x, y, kind = "&", inv = True):
 
 	c.restore ()
 
+def pnp (c, x, y):
+	c.save ()
+	c.translate (x, y)
+
+	c.move_to (1, 1)
+	arc_to (c, 2.6, 1, math.radians (180))
+	arc_to (c, 1.0, 1, math.radians (180))
+
+	c.move_to (1.5, 0.5)
+	c.line_to (1.5, 1.5)
+	c.move_to (0.5, 1)
+	c.line_to (1.5, 1)
+	c.move_to (2.5, 2)
+	c.line_to (1.57, 1.25)
+	c.move_to (2.5, 0)
+	mark_to (c, 1.57, 0.75, "arrow")
+
+	c.stroke ()
+	c.restore ()
+
