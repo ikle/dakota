@@ -134,6 +134,24 @@ def gate (c, x, y, kind = "&", inv = True):
 
 	c.restore ()
 
+def diode (c, x, y):
+	c.save ()
+	c.translate (x, y)
+
+	c.move_to (0.0, 0.5)
+	c.line_to (2.0, 0.5)
+
+	c.move_to (0.75, 0.75)
+	c.line_to (1.25, 0.5)
+	c.line_to (0.75, 0.25)
+	c.close_path ()
+
+	c.move_to (1.25, 0.75)
+	c.line_to (1.25, 0.25)
+
+	c.stroke ()
+	c.restore ()
+
 def bjt (c, x, y, npn = True):
 	c.save ()
 	c.translate (x, y)
