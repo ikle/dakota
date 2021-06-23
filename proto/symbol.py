@@ -175,6 +175,25 @@ def capasitor (c, x, y):
 
 	leave (c)
 
+def inductor (c, x, y, core = False):
+	enter (c, x, y)
+
+	c.move_to (0, 4)
+	c.line_to (4, 4)
+
+	arc_to (c, 8,  4, math.radians (-180))
+	arc_to (c, 12, 4, math.radians (-180))
+	arc_to (c, 16, 4, math.radians (-180))
+#	arc_to (c, 20, 4, math.radians (-180))
+
+	c.line_to (20, 4)
+
+	if core:
+		c.move_to (4, 7)
+		c.line_to (16, 7)
+
+	leave (c)
+
 def diode (c, x, y):
 	enter (c, x, y)
 
