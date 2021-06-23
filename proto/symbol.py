@@ -95,6 +95,28 @@ def mark_to (c, x1, y1, kind, scale = 1):
 		c.stroke ()
 		c.restore ()
 
+	elif kind == "rise":
+		nx, ny = x1 - x0, y1 - y0
+		n = 0.125 * scale / math.hypot (nx, ny)
+		nx, ny = n * nx, n * ny
+
+		k = 1  # √2/2 * √2 = 1
+		vx, vy = k * nx - k * ny, k * nx + k * ny  # 45° left
+
+		c.move_to (x1 - vx, y1 - vy)
+		c.line_to (x1 + vx, y1 + vy)
+
+	elif kind == "fall":
+		nx, ny = x1 - x0, y1 - y0
+		n = 0.125 * scale / math.hypot (nx, ny)
+		nx, ny = n * nx, n * ny
+
+		k = 1  # √2/2 * √2 = 1
+		vx, vy = k * nx + k * ny, -k * nx + k * ny  # 45° right
+
+		c.move_to (x1 - vx, y1 - vy)
+		c.line_to (x1 + vx, y1 + vy)
+
 	c.move_to (x1, y1)
 
 def enter (c, x, y):

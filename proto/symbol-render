@@ -32,6 +32,13 @@ s.mark_to (c, 2, 13, "arrow")
 c.move_to (3, 6)
 s.mark_to (c, 3, 7, "odot")
 
+c.move_to (3, 9)
+c.line_to (3, 11)
+c.move_to (2, 9.5)
+s.mark_to (c, 3, 9.5, "rise")
+c.move_to (2, 10.5)
+s.mark_to (c, 3, 10.5, "fall")
+
 s.gate (c, 7.5, 15)
 s.gate (c, 7.5, 12, "1")
 s.gate (c, 7.5, 9, "=1", False)
