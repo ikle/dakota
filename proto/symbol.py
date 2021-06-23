@@ -109,27 +109,27 @@ def gate (c, x, y, kind = "&", inv = True):
 	c.save ()
 	c.translate (x, y)
 
-	c.move_to (1.0, 0)
-	c.line_to (2.5, 0)
-	c.line_to (2.5, 2)
-	c.line_to (1.0, 2)
-	c.line_to (1.0, 0)
+	c.move_to (0.5, 0)
+	c.line_to (2.0, 0)
+	c.line_to (2.0, 2)
+	c.line_to (0.5, 2)
+	c.line_to (0.5, 0)
 	c.stroke ()
 
-	c.move_to (1.25, 1.3)
+	c.move_to (0.75, 1.3)
 	c.show_text (kind)
 
-	c.move_to (3, 0.5)
+	c.move_to (2.5, 0.5)
 
 	if inv:
-		mark_to (c, 2.5, 0.5, "odot")
+		mark_to (c, 2.0, 0.5, "odot")
 	else:
-		c.line_to (2.5, 0.5)
+		c.line_to (2.0, 0.5)
 
-	c.move_to (0.5, 0.5)
-	c.line_to (1.0, 0.5)
-	c.move_to (0.5, 1.5)
-	c.line_to (1.0, 1.5)
+	c.move_to (0.0, 0.5)
+	c.line_to (0.5, 0.5)
+	c.move_to (0.0, 1.5)
+	c.line_to (0.5, 1.5)
 	c.stroke ()
 
 	c.restore ()
@@ -138,27 +138,27 @@ def bjt (c, x, y, npn = True):
 	c.save ()
 	c.translate (x, y)
 
-	c.move_to (1, 1)
-	arc_to (c, 2.5, 1, math.radians (180))
-	arc_to (c, 1.0, 1, math.radians (180))
-
-	c.move_to (1.5, 0.5)
-	c.line_to (1.5, 1.5)
 	c.move_to (0.5, 1)
-	c.line_to (1.5, 1)
-	c.move_to (2.5, 2)
-	c.line_to (1.5, 1.25)
+	arc_to (c, 2.0, 1, math.radians (180))
+	arc_to (c, 0.5, 1, math.radians (180))
+
+	c.move_to (1.0, 0.5)
+	c.line_to (1.0, 1.5)
+	c.move_to (0.0, 1)
+	c.line_to (1.0, 1)
+	c.move_to (2.0, 2)
+	c.line_to (1.0, 1.25)
 
 	if npn:
-		c.move_to (1.5, 0.75)
+		c.move_to (1.0, 0.75)
 		k = 0.5
 		rx, ry = 1 * k, -0.75 * k
-		mark_to (c, 1.5 + rx, 0.75 + ry, "arrow")
-		c.line_to (2.5, 0)
+		mark_to (c, 1.0 + rx, 0.75 + ry, "arrow")
+		c.line_to (2.0, 0)
 	else:
-		c.move_to (2.5, 0)
-		mark_to (c, 1.5 + normal, 0.75 - normal/2, "arrow")
-		c.line_to (1.5, 0.75)
+		c.move_to (2.0, 0)
+		mark_to (c, 1.0 + normal, 0.75 - normal/2, "arrow")
+		c.line_to (1.0, 0.75)
 
 	c.stroke ()
 	c.restore ()

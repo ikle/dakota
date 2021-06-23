@@ -35,11 +35,11 @@ s.mark_to (c, 3, 7, "odot")
 c.set_font_face (cairo.ToyFontFace ("monospace"))
 sheet.font_size (c, 0.55)
 
-s.gate (c, 7, 15)
-s.gate (c, 7, 12, "1")
-s.gate (c, 7, 9, "=1", False)
+s.gate (c, 7.5, 15)
+s.gate (c, 7.5, 12, "1")
+s.gate (c, 7.5, 9, "=1", False)
 
-s.pnp (c, 7, 6)
-s.npn (c, 7, 3.5)
+s.pnp (c, 7.5, 6)
+s.npn (c, 7.5, 3.5)
 
 surface.write_to_png ("proto/symbol-render.png")
