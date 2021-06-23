@@ -2,6 +2,10 @@
 
 import cairo, math
 
+thin   = 0.05
+normal = 0.07
+thick  = 0.20
+
 def arc_split (c, x1, y1, angle): 
 	x0, y0 = c.get_current_point ()
 
@@ -143,9 +147,9 @@ def pnp (c, x, y):
 	c.move_to (0.5, 1)
 	c.line_to (1.5, 1)
 	c.move_to (2.5, 2)
-	c.line_to (1.57, 1.25)
+	c.line_to (1.5, 1.25)
 	c.move_to (2.5, 0)
-	mark_to (c, 1.57, 0.75, "arrow")
+	mark_to (c, 1.5 + normal, 0.75 - normal/2, "arrow")
 
 	c.stroke ()
 	c.restore ()
