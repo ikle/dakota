@@ -34,7 +34,8 @@ def create (M, W, H, S = 20, right = True, grid = True):
 	# coordinates in center of pixels in user area
 	c.translate (M + 0.5, M + 0.5)
 
-	c.set_line_cap (1)  # cairo.LineCap.ROUND
+	c.set_line_cap  (1)  # cairo.LineCap.ROUND
+	c.set_line_join (1)  # cairo.LineJoin.ROUND
 
 	if grid:
 		c.set_source_rgb (0.0, 0.0, 0.0)
