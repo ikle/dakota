@@ -191,12 +191,13 @@ def diode (c, x, y):
 
 	leave (c)
 
-def bjt (c, x, y, npn = True):
+def bjt (c, x, y, npn = True, case = True):
 	enter (c, x, y)
 
-	c.move_to (4,  8)
-	arc_to (c, 16, 8, math.radians (180))
-	arc_to (c, 4,  8, math.radians (180))
+	if case:
+		c.move_to (4,  8)
+		arc_to (c, 16, 8, math.radians (180))
+		arc_to (c, 4,  8, math.radians (180))
 
 	c.move_to (8,  4)
 	c.line_to (8,  12)
