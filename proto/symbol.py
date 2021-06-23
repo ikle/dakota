@@ -2,10 +2,6 @@
 
 import cairo, math, sheet
 
-thin   = 0.05
-normal = 0.07
-thick  = 0.20
-
 def arc_split (c, x1, y1, angle): 
 	x0, y0 = c.get_current_point ()
 
@@ -108,8 +104,9 @@ def mark_to (c, x1, y1, kind, scale = 1):
 def enter (c, x, y):
 	c.save ()
 	c.translate (x, y)
+	width = c.get_line_width ()
 	c.scale (0.125, 0.125)
-	c.set_line_width (normal * 8)
+	c.set_line_width (width * 8)
 	c.set_font_face (cairo.ToyFontFace ("monospace"))
 	sheet.font_size (c, 4.5)
 
@@ -216,7 +213,8 @@ def bjt (c, x, y, npn = True):
 		c.line_to (16, 0)
 	else:
 		c.move_to (16, 0)
-		mark_to (c, 8 + normal * 8, 6 - normal * 4, "arrow", 8)
+		dot = c.get_line_width ()
+		mark_to (c, 8 + dot, 6 - dot/2, "arrow", 8)
 		c.line_to (8, 6)
 
 	leave (c)
