@@ -158,7 +158,7 @@ def resistor (c, x, y):
 
 	leave (c)
 
-def capasitor (c, x, y):
+def capasitor (c, x, y, polar = False):
 	enter (c, x, y)
 
 	c.move_to (0, 4)
@@ -172,6 +172,12 @@ def capasitor (c, x, y):
 
 	c.move_to (9, 0)
 	c.line_to (9, 8)
+
+	if polar:
+		c.move_to (11, 6)
+		c.line_to (11, 8)
+		c.move_to (10, 7)
+		c.line_to (12, 7)
 
 	leave (c)
 
