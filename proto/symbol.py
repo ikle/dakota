@@ -158,6 +158,7 @@ def bjt (c, x, y, npn = True):
 	else:
 		c.move_to (2.5, 0)
 		mark_to (c, 1.5 + normal, 0.75 - normal/2, "arrow")
+		c.line_to (1.5, 0.75)
 
 	c.stroke ()
 	c.restore ()
