@@ -234,39 +234,88 @@ def diode (c, x, y):
 
 	leave (c)
 
-def bjt (c, x, y, npn = True, case = True):
-	enter (c, x, y)
+def bjt_case (c):
+	c.move_to (4,  8)
+	arc_to (c, 16, 8, math.radians (180))
+	arc_to (c, 4,  8, math.radians (180))
 
-	if case:
-		c.move_to (4,  8)
-		arc_to (c, 16, 8, math.radians (180))
-		arc_to (c, 4,  8, math.radians (180))
-
+def bjt_base (c):
 	c.move_to (8,  4)
 	c.line_to (8,  12)
 	c.move_to (0,  8)
 	c.line_to (8,  8)
 
+def bjt_cu (c):
 	c.move_to (8,  10)
-	c.line_to (12, 14)
+	c.line_to (12, 13)
 	c.line_to (12, 16)
 
-	if npn:
-		c.move_to (8, 6)
-		mark_to (c, 12, 3, "arrow", 8)
-		c.line_to (12, 0)
-	else:
-		c.move_to (12, 0)
-		c.line_to (12, 3)
-		dot = c.get_line_width ()
-		mark_to (c, 8 + dot, 6 - (6/8) * dot, "arrow", 8)
-		c.line_to (8, 6)
+def bjt_cd (c):
+	c.move_to (8,  6)
+	c.line_to (12, 3)
+	c.line_to (12, 0)
+
+def bjt_enu (c):
+	c.move_to (8, 10)
+	mark_to (c, 12, 13, "arrow", 8)
+	c.line_to (12, 16)
+
+def bjt_end (c):
+	c.move_to (8, 6)
+	mark_to (c, 12, 3, "arrow", 8)
+	c.line_to (12, 0)
+
+def bjt_epu (c):
+	c.move_to (12, 16)
+	c.line_to (12, 13)
+	dot = c.get_line_width ()
+	mark_to (c, 8 + dot, 10 + (3/4) * dot, "arrow", 8)
+#	c.line_to (8, 10)
+
+def bjt_epd (c):
+	c.move_to (12, 0)
+	c.line_to (12, 3)
+	dot = c.get_line_width ()
+	mark_to (c, 8 + dot, 6 - (3/4) * dot, "arrow", 8)
+#	c.line_to (8, 6)
+
+def npn_ce (c, x, y):
+	enter (c, x, y)
+
+	bjt_case (c)
+	bjt_base (c)
+	bjt_cu   (c)
+	bjt_end  (c)
 
 	leave (c)
 
-def npn (c, x, y):
-	bjt (c, x, y, True)
+def npn_ec (c, x, y):
+	enter (c, x, y)
 
-def pnp (c, x, y):
-	bjt (c, x, y, False)
+	bjt_case (c)
+	bjt_base (c)
+	bjt_cd   (c)
+	bjt_enu  (c)
+
+	leave (c)
+
+def pnp_ce (c, x, y):
+	enter (c, x, y)
+
+	bjt_case (c)
+	bjt_base (c)
+	bjt_cu   (c)
+	bjt_epd  (c)
+
+	leave (c)
+
+def pnp_ec (c, x, y):
+	enter (c, x, y)
+
+	bjt_case (c)
+	bjt_base (c)
+	bjt_cd   (c)
+	bjt_epu  (c)
+
+	leave (c)
 
