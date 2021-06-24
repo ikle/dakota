@@ -214,12 +214,12 @@ def resistor (c, x, y):
 	enter (c, x, y)
 
 	start (c, 0, 4)
-	line  (c, 4, 0)
+	line  (c, 2, 0)
 
-	start (c, 16, 4)
-	line  (c, -4, 0)
+	start (c, 12, 4)
+	line  (c, -2, 0)
 
-	start (c, 4,  2)
+	start (c, 2,  2)
 	line  (c, 0,  4)
 	line  (c, 8,  0)
 	line  (c, 0, -4)
@@ -231,22 +231,22 @@ def capasitor (c, x, y, polar = False):
 	enter (c, x, y)
 
 	start (c, 0, 4)
-	line  (c, 7, 0)
+	line  (c, 5, 0)
 
-	start (c, 16, 4)
-	line  (c, -7, 0)
+	start (c, 12, 4)
+	line  (c, -5, 0)
+
+	start (c, 5, 0)
+	line  (c, 0, 8)
 
 	start (c, 7, 0)
 	line  (c, 0, 8)
 
-	start (c, 9, 0)
-	line  (c, 0, 8)
-
 	if polar:
-		start (c, 11, 6)
-		line  (c,  0, 2)
-		start (c, 10, 7)
-		line  (c,  2, 0)
+		start (c, 9, 6)
+		line  (c, 0, 2)
+		start (c, 8, 7)
+		line  (c, 2, 0)
 
 	leave (c)
 
@@ -254,17 +254,17 @@ def inductor (c, x, y, core = False):
 	enter (c, x, y)
 
 	start (c, 0, 4)
-	line  (c, 4, 0)
+	line  (c, 2, 0)
 
 	arc (c, 4, 0, -180)
 	arc (c, 4, 0, -180)
 	arc (c, 4, 0, -180)
 #	arc (c, 4, 0, -180)
 
-	line (c, 4, 0)
+	line (c, 2, 0)
 
 	if core:
-		start (c, 4, 7)
+		start (c,  2, 7)
 		line  (c, 12, 0)
 
 	leave (c)
@@ -273,15 +273,15 @@ def diode (c, x, y):
 	enter (c, x, y)
 
 	start (c, 0,  4)
-	line  (c, 16, 0)
+	line  (c, 12, 0)
 
-	start (c,  6,  6)
+	start (c,  4,  6)
 	line  (c,  4, -2)
 	line  (c, -4, -2)
 	close (c)
 
-	start (c, 10,  6)
-	line  (c,  0, -4)
+	start (c, 8,  6)
+	line  (c, 0, -4)
 
 	leave (c)
 
