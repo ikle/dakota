@@ -9,6 +9,17 @@ from sheet import mark
 
 surface, c = sheet.create (8, 20, 20)
 
+def show_box (c, x, y, w, h):
+	c.save ()
+	c.move_to (x, y)
+	c.rel_line_to ( w, 0)
+	c.rel_line_to ( 0, h)
+	c.rel_line_to (-w, 0)
+	c.close_path ()
+	c.set_source_rgb (0, 0, 1)
+	c.stroke ()
+	c.restore ()
+
 x0, y0, x1, y1, α = 10, 2, 18, 17, math.radians (60)
 
 c.move_to (x0, y0)
@@ -42,6 +53,8 @@ s.mark_to (c, 3, 10.5, "fall")
 s.gate (c, 7.5, 15)
 s.gate (c, 7.5, 12, "1")
 s.gate (c, 7.5, 9, "=1", False)
+
+show_box (c, 7.75, 6, 2, 2)
 
 s.pnp_ce (c, 7.5, 6)
 s.npn_ec (c, 7.5, 3.5)
