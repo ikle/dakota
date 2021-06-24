@@ -68,6 +68,12 @@ def show_arrow (c, x, y, dx, dy, scale = 1):
 	c.fill_preserve ()
 	c.stroke ()
 
+def show_pointer (c, x, y, dx, dy, scale = 1):
+	n = -0.0625 * scale / math.hypot (dx, dy)
+	x, y = x + n * dx, y + n * dy
+
+	show_arrow (c, x, y, dx, dy, scale)
+
 def show_dot (c, x, y):
 	c.move_to (x, y)
 	c.line_to (x, y)
@@ -118,6 +124,9 @@ def mark_to (c, x1, y1, kind, scale = 1):
 
 	if kind == "arrow":
 		show_arrow (c, x1, y1, x1 - x0, y1 - y0, scale)
+
+	if kind == "pointer":
+		show_pointer (c, x1, y1, x1 - x0, y1 - y0, scale)
 
 	elif kind == "dot":
 		show_dot (c, x1, y1)
@@ -310,15 +319,17 @@ def bjt_end (c):
 def bjt_epu (c):
 	start (c, 12, 18)
 	line  (c,  0, -5)
-	dot = c.get_line_width ()
-	mark  (c, -4 + dot, -3 + (3/4) * dot, "arrow")
+	mark  (c, -4, -3, "pointer")
+#	dot = c.get_line_width ()
+#	mark  (c, -4 + dot, -3 + (3/4) * dot, "arrow")
 #	line_abs (c, 8, 10)
 
 def bjt_epd (c):
 	start (c, 12, -2)
 	line  (c,  0,  5)
-	dot = c.get_line_width ()
-	mark  (c, -4 + dot, 3 - (3/4) * dot, "arrow")
+	mark  (c, -4,  3, "pointer")
+#	dot = c.get_line_width ()
+#	mark  (c, -4 + dot, 3 - (3/4) * dot, "arrow")
 #	line_abs (c, 8, 6)
 
 def npn_ce (c, x, y):
