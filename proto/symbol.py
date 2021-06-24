@@ -242,22 +242,22 @@ def resistor (c, x, y):
 def capasitor (c, x, y, polar = False):
 	enter (c, x, y)
 
-	start (c, 0, 4)
+	start (c, 0, 6)
 	line  (c, 5, 0)
 
-	start (c, 12, 4)
+	start (c, 12, 6)
 	line  (c, -5, 0)
 
-	start (c, 5, 0)
+	start (c, 5, 2)
 	line  (c, 0, 8)
 
-	start (c, 7, 0)
+	start (c, 7, 2)
 	line  (c, 0, 8)
 
 	if polar:
-		start (c, 9, 6)
+		start (c, 9, 8)
 		line  (c, 0, 2)
-		start (c, 8, 7)
+		start (c, 8, 9)
 		line  (c, 2, 0)
 
 	leave (c)
