@@ -187,26 +187,26 @@ def text (c, s):
 def gate (c, x, y, kind = "&", inv = True):
 	enter (c, x, y)
 
-	start (c,   4,   0)
+	start (c,   2,   0)
 	line  (c,  12,   0)
 	line  (c,   0,  16)
 	line  (c, -12,   0)
 	close (c)
 
-	start (c, 6, 10)
+	start (c, 4, 10)
 	text  (c, kind)
 
-	start (c, 20, 4)
+	start (c, 16, 4)
 
 	if inv:
-		mark (c, -4, 0, "odot")
+		mark (c, -2, 0, "odot")
 	else:
-		line (c, -4, 0)
+		line (c, -2, 0)
 
 	start (c, 0, 4)
-	line  (c, 4, 0)
+	line  (c, 2, 0)
 	start (c, 0, 12)
-	line  (c, 4, 0)
+	line  (c, 2, 0)
 
 	leave (c)
 
