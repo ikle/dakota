@@ -151,7 +151,7 @@ def arc (c, dx, dy, angle):
 
 def mark (c, dx, dy, kind):
 	x, y = c.get_current_point ()
-	mark_to (c, x + dx, y + dy, kind)
+	mark_to (c, x + dx, y + dy, kind, 8)
 
 def close (c):
 	c.close_path ()
@@ -263,49 +263,49 @@ def diode (c, x, y):
 	leave (c)
 
 def bjt_case (c):
-	c.move_to (4,  8)
-	arc_to (c, 16, 8, math.radians (180))
-	arc_to (c, 4,  8, math.radians (180))
+	start (c,   4, 8)
+	arc   (c,  12, 0, 180)
+	arc   (c, -12, 0, 180)
 
 def bjt_base (c):
-	c.move_to (8,  4)
-	c.line_to (8,  12)
-	c.move_to (0,  8)
-	c.line_to (8,  8)
+	start (c, 8,  4)
+	line  (c, 0,  8)
+	start (c, 0,  8)
+	line  (c, 8,  0)
 
 def bjt_cu (c):
-	c.move_to (8,  10)
-	c.line_to (12, 13)
-	c.line_to (12, 18)
+	start (c, 8, 10)
+	line  (c, 4,  3)
+	line  (c, 0,  5)
 
 def bjt_cd (c):
-	c.move_to (8,  6)
-	c.line_to (12, 3)
-	c.line_to (12, -2)
+	start (c, 8,  6)
+	line  (c, 4, -3)
+	line  (c, 0, -5)
 
 def bjt_enu (c):
-	c.move_to (8, 10)
-	mark_to (c, 12, 13, "arrow", 8)
-	c.line_to (12, 18)
+	start (c, 8, 10)
+	mark  (c, 4,  3, "arrow")
+	line  (c, 0,  5)
 
 def bjt_end (c):
-	c.move_to (8, 6)
-	mark_to (c, 12, 3, "arrow", 8)
-	c.line_to (12, -2)
+	start (c, 8,  6)
+	mark  (c, 4, -3, "arrow")
+	line  (c, 0, -5)
 
 def bjt_epu (c):
-	c.move_to (12, 18)
-	c.line_to (12, 13)
+	start (c, 12, 18)
+	line  (c,  0, -5)
 	dot = c.get_line_width ()
-	mark_to (c, 8 + dot, 10 + (3/4) * dot, "arrow", 8)
-#	c.line_to (8, 10)
+	mark  (c, -4 + dot, -3 + (3/4) * dot, "arrow")
+#	line_abs (c, 8, 10)
 
 def bjt_epd (c):
-	c.move_to (12, -2)
-	c.line_to (12, 3)
+	start (c, 12, -2)
+	line  (c,  0,  5)
 	dot = c.get_line_width ()
-	mark_to (c, 8 + dot, 6 - (3/4) * dot, "arrow", 8)
-#	c.line_to (8, 6)
+	mark  (c, -4 + dot, 3 - (3/4) * dot, "arrow")
+#	line_abs (c, 8, 6)
 
 def npn_ce (c, x, y):
 	enter (c, x, y)
