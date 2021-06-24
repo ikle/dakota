@@ -119,6 +119,8 @@ def mark_to (c, x1, y1, kind, scale = 1):
 
 	c.move_to (x1, y1)
 
+# context guards
+
 def enter (c, x, y):
 	c.save ()
 	c.translate (x, y)
@@ -132,30 +134,56 @@ def leave (c):
 	c.stroke ()
 	c.restore ()
 
+# core API
+
+def start (c, x, y):
+	c.move_to (x, y)
+
+def move (c, dx, dy):
+	c.rel_move_to (dx, dy)
+
+def line (c, dx, dy):
+	c.rel_line_to (dx, dy)
+
+def arc (c, dx, dy, angle):
+	x, y = c.get_current_point ()
+	arc_to (c, x + dx, y + dy, math.radians (angle))
+
+def mark (c, dx, dy, kind):
+	x, y = c.get_current_point ()
+	mark_to (c, x + dx, y + dy, kind)
+
+def close (c):
+	c.close_path ()
+
+def text (c, s):
+	c.show_text (s)
+
+# test tiles and symbols
+
 def gate (c, x, y, kind = "&", inv = True):
 	enter (c, x, y)
 
-	c.move_to (4,   0)
-	c.line_to (16,  0)
-	c.line_to (16, 16)
-	c.line_to (4,  16)
-	c.line_to (4,   0)
-	c.stroke ()
+	start (c,   4,   0)
+	line  (c,  12,   0)
+	line  (c,   0,  16)
+	line  (c, -12,   0)
+	close (c)
 
-	c.move_to (6, 10)
-	c.show_text (kind)
+	start (c, 6, 10)
+	text  (c, kind)
 
-	c.move_to (20, 4)
+	start (c, 20, 4)
 
 	if inv:
-		mark_to (c, 16, 4, "odot")
+		mark (c, -4, 0, "odot")
 	else:
-		c.line_to (16, 4)
+		line (c, -4, 0)
 
-	c.move_to (0, 4)
-	c.line_to (4, 4)
-	c.move_to (0, 12)
-	c.line_to (4, 12)
+	start (c, 0, 4)
+	line  (c, 4, 0)
+	start (c, 0, 12)
+	line  (c, 4, 0)
 
 	leave (c)
 
