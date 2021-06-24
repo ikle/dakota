@@ -293,40 +293,40 @@ def bjt_case (c):
 def bjt_base (c):
 	start (c, 8,  4)
 	line  (c, 0,  8)
-	start (c, 0,  8)
-	line  (c, 8,  0)
+	start (c, 2,  8)
+	line  (c, 6,  0)
 
 def bjt_cu (c):
 	start (c, 8, 10)
 	line  (c, 4,  3)
-	line  (c, 0,  5)
+	line  (c, 0,  3)
 
 def bjt_cd (c):
 	start (c, 8,  6)
 	line  (c, 4, -3)
-	line  (c, 0, -5)
+	line  (c, 0, -3)
 
 def bjt_enu (c):
 	start (c, 8, 10)
 	mark  (c, 4,  3, "arrow")
-	line  (c, 0,  5)
+	line  (c, 0,  3)
 
 def bjt_end (c):
 	start (c, 8,  6)
 	mark  (c, 4, -3, "arrow")
-	line  (c, 0, -5)
+	line  (c, 0, -3)
 
 def bjt_epu (c):
-	start (c, 12, 18)
-	line  (c,  0, -5)
+	start (c, 12, 16)
+	line  (c,  0, -3)
 	mark  (c, -4, -3, "pointer")
 #	dot = c.get_line_width ()
 #	mark  (c, -4 + dot, -3 + (3/4) * dot, "arrow")
 #	line_abs (c, 8, 10)
 
 def bjt_epd (c):
-	start (c, 12, -2)
-	line  (c,  0,  5)
+	start (c, 12,  0)
+	line  (c,  0,  3)
 	mark  (c, -4,  3, "pointer")
 #	dot = c.get_line_width ()
 #	mark  (c, -4 + dot, 3 - (3/4) * dot, "arrow")
