@@ -52,14 +52,14 @@ def arc_to (c, x1, y1, angle):
 		arc_to (c, mx, my, angle)
 		arc_to (c, x1, y1, angle)
 
-def show_arrow (c, x, y, nx, ny, scale = 1):
-	n = -0.3 * scale / math.hypot (nx, ny)
-	nx, ny = n * nx, n * ny
-	ox, oy = x + nx, y + ny
+def show_arrow (c, x, y, dx, dy, scale = 1):
+	n = -0.3 * scale / math.hypot (dx, dy)
+	dx, dy = n * dx, n * dy
+	ox, oy = x + dx, y + dy
 
-	nx, ny = 0.5 * nx, 0.5 * ny
-	ax, ay = ox - ny, oy + nx
-	bx, by = ox + ny, oy - nx
+	dx, dy = 0.5 * dx, 0.5 * dy
+	ax, ay = ox - dy, oy + dx
+	bx, by = ox + dy, oy - dx
 
 	c.move_to (x, y)
 	c.line_to (ax, ay)
@@ -91,22 +91,22 @@ def show_odot (c, x, y):
 	c.stroke ()
 	c.restore ()
 
-def show_rise (c, x, y, nx, ny, scale = 1):
-	n = 0.125 * scale / math.hypot (nx, ny)
-	nx, ny = n * nx, n * ny
+def show_rise (c, x, y, dx, dy, scale = 1):
+	n = 0.125 * scale / math.hypot (dx, dy)
+	dx, dy = n * dx, n * dy
 
 	k = 1  # √2/2 * √2 = 1
-	vx, vy = k * nx - k * ny, k * nx + k * ny  # 45° left
+	vx, vy = k * dx - k * dy, k * dx + k * dy  # 45° left
 
 	c.move_to (x - vx, y - vy)
 	c.line_to (x + vx, y + vy)
 
-def show_fall (c, x, y, nx, ny, scale = 1):
-	n = 0.125 * scale / math.hypot (nx, ny)
-	nx, ny = n * nx, n * ny
+def show_fall (c, x, y, dx, dy, scale = 1):
+	n = 0.125 * scale / math.hypot (dx, dy)
+	dx, dy = n * dx, n * dy
 
 	k = 1  # √2/2 * √2 = 1
-	vx, vy = k * nx + k * ny, -k * nx + k * ny  # 45° right
+	vx, vy = k * dx + k * dy, -k * dx + k * dy  # 45° right
 
 	c.move_to (x - vx, y - vy)
 	c.line_to (x + vx, y + vy)
