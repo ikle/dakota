@@ -52,70 +52,84 @@ def arc_to (c, x1, y1, angle):
 		arc_to (c, mx, my, angle)
 		arc_to (c, x1, y1, angle)
 
+def show_arrow (c, x, y, nx, ny, scale = 1):
+	n = -0.3 * scale / math.hypot (nx, ny)
+	nx, ny = n * nx, n * ny
+	ox, oy = x + nx, y + ny
+
+	nx, ny = 0.5 * nx, 0.5 * ny
+	ax, ay = ox - ny, oy + nx
+	bx, by = ox + ny, oy - nx
+
+	c.move_to (x, y)
+	c.line_to (ax, ay)
+	c.line_to (bx, by)
+	c.close_path ()
+	c.fill_preserve ()
+	c.stroke ()
+
+def show_dot (c, x, y):
+	c.move_to (x, y)
+	c.line_to (x, y)
+
+	c.save ()
+	c.scale (4, 4)
+	c.stroke ()
+	c.restore ()
+
+def show_odot (c, x, y):
+	c.move_to (x, y)
+	c.line_to (x, y)
+
+	c.save ()
+	c.scale (5, 5)
+	c.stroke_preserve ()
+	c.restore ()
+	c.save ()
+	c.set_source_rgb (1.0, 1.0, 1.0)
+	c.scale (3, 3)
+	c.stroke ()
+	c.restore ()
+
+def show_rise (c, x, y, nx, ny, scale = 1):
+	n = 0.125 * scale / math.hypot (nx, ny)
+	nx, ny = n * nx, n * ny
+
+	k = 1  # √2/2 * √2 = 1
+	vx, vy = k * nx - k * ny, k * nx + k * ny  # 45° left
+
+	c.move_to (x - vx, y - vy)
+	c.line_to (x + vx, y + vy)
+
+def show_fall (c, x, y, nx, ny, scale = 1):
+	n = 0.125 * scale / math.hypot (nx, ny)
+	nx, ny = n * nx, n * ny
+
+	k = 1  # √2/2 * √2 = 1
+	vx, vy = k * nx + k * ny, -k * nx + k * ny  # 45° right
+
+	c.move_to (x - vx, y - vy)
+	c.line_to (x + vx, y + vy)
+
 def mark_to (c, x1, y1, kind, scale = 1):
 	x0, y0 = c.get_current_point ()
 	c.line_to (x1, y1)
 	c.stroke ()
 
 	if kind == "arrow":
-		nx, ny = x0 - x1, y0 - y1
-		n = 0.3 * scale / math.hypot (nx, ny)
-		nx, ny = n * nx, n * ny
-		ox, oy = x1 + nx, y1 + ny
-
-		nx, ny = 0.5 * nx, 0.5 * ny
-		ax, ay = ox - ny, oy + nx
-		bx, by = ox + ny, oy - nx
-
-		c.move_to (x1, y1)
-		c.line_to (ax, ay)
-		c.line_to (bx, by)
-		c.close_path ()
-		c.fill_preserve ()
-		c.stroke ()
+		show_arrow (c, x1, y1, x1 - x0, y1 - y0, scale)
 
 	elif kind == "dot":
-		c.save ()
-		c.move_to (x1, y1)
-		c.line_to (x1, y1)
-		c.scale (4, 4)
-		c.stroke ()
-		c.restore ()
+		show_dot (c, x1, y1)
 
 	elif kind == "odot":
-		c.move_to (x1, y1)
-		c.line_to (x1, y1)
-		c.save ()
-		c.scale (5, 5)
-		c.stroke_preserve ()
-		c.restore ()
-		c.save ()
-		c.set_source_rgb (1.0, 1.0, 1.0)
-		c.scale (3, 3)
-		c.stroke ()
-		c.restore ()
+		show_odot (c, x1, y1)
 
 	elif kind == "rise":
-		nx, ny = x1 - x0, y1 - y0
-		n = 0.125 * scale / math.hypot (nx, ny)
-		nx, ny = n * nx, n * ny
-
-		k = 1  # √2/2 * √2 = 1
-		vx, vy = k * nx - k * ny, k * nx + k * ny  # 45° left
-
-		c.move_to (x1 - vx, y1 - vy)
-		c.line_to (x1 + vx, y1 + vy)
+		show_rise (c, x1, y1, x1 - x0, y1 - y0, scale)
 
 	elif kind == "fall":
-		nx, ny = x1 - x0, y1 - y0
-		n = 0.125 * scale / math.hypot (nx, ny)
-		nx, ny = n * nx, n * ny
-
-		k = 1  # √2/2 * √2 = 1
-		vx, vy = k * nx + k * ny, -k * nx + k * ny  # 45° right
-
-		c.move_to (x1 - vx, y1 - vy)
-		c.line_to (x1 + vx, y1 + vy)
+		show_fall (c, x1, y1, x1 - x0, y1 - y0, scale)
 
 	c.move_to (x1, y1)
 
