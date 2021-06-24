@@ -50,19 +50,22 @@ s.mark_to (c, 3, 9.5, "rise")
 c.move_to (2, 10.5)
 s.mark_to (c, 3, 10.5, "fall")
 
-s.gate (c, 7.75, 15)
-s.gate (c, 7.75, 12, "1")
+s.cross (c, 6.75, 16.25)
+c.move_to (7.25, 16.5); c.rel_line_to (0.5, 0)
+
+s.gate (c, 7.75, 15);			s.cross (c, 7.25, 15.25)
+s.gate (c, 7.75, 12, "1");		s.cross (c, 9.75, 12.25)
 s.gate (c, 7.75, 9, "=1", False)
 
 show_box (c, 7.75, 6, 2, 2)
 show_box (c, 5.25, 5, 1.5, 1)
 
 s.pnp_ce (c, 7.75, 6)
-s.npn_ec (c, 7.75, 3.5)
+s.npn_ec (c, 7.75, 3.5);		s.cross (c, 7.25, 4.25)
 s.pnp_ec (c, 10.25, 6)
-s.npn_ce (c, 10.25, 3.5)
+s.npn_ce (c, 10.25, 3.5);		s.cross (c, 11.25, 5.5)
 
-s.diode (c, 5.25, 4.0)
+s.diode (c, 5.25, 4.0);			s.cross (c, 4.75, 4.25)
 s.resistor (c, 5.25, 5.0)
 s.capasitor (c, 5.25, 6.0, True)
 s.inductor (c, 5.25, 3.0)

@@ -184,6 +184,18 @@ def text (c, s):
 
 # test tiles and symbols
 
+def cross (c, x, y):
+	enter (c, x, y)
+
+	start (c, 0, 2)
+	mark  (c, 2, 0, "dot")
+	line  (c, 2, 0)
+
+	start (c, 2, 0)
+	line  (c, 0, 4)
+
+	leave (c)
+
 def gate (c, x, y, kind = "&", inv = True):
 	enter (c, x, y)
 
