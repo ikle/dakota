@@ -55,6 +55,7 @@ s.gate (c, 7.5, 12, "1")
 s.gate (c, 7.5, 9, "=1", False)
 
 show_box (c, 7.75, 6, 2, 2)
+show_box (c, 5.25, 5, 1.5, 1)
 
 s.pnp_ce (c, 7.75, 6)
 s.npn_ec (c, 7.75, 3.5)
