@@ -56,10 +56,10 @@ s.gate (c, 7.5, 9, "=1", False)
 
 show_box (c, 7.75, 6, 2, 2)
 
-s.pnp_ce (c, 7.5, 6)
-s.npn_ec (c, 7.5, 3.5)
-s.pnp_ec (c, 10, 6)
-s.npn_ce (c, 10, 3.5)
+s.pnp_ce (c, 7.75, 6)
+s.npn_ec (c, 7.75, 3.5)
+s.pnp_ec (c, 10.25, 6)
+s.npn_ce (c, 10.25, 3.5)
 
 s.diode (c, 5.0, 4.0)
 s.resistor (c, 5.0, 5.0)

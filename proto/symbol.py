@@ -286,38 +286,38 @@ def diode (c, x, y):
 	leave (c)
 
 def bjt_case (c):
-	start (c,   4, 8)
+	start (c,   2, 8)
 	arc   (c,  12, 0, 180)
 	arc   (c, -12, 0, 180)
 
 def bjt_base (c):
-	start (c, 8,  4)
+	start (c, 6,  4)
 	line  (c, 0,  8)
-	start (c, 2,  8)
+	start (c, 0,  8)
 	line  (c, 6,  0)
 
 def bjt_cu (c):
-	start (c, 8, 10)
+	start (c, 6, 10)
 	line  (c, 4,  3)
 	line  (c, 0,  3)
 
 def bjt_cd (c):
-	start (c, 8,  6)
+	start (c, 6,  6)
 	line  (c, 4, -3)
 	line  (c, 0, -3)
 
 def bjt_enu (c):
-	start (c, 8, 10)
+	start (c, 6, 10)
 	mark  (c, 4,  3, "arrow")
 	line  (c, 0,  3)
 
 def bjt_end (c):
-	start (c, 8,  6)
+	start (c, 6,  6)
 	mark  (c, 4, -3, "arrow")
 	line  (c, 0, -3)
 
 def bjt_epu (c):
-	start (c, 12, 16)
+	start (c, 10, 16)
 	line  (c,  0, -3)
 	mark  (c, -4, -3, "pointer")
 #	dot = c.get_line_width ()
@@ -325,7 +325,7 @@ def bjt_epu (c):
 #	line_abs (c, 8, 10)
 
 def bjt_epd (c):
-	start (c, 12,  0)
+	start (c, 10,  0)
 	line  (c,  0,  3)
 	mark  (c, -4,  3, "pointer")
 #	dot = c.get_line_width ()
