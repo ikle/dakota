@@ -190,75 +190,75 @@ def gate (c, x, y, kind = "&", inv = True):
 def resistor (c, x, y):
 	enter (c, x, y)
 
-	c.move_to (0, 4)
-	c.line_to (4, 4)
+	start (c, 0, 4)
+	line  (c, 4, 0)
 
-	c.move_to (16, 4)
-	c.line_to (12, 4)
+	start (c, 16, 4)
+	line  (c, -4, 0)
 
-	c.move_to (4,  2)
-	c.line_to (4,  6)
-	c.line_to (12, 6)
-	c.line_to (12, 2)
-	c.close_path ()
+	start (c, 4,  2)
+	line  (c, 0,  4)
+	line  (c, 8,  0)
+	line  (c, 0, -4)
+	close (c)
 
 	leave (c)
 
 def capasitor (c, x, y, polar = False):
 	enter (c, x, y)
 
-	c.move_to (0, 4)
-	c.line_to (7, 4)
+	start (c, 0, 4)
+	line  (c, 7, 0)
 
-	c.move_to (16, 4)
-	c.line_to (9, 4)
+	start (c, 16, 4)
+	line  (c, -7, 0)
 
-	c.move_to (7, 0)
-	c.line_to (7, 8)
+	start (c, 7, 0)
+	line  (c, 0, 8)
 
-	c.move_to (9, 0)
-	c.line_to (9, 8)
+	start (c, 9, 0)
+	line  (c, 0, 8)
 
 	if polar:
-		c.move_to (11, 6)
-		c.line_to (11, 8)
-		c.move_to (10, 7)
-		c.line_to (12, 7)
+		start (c, 11, 6)
+		line  (c,  0, 2)
+		start (c, 10, 7)
+		line  (c,  2, 0)
 
 	leave (c)
 
 def inductor (c, x, y, core = False):
 	enter (c, x, y)
 
-	c.move_to (0, 4)
-	c.line_to (4, 4)
+	start (c, 0, 4)
+	line  (c, 4, 0)
 
-	arc_to (c, 8,  4, math.radians (-180))
-	arc_to (c, 12, 4, math.radians (-180))
-	arc_to (c, 16, 4, math.radians (-180))
-#	arc_to (c, 20, 4, math.radians (-180))
+	arc (c, 4, 0, -180)
+	arc (c, 4, 0, -180)
+	arc (c, 4, 0, -180)
+#	arc (c, 4, 0, -180)
 
-	c.line_to (20, 4)
+	line (c, 4, 0)
 
 	if core:
-		c.move_to (4, 7)
-		c.line_to (16, 7)
+		start (c, 4, 7)
+		line  (c, 12, 0)
 
 	leave (c)
 
 def diode (c, x, y):
 	enter (c, x, y)
 
-	c.move_to (0,  4)
-	c.line_to (16, 4)
+	start (c, 0,  4)
+	line  (c, 16, 0)
 
-	c.move_to (6,  6)
-	c.line_to (10, 4)
-	c.line_to (6,  2)
-	c.close_path ()
+	start (c,  6,  6)
+	line  (c,  4, -2)
+	line  (c, -4, -2)
+	close (c)
 
-	c.move_to (10, 6)
-	c.line_to (10, 2)
+	start (c, 10,  6)
+	line  (c,  0, -4)
 
 	leave (c)
 
