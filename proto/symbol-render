@@ -69,6 +69,8 @@ s.npn_ce (c, 10.25, 3.5);		s.cross (c, 11.25, 5.5)
 
 s.nfet_ds (c, 10.0, 15)
 s.pfet_ds (c, 12.5, 15)
+s.nmos_ds (c, 10.0, 13)
+s.pmos_ds (c, 12.5, 13)
 
 s.diode (c, 5.25, 4.0);			s.cross (c, 4.75, 4.25)
 s.resistor (c, 5.25, 5.0)

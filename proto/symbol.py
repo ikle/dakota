@@ -421,3 +421,47 @@ def pfet_ds (c, x, y):
 
 	leave (c)
 
+def mos_base (c):
+	start (c, 0, 5)
+	line  (c, 5, 0)
+	line  (c, 0, 6)
+
+	start (c, 7, 4)
+	line  (c, 0, 2)
+	start (c, 7, 7)
+	line  (c, 0, 2)
+	start (c, 7, 10)
+	line  (c, 0, 2)
+
+	start (c, 7,  5)
+	line  (c, 4,  0)
+	line  (c, 0, -5)
+
+	start (c, 7, 11)
+	line  (c, 4,  0)
+	line  (c, 0,  5)
+
+def nmos_ds (c, x, y):
+	enter (c, x, y)
+
+	bjt_case (c)
+	mos_base (c)
+
+	start (c, 11, 5)
+	line  (c,  0, 3)
+	mark  (c, -4, 0, "pointer")
+
+	leave (c)
+
+def pmos_ds (c, x, y):
+	enter (c, x, y)
+
+	bjt_case (c)
+	mos_base (c)
+
+	start (c, 7,  8)
+	mark  (c, 4,  0, "pointer")
+	line  (c, 0, -3)
+
+	leave (c)
+
