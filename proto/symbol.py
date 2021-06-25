@@ -384,3 +384,40 @@ def pnp_ec (c, x, y):
 
 	leave (c)
 
+def jfet_ng (c):
+	start (c, 8, 4)
+	line  (c, 0, 8)
+	start (c, 0, 5)
+	mark  (c, 8, 0, "pointer")
+
+def jfet_pg (c):
+	start (c,  8, 4)
+	line  (c,  0, 8)
+	start (c,  8, 5)
+	mark  (c, -4, 0, "arrow")
+	line  (c, -4, 0)
+
+def jfet_sd (c):
+	start (c, 8,  5)
+	line  (c, 8,  0)
+	start (c, 8, 11)
+	line  (c, 8,  0)
+
+def nfet_ds (c, x, y):
+	enter (c, x, y)
+
+	bjt_case (c)
+	jfet_ng  (c)
+	jfet_sd  (c)
+
+	leave (c)
+
+def pfet_ds (c, x, y):
+	enter (c, x, y)
+
+	bjt_case (c)
+	jfet_pg  (c)
+	jfet_sd  (c)
+
+	leave (c)
+
