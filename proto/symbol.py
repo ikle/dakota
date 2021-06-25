@@ -449,15 +449,11 @@ def mos_p (c):
 	start (c,  7, 8)
 	mark  (c,  4, 0, "pointer")
 
-def mos_ds (c):
-	mos_base (c)
-
+def mos_bd (c):
 	start (c, 11,  8)
 	line  (c,  0, -3)
 
-def mos_sd (c):
-	mos_base (c)
-
+def mos_bu (c):
 	start (c, 11,  8)
 	line  (c,  0,  3)
 
@@ -465,7 +461,8 @@ def nmos_ds (c, x, y):
 	enter (c, x, y)
 
 	bjt_case (c)
-	mos_ds   (c)
+	mos_base (c)
+	mos_bd   (c)
 	mos_n    (c)
 
 	leave (c)
@@ -474,7 +471,8 @@ def nmos_sd (c, x, y):
 	enter (c, x, y)
 
 	bjt_case (c)
-	mos_sd   (c)
+	mos_base (c)
+	mos_bu   (c)
 	mos_n    (c)
 
 	leave (c)
@@ -483,7 +481,8 @@ def pmos_ds (c, x, y):
 	enter (c, x, y)
 
 	bjt_case (c)
-	mos_ds   (c)
+	mos_base (c)
+	mos_bd   (c)
 	mos_p    (c)
 
 	leave (c)
@@ -492,7 +491,8 @@ def pmos_sd (c, x, y):
 	enter (c, x, y)
 
 	bjt_case (c)
-	mos_sd   (c)
+	mos_base (c)
+	mos_bu   (c)
 	mos_p    (c)
 
 	leave (c)
