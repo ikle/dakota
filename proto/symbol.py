@@ -52,8 +52,8 @@ def arc_to (c, x1, y1, angle):
 		arc_to (c, mx, my, angle)
 		arc_to (c, x1, y1, angle)
 
-def show_arrow (c, x, y, dx, dy, scale = 1):
-	n = -0.3 * scale / math.hypot (dx, dy)
+def show_arrow (c, x, y, dx, dy):
+	n = -2.4 / math.hypot (dx, dy)
 	dx, dy = n * dx, n * dy
 	ox, oy = x + dx, y + dy
 
@@ -68,11 +68,11 @@ def show_arrow (c, x, y, dx, dy, scale = 1):
 	c.fill_preserve ()
 	c.stroke ()
 
-def show_pointer (c, x, y, dx, dy, scale = 1):
-	n = -0.0625 * scale / math.hypot (dx, dy)
+def show_pointer (c, x, y, dx, dy):
+	n = -0.5 / math.hypot (dx, dy)
 	x, y = x + n * dx, y + n * dy
 
-	show_arrow (c, x, y, dx, dy, scale)
+	show_arrow (c, x, y, dx, dy)
 
 def show_dot (c, x, y):
 	c.move_to (x, y)
@@ -97,8 +97,8 @@ def show_odot (c, x, y):
 	c.stroke ()
 	c.restore ()
 
-def show_rise (c, x, y, dx, dy, scale = 1):
-	n = 0.125 * scale / math.hypot (dx, dy)
+def show_rise (c, x, y, dx, dy):
+	n = 1.0 / math.hypot (dx, dy)
 	dx, dy = n * dx, n * dy
 
 	k = 1  # √2/2 * √2 = 1
@@ -107,8 +107,8 @@ def show_rise (c, x, y, dx, dy, scale = 1):
 	c.move_to (x - vx, y - vy)
 	c.line_to (x + vx, y + vy)
 
-def show_fall (c, x, y, dx, dy, scale = 1):
-	n = 0.125 * scale / math.hypot (dx, dy)
+def show_fall (c, x, y, dx, dy):
+	n = 1.0 / math.hypot (dx, dy)
 	dx, dy = n * dx, n * dy
 
 	k = 1  # √2/2 * √2 = 1
@@ -117,16 +117,16 @@ def show_fall (c, x, y, dx, dy, scale = 1):
 	c.move_to (x - vx, y - vy)
 	c.line_to (x + vx, y + vy)
 
-def mark_to (c, x1, y1, kind, scale = 1):
+def mark_to (c, x1, y1, kind):
 	x0, y0 = c.get_current_point ()
 	c.line_to (x1, y1)
 	c.stroke ()
 
 	if kind == "arrow":
-		show_arrow (c, x1, y1, x1 - x0, y1 - y0, scale)
+		show_arrow (c, x1, y1, x1 - x0, y1 - y0)
 
 	if kind == "pointer":
-		show_pointer (c, x1, y1, x1 - x0, y1 - y0, scale)
+		show_pointer (c, x1, y1, x1 - x0, y1 - y0)
 
 	elif kind == "dot":
 		show_dot (c, x1, y1)
@@ -135,10 +135,10 @@ def mark_to (c, x1, y1, kind, scale = 1):
 		show_odot (c, x1, y1)
 
 	elif kind == "rise":
-		show_rise (c, x1, y1, x1 - x0, y1 - y0, scale)
+		show_rise (c, x1, y1, x1 - x0, y1 - y0)
 
 	elif kind == "fall":
-		show_fall (c, x1, y1, x1 - x0, y1 - y0, scale)
+		show_fall (c, x1, y1, x1 - x0, y1 - y0)
 
 	c.move_to (x1, y1)
 
@@ -147,9 +147,6 @@ def mark_to (c, x1, y1, kind, scale = 1):
 def enter (c, x, y):
 	c.save ()
 	c.translate (x, y)
-	width = c.get_line_width ()
-	c.scale (0.125, 0.125)
-	c.set_line_width (width * 8)
 	c.set_font_face (cairo.ToyFontFace ("monospace"))
 	sheet.font_size (c, 4.5)
 
@@ -174,7 +171,7 @@ def arc (c, dx, dy, angle):
 
 def mark (c, dx, dy, kind):
 	x, y = c.get_current_point ()
-	mark_to (c, x + dx, y + dy, kind, 8)
+	mark_to (c, x + dx, y + dy, kind)
 
 def close (c):
 	c.close_path ()
