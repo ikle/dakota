@@ -75,9 +75,9 @@ s.nmos_sd (c,  80,  84)
 s.pmos_sd (c, 100,  84)
 
 s.nmos_dbs (c, 124, 20)
-s.nmos_dbs (c, 144, 20)
+s.pmos_dbs (c, 144, 20)
 s.nmos_sbd (c, 124,  0)
-s.nmos_sbd (c, 144,  0)
+s.pmos_sbd (c, 144,  0)
 
 s.diode     (c, 42, 32);		s.cross (c, 38, 34)
 s.resistor  (c, 42, 40)
