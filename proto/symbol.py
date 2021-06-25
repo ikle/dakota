@@ -445,21 +445,21 @@ def mos_p (c):
 	start (c,  7, 8)
 	mark  (c,  4, 0, "pointer")
 
-def mos_gd (c):
+def mos_gd (c):			# gate down
 	start (c, 0, 5)
 	line  (c, 5, 0)
 	line  (c, 0, 6)
 
-def mos_gu (c):
+def mos_gu (c):			# gate up
 	start (c, 0, 11)
 	line  (c, 5,  0)
 	line  (c, 0, -6)
 
-def mos_bd (c):
+def mos_bd (c):			# bulk down
 	start (c, 11,  8)
 	line  (c,  0, -3)
 
-def mos_bu (c):
+def mos_bu (c):			# bulk up
 	start (c, 11,  8)
 	line  (c,  0,  3)
 
