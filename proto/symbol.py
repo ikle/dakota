@@ -463,6 +463,10 @@ def mos_bu (c):			# bulk up
 	start (c, 11,  8)
 	line  (c,  0,  3)
 
+def mos_bf (c):			# bulk free
+	start (c, 11,  8)
+	line  (c,  5,  0)
+
 def nmos_ds (c, x, y):
 	enter (c, x, y)
 
@@ -503,6 +507,50 @@ def pmos_sd (c, x, y):
 	mos_base (c)
 	mos_gu   (c)
 	mos_bu   (c)
+	mos_p    (c)
+
+	leave (c)
+
+def nmos_dbs (c, x, y):
+	enter (c, x, y)
+
+	bjt_case (c)
+	mos_base (c)
+	mos_gd   (c)
+	mos_bf   (c)
+	mos_n    (c)
+
+	leave (c)
+
+def pmos_dbs (c, x, y):
+	enter (c, x, y)
+
+	bjt_case (c)
+	mos_base (c)
+	mos_gd   (c)
+	mos_bf   (c)
+	mos_p    (c)
+
+	leave (c)
+
+def nmos_sbd (c, x, y):
+	enter (c, x, y)
+
+	bjt_case (c)
+	mos_base (c)
+	mos_gu   (c)
+	mos_bf   (c)
+	mos_n    (c)
+
+	leave (c)
+
+def pmos_sbd (c, x, y):
+	enter (c, x, y)
+
+	bjt_case (c)
+	mos_base (c)
+	mos_gu   (c)
+	mos_bf   (c)
 	mos_p    (c)
 
 	leave (c)

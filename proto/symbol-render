@@ -74,6 +74,11 @@ s.pmos_ds (c, 12.5, 13)
 s.nmos_sd (c, 10.0, 10.5)
 s.pmos_sd (c, 12.5, 10.5)
 
+s.nmos_dbs (c, 15.5, 2.5)
+s.nmos_dbs (c, 18.0, 2.5)
+s.nmos_sbd (c, 15.5, 0.0)
+s.nmos_sbd (c, 18.0, 0.0)
+
 s.diode (c, 5.25, 4.0);			s.cross (c, 4.75, 4.25)
 s.resistor (c, 5.25, 5.0)
 s.capasitor (c, 5.25, 6.0, True)
