@@ -7,7 +7,7 @@ import test.arc as TA
 
 from sheet import mark
 
-surface, c = sheet.create (8, 20, 20)
+surface, c = sheet.create (8, 20, 20, 20, 8)
 
 def show_box (c, x, y, w, h):
 	c.save ()
@@ -20,7 +20,7 @@ def show_box (c, x, y, w, h):
 	c.stroke ()
 	c.restore ()
 
-x0, y0, x1, y1, α = 10, 2, 18, 17, math.radians (60)
+x0, y0, x1, y1, α = 80, 16, 144, 136, math.radians (60)
 
 c.move_to (x0, y0)
 TA.arc_to (c, x1, y1, α)
@@ -29,12 +29,9 @@ c.stroke ()
 c.move_to (x0, y0)
 TA.arc_to (c, x1, y1, α, True)
 
-c.move_to (1, 7)
-s.arc_to (c, 1, 13, math.radians (320))
+c.move_to (8, 56)
+s.arc_to (c, 8, 104, math.radians (320))
 c.stroke ()
-
-c.scale (0.125, 0.125)
-c.set_line_width (0.5)
 
 c.move_to (16, 64)
 s.mark_to (c, 16, 56, "dot")

@@ -8,7 +8,7 @@ def font_size (c, size, right = True):
 
 	c.set_font_matrix (cairo.Matrix (xx, 0, 0, yy, 0, 0))
 
-def create (M, W, H, S = 20, right = True, grid = True):
+def create (M, W, H, S = 20, step = 1, right = True, grid = True):
 	SW, SH = W * S, H * S
 	IW, IH = SW + M * 2 + 1, SH + M * 2 + 1
 
@@ -55,9 +55,9 @@ def create (M, W, H, S = 20, right = True, grid = True):
 		c.set_dash ([])
 
 	# scale to user coordinates
-	c.scale (S, S)
-	c.set_line_width (0.0625)
-	font_size (c, 0.5)
+	c.scale (S / step, S / step)
+	c.set_line_width (0.0625 * step)
+	font_size (c, 0.5 * step)
 
 	return surface, c
 
@@ -66,16 +66,17 @@ def mark (c, name, x, y, right = True):
 
 	c.save ()
 	c.translate (x, y)
-	c.set_line_width (0.07)
 	c.set_source_rgb (0.5, 0.0, 0.0)
 
-	c.move_to (-0.1, -0.1)
-	c.line_to (+0.1, +0.1)
-	c.move_to (-0.1, +0.1)
-	c.line_to (+0.1, -0.1)
+	dot = c.get_line_width ()
+	n   = 2 * dot
 
-	c.move_to (+0.2, +0.2)
-	font_size (c, 0.5, right)
+	c.move_to (-n, -n)
+	c.line_to (+n, +n)
+	c.move_to (-n, +n)
+	c.line_to (+n, -n)
+
+	c.move_to (+2 * n, +2 * n)
 	c.show_text (name)
 
 	c.stroke ()
