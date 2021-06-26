@@ -442,7 +442,7 @@ def mos_n (c):
 
 def mos_p (c):
 	start (c,  7, 8)
-	mark  (c,  4, 0, "pointer")
+	mark  (c,  4, 0, "arrow")
 
 def mos_gd (c):			# gate down
 	start (c, 0, 5)
