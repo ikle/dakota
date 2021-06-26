@@ -395,11 +395,11 @@ def fet_base (c):
 	line  (c, 0, 8)
 
 	start (c, 8,  5)
-	line  (c, 3,  0)
+	line  (c, 4,  0)
 	line  (c, 0, -5)
 
 	start (c, 8, 11)
-	line  (c, 3,  0)
+	line  (c, 4,  0)
 	line  (c, 0,  5)
 
 def nfet_ds (c, x, y):
