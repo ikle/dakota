@@ -7,7 +7,7 @@ import test.arc as TA
 
 from sheet import mark
 
-surface, c = sheet.create (8, 20, 20, 20, 8)
+surface, c = sheet.create (8, 20, 20, 16, 8)
 
 def show_box (c, x, y, w, h):
 	c.save ()
