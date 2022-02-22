@@ -115,6 +115,17 @@ no_bitmap:
 	return NULL;
 }
 
+static int is_zero (const unsigned char *data, size_t count)
+{
+	size_t i;
+
+	for (i = 0; i < count; ++i)
+		if (data[i] != 0)
+			return 0;
+
+	return 1;
+}
+
 int bitmap_export (const struct bitmap *o, const char *path)
 {
 	FILE *out;
@@ -124,8 +135,12 @@ int bitmap_export (const struct bitmap *o, const char *path)
 		return 0;
 
 	ok  = pbm_export (out, o->width, o->height, o->bits);
-	ok &= fputc ('\n', out) != EOF;
-	ok &= pbm_export (out, o->width, o->height, o->mask);
+
+	if (!is_zero (o->mask, o->pitch * o->height)) {
+		ok &= fputc ('\n', out) != EOF;
+		ok &= pbm_export (out, o->width, o->height, o->mask);
+	}
+
 	ok &= fclose (out) == 0;
 
 	if (!ok)
