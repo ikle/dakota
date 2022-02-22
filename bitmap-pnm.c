@@ -77,33 +77,35 @@ static int pbm_export (FILE *out, size_t w, size_t h, const unsigned char *data)
 struct bitmap *bitmap_import (const char *path)
 {
 	FILE *in;
-	size_t bw, bh, mw, mh;
-	unsigned char *bits, *mask;
+	size_t w, h;
+	unsigned char *bits;
 	struct bitmap *o;
 
 	if ((in = fopen (path, "rb")) == NULL)
 		return NULL;
 
-	bits = pbm_import (in, &bw, &bh);
-	mask = pbm_import (in, &mw, &mh);
-
-	fclose (in);
-
-	if (bits == NULL || mask == NULL || bw != mw || bh != mh)
-		goto no_import;
-
 	if ((o = bitmap_alloc ()) == NULL)
 		goto no_bitmap;
 
-	o->width  = bw;
-	o->height = bh;
+	if ((bits = pbm_import (in, &w, &h)) == NULL)
+		goto no_import;
+
+	o->width  = w;
+	o->height = h;
 	o->bits   = bits;
-	o->mask   = mask;
+
+	if ((o->mask = pbm_import (in, &w, &h)) == NULL)
+		goto no_import;
+
+	if (w != o->width || h != o->height)
+		goto no_import;
+
+	fclose (in);
 	return o;
-no_bitmap:
 no_import:
-	free (bits);
-	free (mask);
+	bitmap_free (o);
+no_bitmap:
+	fclose (in);
 	return NULL;
 }
 
