@@ -11,8 +11,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <dakota/file.h>
 #include <dakota/shell.h>
-#include <dakota/util.h>
 
 struct shell {
 	FILE *in;

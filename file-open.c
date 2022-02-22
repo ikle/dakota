@@ -1,5 +1,5 @@
 /*
- * Dakota Common Helpers
+ * Dakota File Open Helper
  *
  * Copyright (c) 2021-2022 Alexei A. Smekalkine <ikle@ikle.ru>
  *
@@ -8,8 +8,8 @@
 
 #include <stdlib.h>
 
+#include <dakota/file.h>
 #include <dakota/string.h>
-#include <dakota/util.h>
 
 #ifndef PREFIX
 #define PREFIX		"/usr"
