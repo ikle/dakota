@@ -14,8 +14,7 @@
 
 #include <dakota/bitmap.h>
 #include <dakota/model/pair.h>
-
-#include "model-tuple.h"
+#include <dakota/model/tuple.h>
 
 struct cell {
 	char *type;

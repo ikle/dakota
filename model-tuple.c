@@ -1,7 +1,7 @@
 /*
- * Dakota Tuple
+ * Dakota Model Tuple
  *
- * Copyright (c) 2021 Alexei A. Smekalkine <ikle@ikle.ru>
+ * Copyright (c) 2021-2022 Alexei A. Smekalkine <ikle@ikle.ru>
  *
  * SPDX-License-Identifier: BSD-2-Clause
  */
@@ -10,13 +10,11 @@
 #include <string.h>
 
 #include <dakota/array.h>
-
-#include "model-tuple.h"
+#include <dakota/model/tuple.h>
 
 int tuple_init (struct tuple *o, size_t size, va_list ap)
 {
 	const char *value;
-
 	int i;
 
 	if ((o->m = array_alloc (o->m, size)) == NULL)
