@@ -1,7 +1,7 @@
 /*
  * Dakota Pair
  *
- * Copyright (c) 2021 Alexei A. Smekalkine <ikle@ikle.ru>
+ * Copyright (c) 2021-2022 Alexei A. Smekalkine <ikle@ikle.ru>
  *
  * SPDX-License-Identifier: BSD-2-Clause
  */
@@ -9,7 +9,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "model-pair.h"
+#include <dakota/model/pair.h>
 
 int pair_init (struct pair *o, const char *key, const char *value)
 {

@@ -1,7 +1,7 @@
 /*
- * Dakota Cell
+ * Dakota Model Cell
  *
- * Copyright (c) 2021 Alexei A. Smekalkine <ikle@ikle.ru>
+ * Copyright (c) 2021-2022 Alexei A. Smekalkine <ikle@ikle.ru>
  *
  * SPDX-License-Identifier: BSD-2-Clause
  */
@@ -13,8 +13,8 @@
 #include <stddef.h>
 
 #include <dakota/bitmap.h>
+#include <dakota/model/pair.h>
 
-#include "model-pair.h"
 #include "model-tuple.h"
 
 struct cell {
