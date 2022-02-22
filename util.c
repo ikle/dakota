@@ -1,7 +1,7 @@
 /*
  * Dakota Common Helpers
  *
- * Copyright (c) 2021 Alexei A. Smekalkine <ikle@ikle.ru>
+ * Copyright (c) 2021-2022 Alexei A. Smekalkine <ikle@ikle.ru>
  *
  * SPDX-License-Identifier: BSD-2-Clause
  */
@@ -35,9 +35,7 @@ FILE *dakota_open (const char *category, const char *path)
 
 	++path;
 
-	home = getenv ("HOME");
-
-	if (home != NULL) {
+	if ((home = getenv ("HOME")) != NULL) {
 		fmt = "%s/" USER_DATADIR "/dakota/%s/%s";
 
 		if ((p = make_string (fmt, home, category, path)) == NULL)
