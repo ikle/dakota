@@ -118,19 +118,19 @@ no_bitmap:
 int bitmap_export (const struct bitmap *o, const char *path)
 {
 	FILE *out;
+	int ok;
 
 	if ((out = fopen (path, "wb")) == NULL)
 		return 0;
 
-	if (!pbm_export (out, o->width, o->height, o->bits) ||
-	    fputc ('\n', out) == EOF ||
-	    !pbm_export (out, o->width, o->height, o->mask))
-		goto error;
+	ok  = pbm_export (out, o->width, o->height, o->bits);
+	ok &= fputc ('\n', out) != EOF;
+	ok &= pbm_export (out, o->width, o->height, o->mask);
+	ok &= fclose (out) == 0;
 
-	if (fclose (out) == 0)
-		return 1;
-error:
-	fclose (out);
-	remove (path);
+	if (!ok)
+		remove (path);
+
+	return ok;
 	return 0;
 }
