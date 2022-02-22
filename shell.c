@@ -1,7 +1,7 @@
 /*
  * Dakota Shell Parser
  *
- * Copyright (c) 2021 Alexei A. Smekalkine <ikle@ikle.ru>
+ * Copyright (c) 2021-2022 Alexei A. Smekalkine <ikle@ikle.ru>
  *
  * SPDX-License-Identifier: BSD-2-Clause
  */
@@ -76,7 +76,7 @@ static void debug (const char *fmt, ...)
 
 static size_t get_next_size (size_t min, size_t have, size_t request)
 {
-	size_t size = (have == 0 ? min: have), next;
+	size_t size = (have == 0 ? min : have), next;
 
 	for (; size < request; size = next) {
 		next = size * 2;
