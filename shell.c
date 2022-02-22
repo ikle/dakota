@@ -169,7 +169,7 @@ static int get_word_char (struct shell *o)
 		}
 
 		++o->cmd.lineno;
-		/* collapse backspace + newline, concatenate lines */
+		/* collapse backslash + newline, concatenate lines */
 	}
 
 	return a;  /* unreachable */
