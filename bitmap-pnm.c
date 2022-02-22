@@ -1,7 +1,7 @@
 /*
  * Dakota Chip Bitmap Export (to PBM)
  *
- * Copyright (c) 2021 Alexei A. Smekalkine <ikle@ikle.ru>
+ * Copyright (c) 2021-2022 Alexei A. Smekalkine <ikle@ikle.ru>
  *
  * SPDX-License-Identifier: BSD-2-Clause
  */
@@ -94,9 +94,6 @@ struct bitmap *bitmap_import (const char *path)
 
 	if ((o = bitmap_alloc ()) == NULL)
 		goto no_bitmap;
-
-	free (o->bits);
-	free (o->mask);
 
 	o->width  = bw;
 	o->height = bh;
