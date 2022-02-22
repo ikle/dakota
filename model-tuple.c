@@ -12,7 +12,7 @@
 #include <dakota/array.h>
 #include <dakota/model/tuple.h>
 
-int tuple_init (struct tuple *o, size_t size, va_list ap)
+int tuple_init_va (struct tuple *o, size_t size, va_list ap)
 {
 	const char *value;
 	int i;
