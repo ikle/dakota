@@ -1,7 +1,7 @@
 /*
  * Dakota Error
  *
- * Copyright (c) 2021 Alexei A. Smekalkine <ikle@ikle.ru>
+ * Copyright (c) 2021-2022 Alexei A. Smekalkine <ikle@ikle.ru>
  *
  * SPDX-License-Identifier: BSD-2-Clause
  */
@@ -68,9 +68,9 @@ int error (struct error *o, const char *fmt, ...)
 {
 	va_list ap;
 
-	va_start(ap, fmt);
+	va_start (ap, fmt);
 	error_va (o, fmt, ap);
-	va_end(ap);
+	va_end (ap);
 
 	return 0;
 }
@@ -79,9 +79,9 @@ size_t error_s (struct error *o, const char *fmt, ...)
 {
 	va_list ap;
 
-	va_start(ap, fmt);
+	va_start (ap, fmt);
 	error_va (o, fmt, ap);
-	va_end(ap);
+	va_end (ap);
 
 	return (size_t) -1;
 }
@@ -90,9 +90,9 @@ void *error_p (struct error *o, const char *fmt, ...)
 {
 	va_list ap;
 
-	va_start(ap, fmt);
+	va_start (ap, fmt);
 	error_va (o, fmt, ap);
-	va_end(ap);
+	va_end (ap);
 
 	return NULL;
 }
