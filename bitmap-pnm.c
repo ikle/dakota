@@ -94,11 +94,17 @@ struct bitmap *bitmap_import (const char *path)
 	o->height = h;
 	o->bits   = bits;
 
-	if ((o->mask = pbm_import (in, &w, &h)) == NULL)
-		goto no_import;
+	if (feof (in)) {
+		if ((o->mask = calloc (o->pitch * h, 1)) == NULL)
+			goto no_import;
+	}
+	else {
+		if ((o->mask = pbm_import (in, &w, &h)) == NULL)
+			goto no_import;
 
-	if (w != o->width || h != o->height)
-		goto no_import;
+		if (w != o->width || h != o->height)
+			goto no_import;
+	}
 
 	fclose (in);
 	return o;
