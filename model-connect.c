@@ -15,8 +15,11 @@
 #include "model-connect.h"
 #include "model-core.h"
 
-static int model_add_sink (struct model *o, const char *name,
-			   struct cell *cell, size_t ref)
+/*
+ * Add new driven local port or mark existing port driven
+ */
+static int model_add_driven (struct model *o, const char *name,
+			     struct cell *cell, size_t ref)
 {
 	size_t port;
 
@@ -42,8 +45,11 @@ exists:
 	return 1;
 }
 
-static int model_add_source (struct model *o, const char *name,
-			     struct cell *cell, size_t ref)
+/*
+ * Add local porl
+ */
+static int model_add_local (struct model *o, const char *name,
+			    struct cell *cell, size_t ref)
 {
 	if (model_get_port (o, name) != M_UNKNOWN)
 		return 1;
@@ -63,14 +69,14 @@ static int model_bind_param (struct model *o, struct pair *param)
 	int ok;
 
 	if (strlen (param->value) == 1)
-		return model_add_sink (o, param->key, NULL, 0);
+		return model_add_driven (o, param->key, NULL, 0);
 
 	for (i = 0; param->value[i] != '\0'; ++i) {
 		name = make_string ("%s[%zu]", param->key, i);
 		if (name == NULL)
 			return model_error (o, NULL);
 
-		ok = model_add_sink (o, name, NULL, 0);
+		ok = model_add_driven (o, name, NULL, 0);
 		free (name);
 
 		if (!ok)
@@ -80,7 +86,7 @@ static int model_bind_param (struct model *o, struct pair *param)
 	return 1;
 }
 
-static int model_bind_core (struct model *o, struct cell *cell)
+static int model_bind_table (struct model *o, struct cell *cell)
 {
 	size_t ref, ninputs;
 	const char *name;
@@ -99,8 +105,8 @@ static int model_bind_core (struct model *o, struct cell *cell)
 		}
 
 		ok = (ref < ninputs) ?
-		     model_add_source (o, name, cell, ref):
-		     model_add_sink   (o, name, cell, ref);
+		     model_add_local  (o, name, cell, ref):
+		     model_add_driven (o, name, cell, ref);
 
 		if (!ok)
 			return 0;
@@ -117,12 +123,12 @@ static int model_bind_latch (struct model *o, struct cell *c)
 	case 5:
 		/* init-val at index 4 */
 	case 4:
-		ok &= model_add_source (o, c->bind[3].value, c, 3);
+		ok &= model_add_local  (o, c->bind[3].value, c, 3);
 	case 3:
 		/* init-val at index 2 */
 	case 2:
-		ok &= model_add_source (o, c->bind[0].value, c, 0);
-		ok &= model_add_sink   (o, c->bind[1].value, c, 1);
+		ok &= model_add_local  (o, c->bind[0].value, c, 0);
+		ok &= model_add_driven (o, c->bind[1].value, c, 1);
 		break;
 	default:
 		return model_error (o, "wrong number of arguments for latch");
@@ -148,9 +154,9 @@ static int model_bind_port (struct model *o, const char *name, const char *bind,
 		return model_error (o, "cannot bind %s to local port of "
 				    "cell %s", bind, cell->type);
 
-	ok = (type->port[ref].type & PORT_SOURCE) != 0 ?
-	     model_add_source (o, bind, cell, ref):
-	     model_add_sink   (o, bind, cell, ref);
+	ok = (type->port[ref].type & PORT_INPUT) != 0 ?
+	     model_add_local  (o, bind, cell, ref):
+	     model_add_driven (o, bind, cell, ref);
 
 	return ok;
 }
@@ -162,7 +168,7 @@ static int model_bind_cell (struct model *o, struct cell *cell)
 	const char *port, *value;
 
 	if (strcmp (cell->type, "table") == 0)
-		return model_bind_core (o, cell);
+		return model_bind_table (o, cell);
 
 	if (strcmp (cell->type, "latch") == 0)
 		return model_bind_latch (o, cell);
@@ -182,7 +188,7 @@ static int model_bind_cell (struct model *o, struct cell *cell)
 	return 1;
 }
 
-static int model_is_sink (struct model *o, struct port *port)
+static int model_port_is_driven (struct model *o, struct port *port)
 {
 	if ((port->type & PORT_DRIVEN) != 0)
 		return 1;
@@ -203,7 +209,7 @@ int model_connect (struct model *o)
 			return 0;
 
 	for (i = 0; i < o->nports; ++i)
-		if (!model_is_sink (o, o->port + i))
+		if (!model_port_is_driven (o, o->port + i))
 			return 0;
 
 	for (i = 0; i < o->nmodels; ++i)
