@@ -14,7 +14,7 @@
 enum port_type {
 	PORT_SOURCE	= 1,	/* port is source, sink otherwise	*/
 	PORT_DRIVEN	= 2,	/* port has driver: connected to source	*/
-	PORT_LOCAL	= 4,
+	PORT_LOCAL	= 4,	/* port is local to model		*/
 };
 
 struct port {
