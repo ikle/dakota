@@ -10,7 +10,7 @@
 #include <string.h>
 
 #include <dakota/array.h>
-#include <dakota/model/tuple.h>
+#include <dakota/data/tuple.h>
 
 int tuple_init_va (struct tuple *o, size_t size, va_list ap)
 {
