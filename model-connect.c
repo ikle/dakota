@@ -45,9 +45,7 @@ exists:
 static int model_add_source (struct model *o, const char *name,
 			     struct cell *cell, size_t ref)
 {
-	size_t port;
-
-	if ((port = model_get_port (o, name)) != M_UNKNOWN)
+	if (model_get_port (o, name) != M_UNKNOWN)
 		return 1;
 
 	o->last = o;  /* add local port to this model */
