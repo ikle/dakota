@@ -1,7 +1,7 @@
 /*
- * Dakota Port
+ * Dakota Model Port
  *
- * Copyright (c) 2021 Alexei A. Smekalkine <ikle@ikle.ru>
+ * Copyright (c) 2021-2022 Alexei A. Smekalkine <ikle@ikle.ru>
  *
  * SPDX-License-Identifier: BSD-2-Clause
  */
@@ -9,7 +9,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "model-port.h"
+#include <dakota/model/port.h>
 
 int port_init (struct port *o, const char *name, int type,
 	       struct cell *cell, size_t ref)
