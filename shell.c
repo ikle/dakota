@@ -186,8 +186,10 @@ l_start:
 		else
 		if (a == '\t')
 			o->cmd.indent = (o->cmd.indent + 8) & ~7;
-		else
+		else {
+			ungetc (a, o->in);
 			break;
+		}
 w_start:
 	switch (a = get_word_char (o)) {
 	case EOF:
