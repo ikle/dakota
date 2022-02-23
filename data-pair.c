@@ -9,7 +9,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <dakota/model/pair.h>
+#include <dakota/data/pair.h>
 
 int pair_init (struct pair *o, const char *key, const char *value)
 {

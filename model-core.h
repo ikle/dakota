@@ -11,8 +11,8 @@
 
 #include <stddef.h>
 
+#include <dakota/data/pair.h>
 #include <dakota/error.h>
-#include <dakota/model/pair.h>
 
 #include "model-port.h"
 #include "model-cell.h"

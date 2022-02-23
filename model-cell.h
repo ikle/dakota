@@ -13,7 +13,7 @@
 #include <stddef.h>
 
 #include <dakota/bitmap.h>
-#include <dakota/model/pair.h>
+#include <dakota/data/pair.h>
 #include <dakota/model/tuple.h>
 
 struct cell {
