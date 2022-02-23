@@ -15,8 +15,8 @@
 #include "model-connect.h"
 #include "model-core.h"
 
-static size_t model_add_sink (struct model *o, const char *name,
-			      struct cell *cell, size_t ref)
+static int model_add_sink (struct model *o, const char *name,
+			   struct cell *cell, size_t ref)
 {
 	size_t port;
 
@@ -26,12 +26,12 @@ static size_t model_add_sink (struct model *o, const char *name,
 	o->last = o;  /* add local port to this model */
 
 	if (!model_add_port (o, name, PORT_DRIVEN | PORT_LOCAL, cell, ref))
-		return error_s (&o->error, NULL);
+		return error (&o->error, NULL);
 
-	return o->nports - 1;
+	return 1;
 exists:
 	if ((o->port[port].type & PORT_DRIVEN) != 0)
-		return error_s (&o->error, "multiple drivers for %s", name);
+		return error (&o->error, "multiple drivers for %s", name);
 
 	if (cell != NULL) {
 		o->port[port].cell = cell;
@@ -39,42 +39,43 @@ exists:
 	}
 
 	o->port[port].type |= PORT_DRIVEN;
-	return port;
+	return 1;
 }
 
-static size_t model_add_source (struct model *o, const char *name,
-				struct cell *cell, size_t ref)
+static int model_add_source (struct model *o, const char *name,
+			     struct cell *cell, size_t ref)
 {
 	size_t port;
 
 	if ((port = model_get_port (o, name)) != M_UNKNOWN)
-		return port;
+		return 1;
 
 	o->last = o;  /* add local port to this model */
 
 	if (!model_add_port (o, name, PORT_LOCAL, cell, ref))
-		return error_s (&o->error, NULL);
+		return error (&o->error, NULL);
 
-	return o->nports - 1;
+	return 1;
 }
 
 static int model_bind_param (struct model *o, struct pair *param)
 {
-	size_t i, port;
+	size_t i;
 	char *name;
+	int ok;
 
 	if (strlen (param->value) == 1)
-		return model_add_sink (o, param->key, NULL, 0) != M_UNKNOWN;
+		return model_add_sink (o, param->key, NULL, 0);
 
 	for (i = 0; param->value[i] != '\0'; ++i) {
 		name = make_string ("%s[%zu]", param->key, i);
 		if (name == NULL)
 			return model_error (o, NULL);
 
-		port = model_add_sink (o, name, NULL, 0);;
+		ok = model_add_sink (o, name, NULL, 0);
 		free (name);
 
-		if (port == M_UNKNOWN)
+		if (!ok)
 			return 0;
 	}
 
@@ -83,8 +84,9 @@ static int model_bind_param (struct model *o, struct pair *param)
 
 static int model_bind_core (struct model *o, struct cell *cell)
 {
-	size_t ref, ninputs, port;
+	size_t ref, ninputs;
 	const char *name;
+	int ok;
 
 	for (
 		ref = 0, ninputs = cell->nbinds - 1;
@@ -98,11 +100,11 @@ static int model_bind_core (struct model *o, struct cell *cell)
 			continue;
 		}
 
-		port = (ref < ninputs) ?
-		       model_add_source (o, name, cell, ref):
-		       model_add_sink   (o, name, cell, ref);
+		ok = (ref < ninputs) ?
+		     model_add_source (o, name, cell, ref):
+		     model_add_sink   (o, name, cell, ref);
 
-		if (port == M_UNKNOWN)
+		if (!ok)
 			return 0;
 	}
 
@@ -117,12 +119,12 @@ static int model_bind_latch (struct model *o, struct cell *c)
 	case 5:
 		/* init-val at index 4 */
 	case 4:
-		ok &= model_add_source (o, c->bind[3].value, c, 3) != M_UNKNOWN;
+		ok &= model_add_source (o, c->bind[3].value, c, 3);
 	case 3:
 		/* init-val at index 2 */
 	case 2:
-		ok &= model_add_source (o, c->bind[0].value, c, 0) != M_UNKNOWN;
-		ok &= model_add_sink   (o, c->bind[1].value, c, 1) != M_UNKNOWN;
+		ok &= model_add_source (o, c->bind[0].value, c, 0);
+		ok &= model_add_sink   (o, c->bind[1].value, c, 1);
 		break;
 	default:
 		return model_error (o, "wrong number of arguments for latch");
@@ -134,7 +136,7 @@ static int model_bind_latch (struct model *o, struct cell *c)
 static int model_bind_port (struct model *o, const char *name, const char *bind,
 			    struct model *type, struct cell *cell, size_t ref)
 {
-	size_t port;
+	int ok;
 
 	if (ref >= type->nports)
 		return model_error (o, "too many args for cell %s", cell->type);
@@ -148,11 +150,11 @@ static int model_bind_port (struct model *o, const char *name, const char *bind,
 		return model_error (o, "cannot bind %s to local port of "
 				    "cell %s", bind, cell->type);
 
-	port = (type->port[ref].type & PORT_SOURCE) != 0 ?
-	       model_add_source (o, bind, cell, ref):
-	       model_add_sink   (o, bind, cell, ref);
+	ok = (type->port[ref].type & PORT_SOURCE) != 0 ?
+	     model_add_source (o, bind, cell, ref):
+	     model_add_sink   (o, bind, cell, ref);
 
-	return port != M_UNKNOWN;
+	return ok;
 }
 
 static int model_bind_cell (struct model *o, struct cell *cell)
