@@ -10,8 +10,7 @@
 #include <string.h>
 
 #include <dakota/data/array.h>
-
-#include "model-cell.h"
+#include <dakota/model/cell.h>
 
 int cell_init (struct cell *o, const char *type, const char *name)
 {

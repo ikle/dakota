@@ -13,9 +13,9 @@
 
 #include <dakota/data/pair.h>
 #include <dakota/error.h>
+#include <dakota/model/cell.h>
 
 #include "model-port.h"
-#include "model-cell.h"
 
 struct model {
 	struct model *parent;
