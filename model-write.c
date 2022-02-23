@@ -1,7 +1,7 @@
 /*
  * Dakota Model Writer
  *
- * Copyright (c) 2021 Alexei A. Smekalkine <ikle@ikle.ru>
+ * Copyright (c) 2021-2022 Alexei A. Smekalkine <ikle@ikle.ru>
  *
  * SPDX-License-Identifier: BSD-2-Clause
  */
@@ -38,7 +38,7 @@ static int model_write_inputs (struct model *o, FILE *out)
 	int ok = 1;
 
 	for (i = 0, prefix = ".inputs "; i < o->nports; ++i)
-		if ((o->port[i].type & (PORT_INPUT | PORT_LOCAL)) == PORT_INPUT) {
+		if ((o->port[i].type & (PORT_SOURCE | PORT_LOCAL)) == PORT_SOURCE) {
 			name = o->port[i].name;
 			ok &= fprintf (out, "%s%s", prefix, name) > 0;
 			prefix = " ";
@@ -57,7 +57,7 @@ static int model_write_outputs (struct model *o, FILE *out)
 	int ok = 1;
 
 	for (i = 0, prefix = ".outputs "; i < o->nports; ++i)
-		if ((o->port[i].type & (PORT_INPUT | PORT_LOCAL)) == 0) {
+		if ((o->port[i].type & (PORT_SOURCE | PORT_LOCAL)) == 0) {
 			name = o->port[i].name;
 			ok &= fprintf (out, "%s%s", prefix, name) > 0;
 			prefix = " ";

@@ -1,7 +1,7 @@
 /*
  * Dakota Model Connect
  *
- * Copyright (c) 2021 Alexei A. Smekalkine <ikle@ikle.ru>
+ * Copyright (c) 2021-2022 Alexei A. Smekalkine <ikle@ikle.ru>
  *
  * SPDX-License-Identifier: BSD-2-Clause
  */
@@ -148,7 +148,7 @@ static int model_bind_port (struct model *o, const char *name, const char *bind,
 		return model_error (o, "cannot bind %s to local port of "
 				    "cell %s", bind, cell->type);
 
-	port = (type->port[ref].type & PORT_INPUT) != 0 ?
+	port = (type->port[ref].type & PORT_SOURCE) != 0 ?
 	       model_add_source (o, bind, cell, ref):
 	       model_add_sink   (o, bind, cell, ref);
 

@@ -76,7 +76,7 @@ int model_add_port (struct model *o, const char *name, int type,
 
 int model_add_input (struct model *o, const char *name)
 {
-	return model_add_port (o, name, PORT_INPUT | PORT_DRIVEN, NULL, 0);
+	return model_add_port (o, name, PORT_SOURCE | PORT_DRIVEN, NULL, 0);
 }
 
 int model_add_output (struct model *o, const char *name)
