@@ -1,7 +1,7 @@
 /*
  * Dakota Model Parser
  *
- * Copyright (c) 2021 Alexei A. Smekalkine <ikle@ikle.ru>
+ * Copyright (c) 2021-2022 Alexei A. Smekalkine <ikle@ikle.ru>
  *
  * SPDX-License-Identifier: BSD-2-Clause
  */
@@ -175,6 +175,7 @@ struct model *model_read (const char *path)
 	struct shell *sh;
 	const struct shell_cmd *cmd;
 	int ok;
+	char *e;
 
 	if ((sh = shell_alloc ("model", path)) == NULL)
 		return NULL;
@@ -214,6 +215,11 @@ struct model *model_read (const char *path)
 
 	if (model_status (o) == NULL)
 		model_commit (o);
+	else
+	if (cmd != NULL && (e = strdup (model_status (o))) != NULL) {
+		model_error (o, "%zu: %s", cmd->lineno, e);
+		free (e);
+	}
 
 	shell_free (sh);
 	return o;
