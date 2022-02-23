@@ -242,10 +242,9 @@ int model_write (struct model *o, const char *path)
 
 	return 1;
 error:
-	fclose (out);
-
-	if (strcmp (path, "-") != 0)
-		remove (path);
+	if (out != stdout) {
+		fclose (out);
+	}
 
 	return 0;
 }
