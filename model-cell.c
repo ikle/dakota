@@ -9,7 +9,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <dakota/array.h>
+#include <dakota/data/array.h>
 
 #include "model-cell.h"
 

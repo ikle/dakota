@@ -1,7 +1,7 @@
 /*
  * Dakota Array
  *
- * Copyright (c) 2021 Alexei A. Smekalkine <ikle@ikle.ru>
+ * Copyright (c) 2021-2022 Alexei A. Smekalkine <ikle@ikle.ru>
  *
  * SPDX-License-Identifier: BSD-2-Clause
  */
@@ -10,7 +10,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-#include <dakota/array.h>
+#include <dakota/data/array.h>
 
 void *array_do_alloc (size_t count, size_t size)
 {

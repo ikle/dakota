@@ -1,7 +1,7 @@
 /*
  * Dakota Model Core
  *
- * Copyright (c) 2021 Alexei A. Smekalkine <ikle@ikle.ru>
+ * Copyright (c) 2021-2022 Alexei A. Smekalkine <ikle@ikle.ru>
  *
  * SPDX-License-Identifier: BSD-2-Clause
  */
@@ -10,7 +10,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <dakota/array.h>
+#include <dakota/data/array.h>
 #include <dakota/error.h>
 #include <dakota/model.h>
 
