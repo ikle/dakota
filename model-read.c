@@ -12,7 +12,6 @@
 
 #include <dakota/model.h>
 #include <dakota/shell.h>
-#include <dakota/string.h>
 
 static int on_model (struct model *o, const struct shell_cmd *cmd)
 {
