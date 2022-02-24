@@ -1,5 +1,5 @@
 /*
- * Dakota Model Port
+ * Dakota Netlist Port
  *
  * Copyright (c) 2021-2022 Alexei A. Smekalkine <ikle@ikle.ru>
  *
@@ -9,7 +9,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <dakota/model/port.h>
+#include <dakota/netlist/port.h>
 
 int port_init (struct port *o, const char *name, int type,
 	       struct cell *cell, size_t ref)

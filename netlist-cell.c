@@ -1,5 +1,5 @@
 /*
- * Dakota Model Cell
+ * Dakota Netlist Cell
  *
  * Copyright (c) 2021-2022 Alexei A. Smekalkine <ikle@ikle.ru>
  *
@@ -10,7 +10,7 @@
 #include <string.h>
 
 #include <dakota/data/array.h>
-#include <dakota/model/cell.h>
+#include <dakota/netlist/cell.h>
 
 int cell_init (struct cell *o, const char *type, const char *name)
 {

@@ -13,8 +13,8 @@
 
 #include <dakota/data/pair.h>
 #include <dakota/error.h>
-#include <dakota/model/cell.h>
-#include <dakota/model/port.h>
+#include <dakota/netlist/cell.h>
+#include <dakota/netlist/port.h>
 
 struct model {
 	struct model *parent;

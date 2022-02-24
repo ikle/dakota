@@ -1,13 +1,13 @@
 /*
- * Dakota Model Port
+ * Dakota Netlist Port
  *
  * Copyright (c) 2021-2022 Alexei A. Smekalkine <ikle@ikle.ru>
  *
  * SPDX-License-Identifier: BSD-2-Clause
  */
 
-#ifndef DAKOTA_MODEL_PORT_H
-#define DAKOTA_MODEL_PORT_H  1
+#ifndef DAKOTA_NETLIST_PORT_H
+#define DAKOTA_NETLIST_PORT_H  1
 
 #include <stddef.h>
 
@@ -29,4 +29,4 @@ int  port_init (struct port *o, const char *name, int type,
 		struct cell *cell, size_t ref);
 void port_fini (struct port *o);
 
-#endif  /* DAKOTA_MODEL_PORT_H */
+#endif  /* DAKOTA_NETLIST_PORT_H */

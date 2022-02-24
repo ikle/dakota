@@ -1,13 +1,13 @@
 /*
- * Dakota Model Cell
+ * Dakota Netlist Cell
  *
  * Copyright (c) 2021-2022 Alexei A. Smekalkine <ikle@ikle.ru>
  *
  * SPDX-License-Identifier: BSD-2-Clause
  */
 
-#ifndef DAKOTA_MODEL_CELL_H
-#define DAKOTA_MODEL_CELL_H  1
+#ifndef DAKOTA_NETLIST_CELL_H
+#define DAKOTA_NETLIST_CELL_H  1
 
 #include <stdarg.h>
 #include <stddef.h>
@@ -41,4 +41,4 @@ int cell_load_bitmap  (struct cell *o, const char *path);
 
 const char *cell_get_attr (const struct cell *o, const char *name);
 
-#endif  /* DAKOTA_MODEL_CELL_H */
+#endif  /* DAKOTA_NETLIST_CELL_H */
