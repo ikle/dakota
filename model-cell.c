@@ -49,22 +49,27 @@ void cell_fini (struct cell *o)
 	bitmap_free (o->map);
 }
 
-int cell_add_bind (struct cell *o, const char *port, const char *value)
-{
-	const size_t nbinds = o->nbinds + 1;
-	struct pair *p;
-
-	if ((p = array_resize (o->bind, nbinds)) == NULL)
-		return 0;
-
-	o->bind = p;
-
-	if (!pair_init (o->bind + o->nbinds, port, value))
-		return 0;
-
-	o->nbinds = nbinds;
-	return 1;
+#define DEF_PAIR_ADD(attr, count)					\
+int cell_add_##attr (struct cell *o, const char *key, const char *value) \
+{									\
+	const size_t count = o->count + 1;				\
+	struct pair *p;							\
+									\
+	if ((p = array_resize (o->attr, count)) == NULL)		\
+		return 0;						\
+									\
+	o->attr = p;							\
+									\
+	if (!pair_init (o->attr + o->count, key, value))		\
+		return 0;						\
+									\
+	o->count = count;						\
+	return 1;							\
 }
+
+DEF_PAIR_ADD (bind,  nbinds)
+DEF_PAIR_ADD (param, nparams)
+DEF_PAIR_ADD (attr,  nattrs)
 
 int cell_add_tuple_va (struct cell *o, int size, va_list ap)
 {
@@ -110,40 +115,6 @@ int cell_add_tuple (struct cell *o, int size, ...)
 	va_end (ap);
 
 	return ok;
-}
-
-int cell_add_param (struct cell *o, const char *name, const char *value)
-{
-	const size_t nparams = o->nparams + 1;
-	struct pair *p;
-
-	if ((p = array_resize (o->param, nparams)) == NULL)
-		return 0;
-
-	o->param = p;
-
-	if (!pair_init (o->param + o->nparams, name, value))
-		return 0;
-
-	o->nparams = nparams;
-	return 1;
-}
-
-int cell_add_attr (struct cell *o, const char *name, const char *value)
-{
-	const size_t nattrs = o->nattrs + 1;
-	struct pair *p;
-
-	if ((p = array_resize (o->attr, nattrs)) == NULL)
-		return 0;
-
-	o->attr = p;
-
-	if (!pair_init (o->attr + o->nattrs, name, value))
-		return 0;
-
-	o->nattrs = nattrs;
-	return 1;
 }
 
 int cell_load_bitmap (struct cell *o, const char *path)
