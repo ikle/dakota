@@ -21,13 +21,14 @@ int cell_init (struct cell *o, const char *type, const char *name)
 		goto no_name;
 
 	o->nbinds  = 0;
-	o->bind    = NULL;
-	o->ntuples = 0;
-	o->tuple   = NULL;
 	o->nparams = 0;
-	o->param   = NULL;
 	o->nattrs  = 0;
+	o->ntuples = 0;
+
+	o->bind    = NULL;
+	o->param   = NULL;
 	o->attr    = NULL;
+	o->tuple   = NULL;
 
 	o->map = NULL;
 	return 1;
@@ -42,9 +43,9 @@ void cell_fini (struct cell *o)
 	free (o->name);
 
 	array_free (o->bind,  o->nbinds,  pair_fini);
-	array_free (o->tuple, o->ntuples, tuple_fini);
 	array_free (o->param, o->nparams, pair_fini);
 	array_free (o->attr,  o->nattrs,  pair_fini);
+	array_free (o->tuple, o->ntuples, tuple_fini);
 
 	bitmap_free (o->map);
 }
