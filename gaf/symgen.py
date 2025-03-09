@@ -230,11 +230,28 @@ LCX573 = {
 	'slots': [[2, 3, 4, 5, 6, 7, 8, 9, 1, 11, 19, 18, 17, 16, 15, 14, 13, 12]]
 }
 
+LCX574 = {
+	'author': 'Alexei A Smekalkine <ikle@ikle.ru>',
+
+	'hint':	'574',
+	'dev':	'74LCX574',
+	'desc':	'Octal D-Type Flip-Flop with 3-state Outputs',
+	'pack':	'DIP20',
+
+	'east': [('in',  ['D0', 'D1', 'D2', 'D3', 'D4', 'D5', 'D6', 'D7', '-', '!OE']),
+		 ('clk', ['CLK'])],
+	'west': [('tri', ['Q0', 'Q1', 'Q2', 'Q3', 'Q4', 'Q5', 'Q6', 'Q7'])],
+	'nets': ['Vcc:20', 'GND:10'],
+
+	'slots': [[2, 3, 4, 5, 6, 7, 8, 9, 1, 11, 19, 18, 17, 16, 15, 14, 13, 12]]
+}
+
 make_device (LCX244, 'lib/ttl-244-1.sym')
 make_device (LCX245, 'lib/ttl-245-1.sym')
 make_device (LCX373, 'lib/ttl-373-1.sym')
 make_device (LCX541, 'lib/ttl-541-1.sym')
 make_device (LCX573, 'lib/ttl-573-1.sym')
+make_device (LCX574, 'lib/ttl-574-1.sym')
 
 SRAM_64K_8 = {
 	'author': 'Alexei A Smekalkine <ikle@ikle.ru>',
