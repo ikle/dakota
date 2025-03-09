@@ -255,5 +255,26 @@ SRAM_64K_8 = {
 		   13, 14, 15, 17, 18, 19, 20, 21]]
 }
 
+SRAM_64K_16 = {
+	'author': 'Alexei A Smekalkine <ikle@ikle.ru>',
+
+	'hint':	'64Kx16',
+	'dev':	'AS7C1026-20TC',
+	'desc':	'64K-word x 16-bit high-speed CMOS static RAM',
+	'pack':	'TSOP44',
+
+	'east':	[('in',  ['A0', 'A1',  'A2',  'A3',  'A4',  'A5',  'A6',  'A7']),
+		 ('in',  ['A8', 'A9', 'A10', 'A11', 'A12', 'A13', 'A14', 'A15']),
+		 ('in',  ['-', '!BE0', '!BE1', '!WE', '!OE', '!CE'])],
+	'west':	[('io',  ['D0', 'D1',  'D2',  'D3',  'D4',  'D5',  'D6',  'D7']),
+		 ('io',  ['D8', 'D9', 'D10', 'D11', 'D12', 'D13', 'D14', 'D15'])],
+	'nets': ['Vcc:11,33', 'GND:12,34'],
+
+	'slots': [[5, 4, 3, 2, 1, 44, 43, 42, 27, 26, 25, 24, 21, 20, 19, 18,
+		   39, 40, 17, 41, 6,
+		   7, 8, 9, 10, 13, 14, 15, 16, 29, 30, 31, 32, 35, 36, 37, 38]]
+}
+
 make_device (SRAM_64K_8,  'lib/sram-64K-8-1.sym')
+make_device (SRAM_64K_16, 'lib/sram-64K-16-1.sym')
 
